@@ -1,0 +1,154 @@
+
+state 0
+	$accept: .doc $end 
+	Content: .    (2)
+
+	.  reduce 2 (src line 43)
+
+	Content  goto 2
+	doc  goto 1
+
+state 1
+	$accept:  doc.$end 
+
+	$end  accept
+	.  error
+
+
+state 2
+	doc:  Content.    (1)
+	Content:  Content.Literal 
+	Content:  Content.Ident 
+	Content:  Content.Comment 
+	Content:  Content.DefStatement 
+	Content:  Content.WhiteSpace 
+
+	whiteSpace  shift 16
+	commentInline  shift 13
+	commentMultiline  shift 14
+	identToken  shift 12
+	boolLiteral  shift 11
+	integerLiteral  shift 9
+	floatLiteral  shift 10
+	stringLiteral  shift 8
+	defKeyword  shift 15
+	.  reduce 1 (src line 41)
+
+	Ident  goto 4
+	Literal  goto 3
+	Comment  goto 5
+	DefStatement  goto 6
+	WhiteSpace  goto 7
+
+state 3
+	Content:  Content Literal.    (3)
+
+	.  reduce 3 (src line 47)
+
+
+state 4
+	Content:  Content Ident.    (4)
+
+	.  reduce 4 (src line 51)
+
+
+state 5
+	Content:  Content Comment.    (5)
+
+	.  reduce 5 (src line 55)
+
+
+state 6
+	Content:  Content DefStatement.    (6)
+
+	.  reduce 6 (src line 59)
+
+
+state 7
+	Content:  Content WhiteSpace.    (7)
+
+	.  reduce 7 (src line 63)
+
+
+state 8
+	Literal:  stringLiteral.    (10)
+
+	.  reduce 10 (src line 85)
+
+
+state 9
+	Literal:  integerLiteral.    (11)
+
+	.  reduce 11 (src line 89)
+
+
+state 10
+	Literal:  floatLiteral.    (12)
+
+	.  reduce 12 (src line 92)
+
+
+state 11
+	Literal:  boolLiteral.    (13)
+
+	.  reduce 13 (src line 95)
+
+
+state 12
+	Ident:  identToken.    (9)
+
+	.  reduce 9 (src line 81)
+
+
+state 13
+	Comment:  commentInline.    (14)
+
+	.  reduce 14 (src line 100)
+
+
+state 14
+	Comment:  commentMultiline.    (15)
+
+	.  reduce 15 (src line 102)
+
+
+state 15
+	DefStatement:  defKeyword.WhiteSpace Ident 
+
+	whiteSpace  shift 16
+	.  error
+
+	WhiteSpace  goto 17
+
+state 16
+	WhiteSpace:  whiteSpace.    (16)
+
+	.  reduce 16 (src line 106)
+
+
+state 17
+	DefStatement:  defKeyword WhiteSpace.Ident 
+
+	identToken  shift 12
+	.  error
+
+	Ident  goto 18
+
+state 18
+	DefStatement:  defKeyword WhiteSpace Ident.    (8)
+
+	.  reduce 8 (src line 73)
+
+
+18 terminals, 8 nonterminals
+17 grammar rules, 19/16000 states
+0 shift/reduce, 0 reduce/reduce conflicts reported
+57 working sets used
+memory: parser 8/240000
+0 extra closures
+11 shift entries, 1 exceptions
+9 goto entries
+0 entries saved by goto default
+Optimizer space used: output 28/240000
+28 table entries, 8 zero
+maximum spread: 12, maximum offset: 17
