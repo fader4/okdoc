@@ -41,12 +41,17 @@ skipToken:
 	out.token = &tokenWithData{token: token, lex: l.lex}
 
 	if pyDebug == 1 {
-		fmt.Printf(
-			"[PARSER] next token L%d(%d;%d): %q\n",
-			token.pos[0],
-			token.pos[1],
-			token.pos[2],
-			string(token.Read(l.lex)),
+		firstChar := token.pos[1] == token.pos[2]
+
+		lineInfo := fmt.Sprintf("\t>%d:\t", token.pos[1])
+		if firstChar {
+			lineInfo = fmt.Sprintf("L%dT%d:", token.pos[0], token.pos[2])
+		}
+		charInfo := fmt.Sprintf("%q", string(token.Read(l.lex)))
+		fmt.Println(
+			"[PARSER]",
+			lineInfo,
+			charInfo,
 		)
 	}
 	return token.symbol

@@ -21,8 +21,8 @@ import _ "fmt"
     NewLine    = [\n\r] @incLine;
 
     CommentInline = "#" [^\r\n]*;
-    CommentMultiline1 = "'''" (any)* :>> "'''";
-    CommentMultiline2 = '"""' (any)* :>> '"""';
+    CommentMultiline1 = "'''" (any|[\n\r] @{lex.countNewLinesInComments++})* :>> "'''";
+    CommentMultiline2 = '"""' (any|[\n\r] @{lex.countNewLinesInComments++})* :>> '"""';
 
     keywords = ("load"|"module"|"def");
 

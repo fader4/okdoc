@@ -44,9 +44,10 @@ type lexer struct {
 	// It is helper structure.
 	stackPairedCharacters stackChars
 
-	tokens               tokens
-	idxNewlines          []int
-	countLineWhiteSpaces int
+	tokens                  tokens
+	idxNewlines             []int
+	countLineWhiteSpaces    int
+	countNewLinesInComments int
 }
 
 func (l *lexer) releaseToken(symbol int) {
@@ -76,7 +77,7 @@ func (l *lexer) releaseNEL() {
 
 func (l *lexer) currentPos() [3]int {
 	return [3]int{
-		l.lineNumber(),
+		l.lineNumber() + l.countNewLinesInComments,
 		l.charNumberOnLine(),
 		l.countLineWhiteSpaces}
 }

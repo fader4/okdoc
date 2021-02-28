@@ -235,14 +235,14 @@ func pyLex(data []byte) (*lexer, error) {
 			}
 		}
 		goto st12
-	tr4:
+	tr5:
 //line py_lexer.rl:67
 		lex.te = (lex.p) + 1
 		{
 			lex.releaseToken(commentMultiline)
 		}
 		goto st12
-	tr5:
+	tr6:
 //line py_lexer.rl:102
 		(lex.p) = (lex.te) - 1
 		{
@@ -257,19 +257,19 @@ func pyLex(data []byte) (*lexer, error) {
 			}
 		}
 		goto st12
-	tr9:
+	tr11:
 //line py_lexer.rl:89
 		(lex.p) = (lex.te) - 1
 		{
 			lex.releaseToken(ident)
 		}
 		goto st12
-	tr15:
+	tr17:
 //line py_lexer.rl:135
 		lex.te = (lex.p) + 1
 
 		goto st12
-	tr17:
+	tr19:
 //line py_lexer.rl:13
 
 		lex.releaseNEL()
@@ -278,7 +278,7 @@ func pyLex(data []byte) (*lexer, error) {
 		lex.te = (lex.p) + 1
 
 		goto st12
-	tr21:
+	tr23:
 //line py_lexer.rl:112
 		lex.te = (lex.p) + 1
 		{
@@ -294,7 +294,7 @@ func pyLex(data []byte) (*lexer, error) {
 			}
 		}
 		goto st12
-	tr22:
+	tr24:
 //line py_lexer.rl:128
 		lex.te = (lex.p) + 1
 		{
@@ -308,20 +308,20 @@ func pyLex(data []byte) (*lexer, error) {
 			}
 		}
 		goto st12
-	tr23:
+	tr25:
 //line py_lexer.rl:84
 		lex.te = (lex.p) + 1
 		{
 			lex.releaseToken(int(lex.data[lex.ts]))
 		}
 		goto st12
-	tr30:
+	tr32:
 //line py_lexer.rl:61
 		lex.te = (lex.p)
 		(lex.p)--
 
 		goto st12
-	tr31:
+	tr33:
 //line py_lexer.rl:107
 		lex.te = (lex.p)
 		(lex.p)--
@@ -337,7 +337,7 @@ func pyLex(data []byte) (*lexer, error) {
 			}
 		}
 		goto st12
-	tr33:
+	tr35:
 //line py_lexer.rl:64
 		lex.te = (lex.p)
 		(lex.p)--
@@ -345,7 +345,7 @@ func pyLex(data []byte) (*lexer, error) {
 			lex.releaseToken(commentInline)
 		}
 		goto st12
-	tr34:
+	tr36:
 //line py_lexer.rl:102
 		lex.te = (lex.p)
 		(lex.p)--
@@ -361,7 +361,7 @@ func pyLex(data []byte) (*lexer, error) {
 			}
 		}
 		goto st12
-	tr36:
+	tr38:
 //line NONE:1
 		switch lex.act {
 		case 9:
@@ -397,7 +397,7 @@ func pyLex(data []byte) (*lexer, error) {
 		}
 
 		goto st12
-	tr37:
+	tr39:
 //line py_lexer.rl:89
 		lex.te = (lex.p)
 		(lex.p)--
@@ -419,25 +419,25 @@ func pyLex(data []byte) (*lexer, error) {
 //line py_lexer.go:382
 		switch lex.data[(lex.p)] {
 		case 9:
-			goto tr16
-		case 10:
-			goto tr17
-		case 13:
-			goto tr17
-		case 32:
-			goto tr16
-		case 34:
 			goto tr18
+		case 10:
+			goto tr19
+		case 13:
+			goto tr19
+		case 32:
+			goto tr18
+		case 34:
+			goto tr20
 		case 35:
 			goto st15
 		case 39:
-			goto tr20
-		case 40:
-			goto tr21
-		case 41:
 			goto tr22
-		case 61:
+		case 40:
 			goto tr23
+		case 41:
+			goto tr24
+		case 61:
+			goto tr25
 		case 70:
 			goto st18
 		case 84:
@@ -454,13 +454,13 @@ func pyLex(data []byte) (*lexer, error) {
 		switch {
 		case lex.data[(lex.p)] > 90:
 			if 97 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 122 {
-				goto tr10
+				goto tr12
 			}
 		case lex.data[(lex.p)] >= 65:
-			goto tr10
+			goto tr12
 		}
-		goto tr15
-	tr16:
+		goto tr17
+	tr18:
 //line py_lexer.rl:16
 
 		lex.releaseWhiteSpace()
@@ -474,12 +474,12 @@ func pyLex(data []byte) (*lexer, error) {
 //line py_lexer.go:437
 		switch lex.data[(lex.p)] {
 		case 9:
-			goto tr16
+			goto tr18
 		case 32:
-			goto tr16
+			goto tr18
 		}
-		goto tr30
-	tr18:
+		goto tr32
+	tr20:
 //line NONE:1
 		lex.te = (lex.p) + 1
 
@@ -493,7 +493,7 @@ func pyLex(data []byte) (*lexer, error) {
 		if lex.data[(lex.p)] == 34 {
 			goto st1
 		}
-		goto tr31
+		goto tr33
 	st1:
 		if (lex.p)++; (lex.p) == (lex.pe) {
 			goto _test_eof1
@@ -503,12 +503,22 @@ func pyLex(data []byte) (*lexer, error) {
 			goto st2
 		}
 		goto tr0
+	tr2:
+//line py_lexer.rl:25
+		lex.countNewLinesInComments++
+		goto st2
 	st2:
 		if (lex.p)++; (lex.p) == (lex.pe) {
 			goto _test_eof2
 		}
 	st_case_2:
-		if lex.data[(lex.p)] == 34 {
+//line py_lexer.go:478
+		switch lex.data[(lex.p)] {
+		case 10:
+			goto tr2
+		case 13:
+			goto tr2
+		case 34:
 			goto st3
 		}
 		goto st2
@@ -517,7 +527,12 @@ func pyLex(data []byte) (*lexer, error) {
 			goto _test_eof3
 		}
 	st_case_3:
-		if lex.data[(lex.p)] == 34 {
+		switch lex.data[(lex.p)] {
+		case 10:
+			goto tr2
+		case 13:
+			goto tr2
+		case 34:
 			goto st4
 		}
 		goto st2
@@ -526,8 +541,13 @@ func pyLex(data []byte) (*lexer, error) {
 			goto _test_eof4
 		}
 	st_case_4:
-		if lex.data[(lex.p)] == 34 {
-			goto tr4
+		switch lex.data[(lex.p)] {
+		case 10:
+			goto tr2
+		case 13:
+			goto tr2
+		case 34:
+			goto tr5
 		}
 		goto st2
 	st15:
@@ -537,12 +557,12 @@ func pyLex(data []byte) (*lexer, error) {
 	st_case_15:
 		switch lex.data[(lex.p)] {
 		case 10:
-			goto tr33
+			goto tr35
 		case 13:
-			goto tr33
+			goto tr35
 		}
 		goto st15
-	tr20:
+	tr22:
 //line NONE:1
 		lex.te = (lex.p) + 1
 
@@ -552,11 +572,11 @@ func pyLex(data []byte) (*lexer, error) {
 			goto _test_eof16
 		}
 	st_case_16:
-//line py_lexer.go:518
+//line py_lexer.go:538
 		if lex.data[(lex.p)] == 39 {
 			goto st5
 		}
-		goto tr34
+		goto tr36
 	st5:
 		if (lex.p)++; (lex.p) == (lex.pe) {
 			goto _test_eof5
@@ -565,13 +585,23 @@ func pyLex(data []byte) (*lexer, error) {
 		if lex.data[(lex.p)] == 39 {
 			goto st6
 		}
-		goto tr5
+		goto tr6
+	tr8:
+//line py_lexer.rl:24
+		lex.countNewLinesInComments++
+		goto st6
 	st6:
 		if (lex.p)++; (lex.p) == (lex.pe) {
 			goto _test_eof6
 		}
 	st_case_6:
-		if lex.data[(lex.p)] == 39 {
+//line py_lexer.go:561
+		switch lex.data[(lex.p)] {
+		case 10:
+			goto tr8
+		case 13:
+			goto tr8
+		case 39:
 			goto st7
 		}
 		goto st6
@@ -580,7 +610,12 @@ func pyLex(data []byte) (*lexer, error) {
 			goto _test_eof7
 		}
 	st_case_7:
-		if lex.data[(lex.p)] == 39 {
+		switch lex.data[(lex.p)] {
+		case 10:
+			goto tr8
+		case 13:
+			goto tr8
+		case 39:
 			goto st8
 		}
 		goto st6
@@ -589,39 +624,44 @@ func pyLex(data []byte) (*lexer, error) {
 			goto _test_eof8
 		}
 	st_case_8:
-		if lex.data[(lex.p)] == 39 {
-			goto tr4
+		switch lex.data[(lex.p)] {
+		case 10:
+			goto tr8
+		case 13:
+			goto tr8
+		case 39:
+			goto tr5
 		}
 		goto st6
-	tr10:
+	tr12:
 //line NONE:1
 		lex.te = (lex.p) + 1
 
 //line py_lexer.rl:89
 		lex.act = 14
 		goto st17
-	tr44:
+	tr46:
 //line NONE:1
 		lex.te = (lex.p) + 1
 
 //line py_lexer.rl:78
 		lex.act = 11
 		goto st17
-	tr47:
+	tr49:
 //line NONE:1
 		lex.te = (lex.p) + 1
 
 //line py_lexer.rl:72
 		lex.act = 9
 		goto st17
-	tr52:
+	tr54:
 //line NONE:1
 		lex.te = (lex.p) + 1
 
 //line py_lexer.rl:75
 		lex.act = 10
 		goto st17
-	tr57:
+	tr59:
 //line NONE:1
 		lex.te = (lex.p) + 1
 
@@ -633,23 +673,23 @@ func pyLex(data []byte) (*lexer, error) {
 			goto _test_eof17
 		}
 	st_case_17:
-//line py_lexer.go:599
+//line py_lexer.go:639
 		if lex.data[(lex.p)] == 95 {
-			goto tr10
+			goto tr12
 		}
 		switch {
 		case lex.data[(lex.p)] < 65:
 			if 48 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 57 {
-				goto tr10
+				goto tr12
 			}
 		case lex.data[(lex.p)] > 90:
 			if 97 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 122 {
-				goto tr10
+				goto tr12
 			}
 		default:
-			goto tr10
+			goto tr12
 		}
-		goto tr36
+		goto tr38
 	st18:
 		if (lex.p)++; (lex.p) == (lex.pe) {
 			goto _test_eof18
@@ -657,23 +697,23 @@ func pyLex(data []byte) (*lexer, error) {
 	st_case_18:
 		switch lex.data[(lex.p)] {
 		case 95:
-			goto tr10
+			goto tr12
 		case 97:
 			goto st19
 		}
 		switch {
 		case lex.data[(lex.p)] < 65:
 			if 48 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 57 {
-				goto tr10
+				goto tr12
 			}
 		case lex.data[(lex.p)] > 90:
 			if 98 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 122 {
-				goto tr10
+				goto tr12
 			}
 		default:
-			goto tr10
+			goto tr12
 		}
-		goto tr37
+		goto tr39
 	st19:
 		if (lex.p)++; (lex.p) == (lex.pe) {
 			goto _test_eof19
@@ -681,23 +721,23 @@ func pyLex(data []byte) (*lexer, error) {
 	st_case_19:
 		switch lex.data[(lex.p)] {
 		case 95:
-			goto tr10
+			goto tr12
 		case 108:
 			goto st20
 		}
 		switch {
 		case lex.data[(lex.p)] < 65:
 			if 48 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 57 {
-				goto tr10
+				goto tr12
 			}
 		case lex.data[(lex.p)] > 90:
 			if 97 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 122 {
-				goto tr10
+				goto tr12
 			}
 		default:
-			goto tr10
+			goto tr12
 		}
-		goto tr37
+		goto tr39
 	st20:
 		if (lex.p)++; (lex.p) == (lex.pe) {
 			goto _test_eof20
@@ -705,24 +745,24 @@ func pyLex(data []byte) (*lexer, error) {
 	st_case_20:
 		switch lex.data[(lex.p)] {
 		case 95:
-			goto tr10
+			goto tr12
 		case 115:
-			goto tr40
+			goto tr42
 		}
 		switch {
 		case lex.data[(lex.p)] < 65:
 			if 48 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 57 {
-				goto tr10
+				goto tr12
 			}
 		case lex.data[(lex.p)] > 90:
 			if 97 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 122 {
-				goto tr10
+				goto tr12
 			}
 		default:
-			goto tr10
+			goto tr12
 		}
-		goto tr37
-	tr40:
+		goto tr39
+	tr42:
 //line NONE:1
 		lex.te = (lex.p) + 1
 
@@ -732,47 +772,47 @@ func pyLex(data []byte) (*lexer, error) {
 			goto _test_eof21
 		}
 	st_case_21:
-//line py_lexer.go:698
+//line py_lexer.go:738
 		switch lex.data[(lex.p)] {
 		case 95:
-			goto tr10
+			goto tr12
 		case 101:
 			goto st9
 		}
 		switch {
 		case lex.data[(lex.p)] < 65:
 			if 48 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 57 {
-				goto tr10
+				goto tr12
 			}
 		case lex.data[(lex.p)] > 90:
 			if 97 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 122 {
-				goto tr10
+				goto tr12
 			}
 		default:
-			goto tr10
+			goto tr12
 		}
-		goto tr37
+		goto tr39
 	st9:
 		if (lex.p)++; (lex.p) == (lex.pe) {
 			goto _test_eof9
 		}
 	st_case_9:
 		if lex.data[(lex.p)] == 95 {
-			goto tr10
+			goto tr12
 		}
 		switch {
 		case lex.data[(lex.p)] < 65:
 			if 48 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 57 {
-				goto tr10
+				goto tr12
 			}
 		case lex.data[(lex.p)] > 90:
 			if 97 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 122 {
-				goto tr10
+				goto tr12
 			}
 		default:
-			goto tr10
+			goto tr12
 		}
-		goto tr9
+		goto tr11
 	st22:
 		if (lex.p)++; (lex.p) == (lex.pe) {
 			goto _test_eof22
@@ -780,23 +820,23 @@ func pyLex(data []byte) (*lexer, error) {
 	st_case_22:
 		switch lex.data[(lex.p)] {
 		case 95:
-			goto tr10
+			goto tr12
 		case 114:
 			goto st23
 		}
 		switch {
 		case lex.data[(lex.p)] < 65:
 			if 48 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 57 {
-				goto tr10
+				goto tr12
 			}
 		case lex.data[(lex.p)] > 90:
 			if 97 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 122 {
-				goto tr10
+				goto tr12
 			}
 		default:
-			goto tr10
+			goto tr12
 		}
-		goto tr37
+		goto tr39
 	st23:
 		if (lex.p)++; (lex.p) == (lex.pe) {
 			goto _test_eof23
@@ -804,23 +844,23 @@ func pyLex(data []byte) (*lexer, error) {
 	st_case_23:
 		switch lex.data[(lex.p)] {
 		case 95:
-			goto tr10
+			goto tr12
 		case 117:
-			goto tr40
+			goto tr42
 		}
 		switch {
 		case lex.data[(lex.p)] < 65:
 			if 48 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 57 {
-				goto tr10
+				goto tr12
 			}
 		case lex.data[(lex.p)] > 90:
 			if 97 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 122 {
-				goto tr10
+				goto tr12
 			}
 		default:
-			goto tr10
+			goto tr12
 		}
-		goto tr37
+		goto tr39
 	st24:
 		if (lex.p)++; (lex.p) == (lex.pe) {
 			goto _test_eof24
@@ -828,23 +868,23 @@ func pyLex(data []byte) (*lexer, error) {
 	st_case_24:
 		switch lex.data[(lex.p)] {
 		case 95:
-			goto tr10
+			goto tr12
 		case 101:
 			goto st25
 		}
 		switch {
 		case lex.data[(lex.p)] < 65:
 			if 48 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 57 {
-				goto tr10
+				goto tr12
 			}
 		case lex.data[(lex.p)] > 90:
 			if 97 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 122 {
-				goto tr10
+				goto tr12
 			}
 		default:
-			goto tr10
+			goto tr12
 		}
-		goto tr37
+		goto tr39
 	st25:
 		if (lex.p)++; (lex.p) == (lex.pe) {
 			goto _test_eof25
@@ -852,23 +892,23 @@ func pyLex(data []byte) (*lexer, error) {
 	st_case_25:
 		switch lex.data[(lex.p)] {
 		case 95:
-			goto tr10
+			goto tr12
 		case 102:
-			goto tr44
+			goto tr46
 		}
 		switch {
 		case lex.data[(lex.p)] < 65:
 			if 48 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 57 {
-				goto tr10
+				goto tr12
 			}
 		case lex.data[(lex.p)] > 90:
 			if 97 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 122 {
-				goto tr10
+				goto tr12
 			}
 		default:
-			goto tr10
+			goto tr12
 		}
-		goto tr37
+		goto tr39
 	st26:
 		if (lex.p)++; (lex.p) == (lex.pe) {
 			goto _test_eof26
@@ -876,23 +916,23 @@ func pyLex(data []byte) (*lexer, error) {
 	st_case_26:
 		switch lex.data[(lex.p)] {
 		case 95:
-			goto tr10
+			goto tr12
 		case 111:
 			goto st27
 		}
 		switch {
 		case lex.data[(lex.p)] < 65:
 			if 48 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 57 {
-				goto tr10
+				goto tr12
 			}
 		case lex.data[(lex.p)] > 90:
 			if 97 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 122 {
-				goto tr10
+				goto tr12
 			}
 		default:
-			goto tr10
+			goto tr12
 		}
-		goto tr37
+		goto tr39
 	st27:
 		if (lex.p)++; (lex.p) == (lex.pe) {
 			goto _test_eof27
@@ -900,23 +940,23 @@ func pyLex(data []byte) (*lexer, error) {
 	st_case_27:
 		switch lex.data[(lex.p)] {
 		case 95:
-			goto tr10
+			goto tr12
 		case 97:
 			goto st28
 		}
 		switch {
 		case lex.data[(lex.p)] < 65:
 			if 48 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 57 {
-				goto tr10
+				goto tr12
 			}
 		case lex.data[(lex.p)] > 90:
 			if 98 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 122 {
-				goto tr10
+				goto tr12
 			}
 		default:
-			goto tr10
+			goto tr12
 		}
-		goto tr37
+		goto tr39
 	st28:
 		if (lex.p)++; (lex.p) == (lex.pe) {
 			goto _test_eof28
@@ -924,23 +964,23 @@ func pyLex(data []byte) (*lexer, error) {
 	st_case_28:
 		switch lex.data[(lex.p)] {
 		case 95:
-			goto tr10
+			goto tr12
 		case 100:
-			goto tr47
+			goto tr49
 		}
 		switch {
 		case lex.data[(lex.p)] < 65:
 			if 48 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 57 {
-				goto tr10
+				goto tr12
 			}
 		case lex.data[(lex.p)] > 90:
 			if 97 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 122 {
-				goto tr10
+				goto tr12
 			}
 		default:
-			goto tr10
+			goto tr12
 		}
-		goto tr37
+		goto tr39
 	st29:
 		if (lex.p)++; (lex.p) == (lex.pe) {
 			goto _test_eof29
@@ -948,23 +988,23 @@ func pyLex(data []byte) (*lexer, error) {
 	st_case_29:
 		switch lex.data[(lex.p)] {
 		case 95:
-			goto tr10
+			goto tr12
 		case 111:
 			goto st30
 		}
 		switch {
 		case lex.data[(lex.p)] < 65:
 			if 48 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 57 {
-				goto tr10
+				goto tr12
 			}
 		case lex.data[(lex.p)] > 90:
 			if 97 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 122 {
-				goto tr10
+				goto tr12
 			}
 		default:
-			goto tr10
+			goto tr12
 		}
-		goto tr37
+		goto tr39
 	st30:
 		if (lex.p)++; (lex.p) == (lex.pe) {
 			goto _test_eof30
@@ -972,23 +1012,23 @@ func pyLex(data []byte) (*lexer, error) {
 	st_case_30:
 		switch lex.data[(lex.p)] {
 		case 95:
-			goto tr10
+			goto tr12
 		case 100:
 			goto st31
 		}
 		switch {
 		case lex.data[(lex.p)] < 65:
 			if 48 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 57 {
-				goto tr10
+				goto tr12
 			}
 		case lex.data[(lex.p)] > 90:
 			if 97 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 122 {
-				goto tr10
+				goto tr12
 			}
 		default:
-			goto tr10
+			goto tr12
 		}
-		goto tr37
+		goto tr39
 	st31:
 		if (lex.p)++; (lex.p) == (lex.pe) {
 			goto _test_eof31
@@ -996,23 +1036,23 @@ func pyLex(data []byte) (*lexer, error) {
 	st_case_31:
 		switch lex.data[(lex.p)] {
 		case 95:
-			goto tr10
+			goto tr12
 		case 117:
 			goto st32
 		}
 		switch {
 		case lex.data[(lex.p)] < 65:
 			if 48 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 57 {
-				goto tr10
+				goto tr12
 			}
 		case lex.data[(lex.p)] > 90:
 			if 97 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 122 {
-				goto tr10
+				goto tr12
 			}
 		default:
-			goto tr10
+			goto tr12
 		}
-		goto tr37
+		goto tr39
 	st32:
 		if (lex.p)++; (lex.p) == (lex.pe) {
 			goto _test_eof32
@@ -1020,23 +1060,23 @@ func pyLex(data []byte) (*lexer, error) {
 	st_case_32:
 		switch lex.data[(lex.p)] {
 		case 95:
-			goto tr10
+			goto tr12
 		case 108:
 			goto st33
 		}
 		switch {
 		case lex.data[(lex.p)] < 65:
 			if 48 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 57 {
-				goto tr10
+				goto tr12
 			}
 		case lex.data[(lex.p)] > 90:
 			if 97 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 122 {
-				goto tr10
+				goto tr12
 			}
 		default:
-			goto tr10
+			goto tr12
 		}
-		goto tr37
+		goto tr39
 	st33:
 		if (lex.p)++; (lex.p) == (lex.pe) {
 			goto _test_eof33
@@ -1044,23 +1084,23 @@ func pyLex(data []byte) (*lexer, error) {
 	st_case_33:
 		switch lex.data[(lex.p)] {
 		case 95:
-			goto tr10
+			goto tr12
 		case 101:
-			goto tr52
+			goto tr54
 		}
 		switch {
 		case lex.data[(lex.p)] < 65:
 			if 48 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 57 {
-				goto tr10
+				goto tr12
 			}
 		case lex.data[(lex.p)] > 90:
 			if 97 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 122 {
-				goto tr10
+				goto tr12
 			}
 		default:
-			goto tr10
+			goto tr12
 		}
-		goto tr37
+		goto tr39
 	st34:
 		if (lex.p)++; (lex.p) == (lex.pe) {
 			goto _test_eof34
@@ -1068,23 +1108,23 @@ func pyLex(data []byte) (*lexer, error) {
 	st_case_34:
 		switch lex.data[(lex.p)] {
 		case 95:
-			goto tr10
+			goto tr12
 		case 101:
 			goto st35
 		}
 		switch {
 		case lex.data[(lex.p)] < 65:
 			if 48 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 57 {
-				goto tr10
+				goto tr12
 			}
 		case lex.data[(lex.p)] > 90:
 			if 97 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 122 {
-				goto tr10
+				goto tr12
 			}
 		default:
-			goto tr10
+			goto tr12
 		}
-		goto tr37
+		goto tr39
 	st35:
 		if (lex.p)++; (lex.p) == (lex.pe) {
 			goto _test_eof35
@@ -1092,23 +1132,23 @@ func pyLex(data []byte) (*lexer, error) {
 	st_case_35:
 		switch lex.data[(lex.p)] {
 		case 95:
-			goto tr10
+			goto tr12
 		case 116:
 			goto st36
 		}
 		switch {
 		case lex.data[(lex.p)] < 65:
 			if 48 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 57 {
-				goto tr10
+				goto tr12
 			}
 		case lex.data[(lex.p)] > 90:
 			if 97 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 122 {
-				goto tr10
+				goto tr12
 			}
 		default:
-			goto tr10
+			goto tr12
 		}
-		goto tr37
+		goto tr39
 	st36:
 		if (lex.p)++; (lex.p) == (lex.pe) {
 			goto _test_eof36
@@ -1116,23 +1156,23 @@ func pyLex(data []byte) (*lexer, error) {
 	st_case_36:
 		switch lex.data[(lex.p)] {
 		case 95:
-			goto tr10
+			goto tr12
 		case 117:
 			goto st37
 		}
 		switch {
 		case lex.data[(lex.p)] < 65:
 			if 48 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 57 {
-				goto tr10
+				goto tr12
 			}
 		case lex.data[(lex.p)] > 90:
 			if 97 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 122 {
-				goto tr10
+				goto tr12
 			}
 		default:
-			goto tr10
+			goto tr12
 		}
-		goto tr37
+		goto tr39
 	st37:
 		if (lex.p)++; (lex.p) == (lex.pe) {
 			goto _test_eof37
@@ -1140,23 +1180,23 @@ func pyLex(data []byte) (*lexer, error) {
 	st_case_37:
 		switch lex.data[(lex.p)] {
 		case 95:
-			goto tr10
+			goto tr12
 		case 114:
 			goto st38
 		}
 		switch {
 		case lex.data[(lex.p)] < 65:
 			if 48 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 57 {
-				goto tr10
+				goto tr12
 			}
 		case lex.data[(lex.p)] > 90:
 			if 97 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 122 {
-				goto tr10
+				goto tr12
 			}
 		default:
-			goto tr10
+			goto tr12
 		}
-		goto tr37
+		goto tr39
 	st38:
 		if (lex.p)++; (lex.p) == (lex.pe) {
 			goto _test_eof38
@@ -1164,24 +1204,24 @@ func pyLex(data []byte) (*lexer, error) {
 	st_case_38:
 		switch lex.data[(lex.p)] {
 		case 95:
-			goto tr10
+			goto tr12
 		case 110:
-			goto tr57
+			goto tr59
 		}
 		switch {
 		case lex.data[(lex.p)] < 65:
 			if 48 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 57 {
-				goto tr10
+				goto tr12
 			}
 		case lex.data[(lex.p)] > 90:
 			if 97 <= lex.data[(lex.p)] && lex.data[(lex.p)] <= 122 {
-				goto tr10
+				goto tr12
 			}
 		default:
-			goto tr10
+			goto tr12
 		}
-		goto tr37
-	tr11:
+		goto tr39
+	tr13:
 //line NONE:1
 		switch lex.act {
 		case 0:
@@ -1199,7 +1239,7 @@ func pyLex(data []byte) (*lexer, error) {
 		}
 
 		goto st39
-	tr58:
+	tr60:
 //line py_lexer.rl:35
 		lex.te = (lex.p) + 1
 		{
@@ -1212,7 +1252,7 @@ func pyLex(data []byte) (*lexer, error) {
 			}
 		}
 		goto st39
-	tr60:
+	tr62:
 //line py_lexer.rl:41
 		lex.te = (lex.p)
 		(lex.p)--
@@ -1234,15 +1274,15 @@ func pyLex(data []byte) (*lexer, error) {
 //line NONE:1
 		lex.ts = (lex.p)
 
-//line py_lexer.go:1191
+//line py_lexer.go:1231
 		switch lex.data[(lex.p)] {
 		case 39:
-			goto tr58
+			goto tr60
 		case 92:
 			goto st10
 		}
-		goto tr12
-	tr12:
+		goto tr14
+	tr14:
 //line NONE:1
 		lex.te = (lex.p) + 1
 
@@ -1254,21 +1294,21 @@ func pyLex(data []byte) (*lexer, error) {
 			goto _test_eof40
 		}
 	st_case_40:
-//line py_lexer.go:1211
+//line py_lexer.go:1251
 		switch lex.data[(lex.p)] {
 		case 39:
-			goto tr60
+			goto tr62
 		case 92:
 			goto st10
 		}
-		goto tr12
+		goto tr14
 	st10:
 		if (lex.p)++; (lex.p) == (lex.pe) {
 			goto _test_eof10
 		}
 	st_case_10:
-		goto tr12
-	tr13:
+		goto tr14
+	tr15:
 //line NONE:1
 		switch lex.act {
 		case 0:
@@ -1286,7 +1326,7 @@ func pyLex(data []byte) (*lexer, error) {
 		}
 
 		goto st41
-	tr61:
+	tr63:
 //line py_lexer.rl:47
 		lex.te = (lex.p) + 1
 		{
@@ -1299,7 +1339,7 @@ func pyLex(data []byte) (*lexer, error) {
 			}
 		}
 		goto st41
-	tr63:
+	tr65:
 //line py_lexer.rl:53
 		lex.te = (lex.p)
 		(lex.p)--
@@ -1321,15 +1361,15 @@ func pyLex(data []byte) (*lexer, error) {
 //line NONE:1
 		lex.ts = (lex.p)
 
-//line py_lexer.go:1269
+//line py_lexer.go:1309
 		switch lex.data[(lex.p)] {
 		case 34:
-			goto tr61
+			goto tr63
 		case 92:
 			goto st11
 		}
-		goto tr14
-	tr14:
+		goto tr16
+	tr16:
 //line NONE:1
 		lex.te = (lex.p) + 1
 
@@ -1341,20 +1381,20 @@ func pyLex(data []byte) (*lexer, error) {
 			goto _test_eof42
 		}
 	st_case_42:
-//line py_lexer.go:1289
+//line py_lexer.go:1329
 		switch lex.data[(lex.p)] {
 		case 34:
-			goto tr63
+			goto tr65
 		case 92:
 			goto st11
 		}
-		goto tr14
+		goto tr16
 	st11:
 		if (lex.p)++; (lex.p) == (lex.pe) {
 			goto _test_eof11
 		}
 	st_case_11:
-		goto tr14
+		goto tr16
 	st_case_0:
 	st0:
 		lex.cs = 0
@@ -1493,9 +1533,9 @@ func pyLex(data []byte) (*lexer, error) {
 		if (lex.p) == eof {
 			switch lex.cs {
 			case 13:
-				goto tr30
+				goto tr32
 			case 14:
-				goto tr31
+				goto tr33
 			case 1:
 				goto tr0
 			case 2:
@@ -1505,71 +1545,71 @@ func pyLex(data []byte) (*lexer, error) {
 			case 4:
 				goto tr0
 			case 15:
-				goto tr33
+				goto tr35
 			case 16:
-				goto tr34
-			case 5:
-				goto tr5
-			case 6:
-				goto tr5
-			case 7:
-				goto tr5
-			case 8:
-				goto tr5
-			case 17:
 				goto tr36
+			case 5:
+				goto tr6
+			case 6:
+				goto tr6
+			case 7:
+				goto tr6
+			case 8:
+				goto tr6
+			case 17:
+				goto tr38
 			case 18:
-				goto tr37
+				goto tr39
 			case 19:
-				goto tr37
+				goto tr39
 			case 20:
-				goto tr37
+				goto tr39
 			case 21:
-				goto tr37
+				goto tr39
 			case 9:
-				goto tr9
-			case 22:
-				goto tr37
-			case 23:
-				goto tr37
-			case 24:
-				goto tr37
-			case 25:
-				goto tr37
-			case 26:
-				goto tr37
-			case 27:
-				goto tr37
-			case 28:
-				goto tr37
-			case 29:
-				goto tr37
-			case 30:
-				goto tr37
-			case 31:
-				goto tr37
-			case 32:
-				goto tr37
-			case 33:
-				goto tr37
-			case 34:
-				goto tr37
-			case 35:
-				goto tr37
-			case 36:
-				goto tr37
-			case 37:
-				goto tr37
-			case 38:
-				goto tr37
-			case 40:
-				goto tr60
-			case 10:
 				goto tr11
-			case 42:
-				goto tr63
-			case 11:
+			case 22:
+				goto tr39
+			case 23:
+				goto tr39
+			case 24:
+				goto tr39
+			case 25:
+				goto tr39
+			case 26:
+				goto tr39
+			case 27:
+				goto tr39
+			case 28:
+				goto tr39
+			case 29:
+				goto tr39
+			case 30:
+				goto tr39
+			case 31:
+				goto tr39
+			case 32:
+				goto tr39
+			case 33:
+				goto tr39
+			case 34:
+				goto tr39
+			case 35:
+				goto tr39
+			case 36:
+				goto tr39
+			case 37:
+				goto tr39
+			case 38:
+				goto tr39
+			case 40:
+				goto tr62
+			case 10:
 				goto tr13
+			case 42:
+				goto tr65
+			case 11:
+				goto tr15
 			}
 		}
 
