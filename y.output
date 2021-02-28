@@ -3,7 +3,7 @@ state 0
 	$accept: .doc $end 
 	Content: .    (2)
 
-	.  reduce 2 (src line 38)
+	.  reduce 2 (src line 36)
 
 	Content  goto 2
 	doc  goto 1
@@ -18,325 +18,248 @@ state 1
 state 2
 	doc:  Content.    (1)
 	Content:  Content.Comment 
-	Content:  Content.Literal 
-	Content:  Content.Ident 
-	Content:  Content.LoadStmt 
 	Content:  Content.DefStmt 
 	Content:  Content.ReturnStmt 
+	Content:  Content.LoadStmt 
+	Content:  Content.ModuleStmt 
+	Content:  Content.stringLiteral 
+	Content:  Content.FreeTokens 
 
-	commentInline  shift 9
-	commentMultiline  shift 10
-	identToken  shift 15
-	boolLiteral  shift 14
-	integerLiteral  shift 12
-	floatLiteral  shift 13
-	stringLiteral  shift 11
-	defKeyword  shift 17
-	loadKeyword  shift 16
-	returnKeyword  shift 18
-	.  reduce 1 (src line 36)
+	commentInline  shift 10
+	commentMultiline  shift 11
+	ident  shift 16
+	stringLiteral  shift 8
+	defKeyword  shift 12
+	loadKeyword  shift 14
+	returnKeyword  shift 13
+	moduleKeyword  shift 15
+	'('  shift 17
+	')'  shift 18
+	'='  shift 19
+	.  reduce 1 (src line 34)
 
 	Comment  goto 3
-	Ident  goto 5
-	Literal  goto 4
 	LoadStmt  goto 6
-	DefStmt  goto 7
-	ReturnStmt  goto 8
+	DefStmt  goto 4
+	ReturnStmt  goto 5
+	ModuleStmt  goto 7
+	FreeTokens  goto 9
 
 state 3
 	Content:  Content Comment.    (3)
 
-	.  reduce 3 (src line 40)
+	.  reduce 3 (src line 38)
 
 
 state 4
-	Content:  Content Literal.    (4)
+	Content:  Content DefStmt.    (4)
 
-	.  reduce 4 (src line 44)
+	.  reduce 4 (src line 42)
 
 
 state 5
-	Content:  Content Ident.    (5)
+	Content:  Content ReturnStmt.    (5)
 
-	.  reduce 5 (src line 48)
+	.  reduce 5 (src line 46)
 
 
 state 6
 	Content:  Content LoadStmt.    (6)
 
-	.  reduce 6 (src line 52)
+	.  reduce 6 (src line 50)
 
 
 state 7
-	Content:  Content DefStmt.    (7)
+	Content:  Content ModuleStmt.    (7)
 
-	.  reduce 7 (src line 56)
+	.  reduce 7 (src line 54)
 
 
 state 8
-	Content:  Content ReturnStmt.    (8)
+	Content:  Content stringLiteral.    (8)
 
-	.  reduce 8 (src line 60)
+	.  reduce 8 (src line 58)
 
 
 state 9
-	Comment:  commentInline.    (9)
+	Content:  Content FreeTokens.    (9)
 
-	.  reduce 9 (src line 68)
+	.  reduce 9 (src line 62)
 
 
 state 10
-	Comment:  commentMultiline.    (10)
+	Comment:  commentInline.    (10)
 
-	.  reduce 10 (src line 70)
+	.  reduce 10 (src line 66)
 
 
 state 11
-	Literal:  stringLiteral.    (12)
+	Comment:  commentMultiline.    (11)
 
-	.  reduce 12 (src line 78)
+	.  reduce 11 (src line 67)
 
 
 state 12
-	Literal:  integerLiteral.    (13)
+	DefStmt:  defKeyword.ident 
 
-	.  reduce 13 (src line 82)
+	ident  shift 20
+	.  error
 
 
 state 13
-	Literal:  floatLiteral.    (14)
+	ReturnStmt:  returnKeyword.    (15)
 
-	.  reduce 14 (src line 85)
+	.  reduce 15 (src line 85)
 
 
 state 14
-	Literal:  boolLiteral.    (15)
+	LoadStmt:  loadKeyword.'(' Arguments ')' 
 
-	.  reduce 15 (src line 88)
+	'('  shift 21
+	.  error
 
 
 state 15
-	Ident:  identToken.    (11)
+	ModuleStmt:  moduleKeyword.'(' stringLiteral Arguments ')' 
 
-	.  reduce 11 (src line 75)
+	'('  shift 22
+	.  error
 
 
 state 16
-	LoadStmt:  loadKeyword.'(' Arguments ')' 
+	FreeTokens:  ident.    (21)
 
-	'('  shift 19
-	.  error
+	.  reduce 21 (src line 98)
 
 
 state 17
-	DefStmt:  defKeyword.Ident '(' Parameters ')' ':' 
-	DefStmt:  defKeyword.Ident '(' ')' ':' 
+	FreeTokens:  '('.    (22)
 
-	identToken  shift 15
-	.  error
+	.  reduce 22 (src line 99)
 
-	Ident  goto 20
 
 state 18
-	ReturnStmt:  returnKeyword.    (30)
+	FreeTokens:  ')'.    (23)
 
-	.  reduce 30 (src line 123)
+	.  reduce 23 (src line 99)
 
 
 state 19
-	LoadStmt:  loadKeyword '('.Arguments ')' 
+	FreeTokens:  '='.    (24)
 
-	identToken  shift 15
-	stringLiteral  shift 23
-	.  error
+	.  reduce 24 (src line 99)
 
-	Ident  goto 24
-	Arguments  goto 21
-	Argument  goto 22
 
 state 20
-	DefStmt:  defKeyword Ident.'(' Parameters ')' ':' 
-	DefStmt:  defKeyword Ident.'(' ')' ':' 
+	DefStmt:  defKeyword ident.    (14)
 
-	'('  shift 25
-	.  error
+	.  reduce 14 (src line 80)
 
 
 state 21
-	LoadStmt:  loadKeyword '(' Arguments.')' 
-	Arguments:  Arguments.Argument 
+	LoadStmt:  loadKeyword '('.Arguments ')' 
 
-	identToken  shift 15
-	stringLiteral  shift 23
-	')'  shift 26
+	ident  shift 26
+	stringLiteral  shift 25
 	.  error
 
-	Ident  goto 24
-	Argument  goto 27
+	Arguments  goto 23
+	Argument  goto 24
 
 state 22
-	Arguments:  Argument.    (19)
-	Arguments:  Argument.',' 
+	ModuleStmt:  moduleKeyword '('.stringLiteral Arguments ')' 
 
-	','  shift 28
-	.  reduce 19 (src line 101)
+	stringLiteral  shift 27
+	.  error
 
 
 state 23
-	Argument:  stringLiteral.    (17)
+	LoadStmt:  loadKeyword '(' Arguments.')' 
+	Arguments:  Arguments.Argument 
 
-	.  reduce 17 (src line 97)
+	ident  shift 26
+	stringLiteral  shift 25
+	')'  shift 28
+	.  error
 
+	Argument  goto 29
 
 state 24
-	Argument:  Ident.'=' stringLiteral 
+	Argument:  Argument.'=' 
+	Arguments:  Argument.    (19)
 
-	'='  shift 29
-	.  error
+	'='  shift 30
+	.  reduce 19 (src line 94)
 
 
 state 25
-	DefStmt:  defKeyword Ident '('.Parameters ')' ':' 
-	DefStmt:  defKeyword Ident '('.')' ':' 
+	Argument:  stringLiteral.    (16)
 
-	identToken  shift 15
-	')'  shift 31
-	'*'  shift 34
-	.  error
+	.  reduce 16 (src line 89)
 
-	Ident  goto 33
-	Parameters  goto 30
-	Parameter  goto 32
 
 state 26
-	LoadStmt:  loadKeyword '(' Arguments ')'.    (16)
+	Argument:  ident.    (17)
 
-	.  reduce 16 (src line 93)
+	.  reduce 17 (src line 90)
 
 
 state 27
-	Arguments:  Arguments Argument.    (21)
+	ModuleStmt:  moduleKeyword '(' stringLiteral.Arguments ')' 
 
-	.  reduce 21 (src line 103)
+	ident  shift 26
+	stringLiteral  shift 25
+	.  error
 
+	Arguments  goto 31
+	Argument  goto 24
 
 state 28
-	Arguments:  Argument ','.    (20)
+	LoadStmt:  loadKeyword '(' Arguments ')'.    (12)
 
-	.  reduce 20 (src line 102)
+	.  reduce 12 (src line 71)
 
 
 state 29
-	Argument:  Ident '='.stringLiteral 
+	Argument:  Argument.'=' 
+	Arguments:  Arguments Argument.    (20)
 
-	stringLiteral  shift 35
-	.  error
+	'='  shift 30
+	.  reduce 20 (src line 95)
 
 
 state 30
-	DefStmt:  defKeyword Ident '(' Parameters.')' ':' 
-	Parameters:  Parameters.Parameter 
+	Argument:  Argument '='.    (18)
 
-	identToken  shift 15
-	')'  shift 36
-	'*'  shift 34
-	.  error
+	.  reduce 18 (src line 91)
 
-	Ident  goto 33
-	Parameter  goto 37
 
 state 31
-	DefStmt:  defKeyword Ident '(' ')'.':' 
+	ModuleStmt:  moduleKeyword '(' stringLiteral Arguments.')' 
+	Arguments:  Arguments.Argument 
 
-	':'  shift 38
+	ident  shift 26
+	stringLiteral  shift 25
+	')'  shift 32
 	.  error
 
+	Argument  goto 29
 
 state 32
-	Parameters:  Parameter.    (24)
-	Parameters:  Parameter.',' 
+	ModuleStmt:  moduleKeyword '(' stringLiteral Arguments ')'.    (13)
 
-	','  shift 39
-	.  reduce 24 (src line 111)
+	.  reduce 13 (src line 75)
 
 
-state 33
-	Parameter:  Ident.    (27)
-	Parameter:  Ident.'=' Literal 
-
-	'='  shift 40
-	.  reduce 27 (src line 117)
-
-
-state 34
-	Parameter:  '*'.    (29)
-
-	.  reduce 29 (src line 119)
-
-
-state 35
-	Argument:  Ident '=' stringLiteral.    (18)
-
-	.  reduce 18 (src line 98)
-
-
-state 36
-	DefStmt:  defKeyword Ident '(' Parameters ')'.':' 
-
-	':'  shift 41
-	.  error
-
-
-state 37
-	Parameters:  Parameters Parameter.    (26)
-
-	.  reduce 26 (src line 113)
-
-
-state 38
-	DefStmt:  defKeyword Ident '(' ')' ':'.    (23)
-
-	.  reduce 23 (src line 107)
-
-
-state 39
-	Parameters:  Parameter ','.    (25)
-
-	.  reduce 25 (src line 112)
-
-
-state 40
-	Parameter:  Ident '='.Literal 
-
-	boolLiteral  shift 14
-	integerLiteral  shift 12
-	floatLiteral  shift 13
-	stringLiteral  shift 11
-	.  error
-
-	Literal  goto 42
-
-state 41
-	DefStmt:  defKeyword Ident '(' Parameters ')' ':'.    (22)
-
-	.  reduce 22 (src line 106)
-
-
-state 42
-	Parameter:  Ident '=' Literal.    (28)
-
-	.  reduce 28 (src line 118)
-
-
-24 terminals, 13 nonterminals
-31 grammar rules, 43/16000 states
+25 terminals, 11 nonterminals
+25 grammar rules, 33/16000 states
 0 shift/reduce, 0 reduce/reduce conflicts reported
-62 working sets used
-memory: parser 21/240000
-5 extra closures
-35 shift entries, 1 exceptions
-19 goto entries
+60 working sets used
+memory: parser 12/240000
+0 extra closures
+27 shift entries, 1 exceptions
+13 goto entries
 1 entries saved by goto default
-Optimizer space used: output 54/240000
-54 table entries, 0 zero
-maximum spread: 24, maximum offset: 40
+Optimizer space used: output 37/240000
+37 table entries, 0 zero
+maximum spread: 24, maximum offset: 31

@@ -14,13 +14,13 @@ import (
 //line py_parser.y:11
 type pySymType struct {
 	yys   int
-	token int
+	token *tokenWithData
 	node  *node
 }
 
 const commentInline = 57346
 const commentMultiline = 57347
-const identToken = 57348
+const ident = 57348
 const boolLiteral = 57349
 const integerLiteral = 57350
 const floatLiteral = 57351
@@ -28,6 +28,7 @@ const stringLiteral = 57352
 const defKeyword = 57353
 const loadKeyword = 57354
 const returnKeyword = 57355
+const moduleKeyword = 57356
 
 var pyToknames = [...]string{
 	"$end",
@@ -35,7 +36,7 @@ var pyToknames = [...]string{
 	"$unk",
 	"commentInline",
 	"commentMultiline",
-	"identToken",
+	"ident",
 	"boolLiteral",
 	"integerLiteral",
 	"floatLiteral",
@@ -43,6 +44,7 @@ var pyToknames = [...]string{
 	"defKeyword",
 	"loadKeyword",
 	"returnKeyword",
+	"moduleKeyword",
 	"'.'",
 	"','",
 	"':'",
@@ -71,58 +73,51 @@ var pyExca = [...]int{
 
 const pyPrivate = 57344
 
-const pyLast = 54
+const pyLast = 37
 
 var pyAct = [...]int{
-	4, 24, 32, 15, 5, 15, 40, 29, 22, 25,
-	15, 19, 41, 39, 23, 36, 38, 31, 28, 20,
-	15, 34, 26, 34, 23, 35, 15, 33, 30, 21,
-	27, 8, 33, 37, 14, 12, 13, 11, 7, 1,
-	6, 42, 9, 10, 15, 14, 12, 13, 11, 17,
-	16, 18, 3, 2,
+	10, 11, 16, 24, 23, 30, 8, 12, 14, 13,
+	15, 22, 26, 26, 17, 18, 25, 25, 21, 26,
+	19, 27, 20, 25, 9, 32, 28, 29, 7, 5,
+	4, 1, 31, 6, 3, 29, 2,
 }
 
 var pyPact = [...]int{
-	-1000, -1000, 38, -1000, -1000, -1000, -1000, -1000, -1000, -1000,
-	-1000, -1000, -1000, -1000, -1000, -1000, -6, 20, -1000, 14,
-	-8, 4, 3, -1000, -16, -1, -1000, -1000, -1000, 15,
-	-3, 0, -2, -17, -1000, -1000, -4, -1000, -1000, -1000,
-	27, -1000, -1000,
+	-1000, -1000, -4, -1000, -1000, -1000, -1000, -1000, -1000, -1000,
+	-1000, -1000, 16, -1000, 0, -7, -1000, -1000, -1000, -1000,
+	-1000, 13, 11, 7, -19, -1000, -1000, 13, -1000, -19,
+	-1000, 6, -1000,
 }
 
 var pyPgo = [...]int{
-	0, 53, 52, 1, 0, 40, 39, 38, 31, 29,
-	8, 28, 2,
+	0, 36, 34, 33, 31, 30, 29, 28, 24, 4,
+	3,
 }
 
 var pyR1 = [...]int{
-	0, 6, 1, 1, 1, 1, 1, 1, 1, 2,
-	2, 3, 4, 4, 4, 4, 5, 10, 10, 9,
-	9, 9, 7, 7, 11, 11, 11, 12, 12, 12,
-	8,
+	0, 4, 1, 1, 1, 1, 1, 1, 1, 1,
+	2, 2, 3, 7, 5, 6, 10, 10, 10, 9,
+	9, 8, 8, 8, 8,
 }
 
 var pyR2 = [...]int{
-	0, 1, 0, 2, 2, 2, 2, 2, 2, 1,
-	1, 1, 1, 1, 1, 1, 4, 1, 3, 1,
-	2, 2, 6, 5, 1, 2, 2, 1, 3, 1,
-	1,
+	0, 1, 0, 2, 2, 2, 2, 2, 2, 2,
+	1, 1, 4, 5, 2, 1, 1, 1, 2, 1,
+	2, 1, 1, 1, 1,
 }
 
 var pyChk = [...]int{
-	-1000, -6, -1, -2, -4, -3, -5, -7, -8, 4,
-	5, 10, 8, 9, 7, 6, 12, 11, 13, 17,
-	-3, -9, -10, 10, -3, 17, 18, -10, 15, 23,
-	-11, 18, -12, -3, 24, 10, 18, -12, 16, 15,
-	23, 16, -4,
+	-1000, -4, -1, -2, -5, -6, -3, -7, 10, -8,
+	4, 5, 11, 13, 12, 14, 6, 18, 19, 24,
+	6, 18, 18, -9, -10, 10, 6, 10, 19, -10,
+	24, -9, 19,
 }
 
 var pyDef = [...]int{
 	2, -2, 1, 3, 4, 5, 6, 7, 8, 9,
-	10, 12, 13, 14, 15, 11, 0, 0, 30, 0,
-	0, 0, 19, 17, 0, 0, 16, 21, 20, 0,
-	0, 0, 24, 27, 29, 18, 0, 26, 23, 25,
-	0, 22, 28,
+	10, 11, 0, 15, 0, 0, 21, 22, 23, 24,
+	14, 0, 0, 0, 19, 16, 17, 0, 12, 20,
+	18, 0, 13,
 }
 
 var pyTok1 = [...]int{
@@ -130,20 +125,20 @@ var pyTok1 = [...]int{
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-	17, 18, 24, 3, 15, 3, 14, 3, 3, 3,
-	3, 3, 3, 3, 3, 3, 3, 3, 16, 3,
-	3, 23, 3, 3, 3, 3, 3, 3, 3, 3,
+	18, 19, 25, 3, 16, 3, 15, 3, 3, 3,
+	3, 3, 3, 3, 3, 3, 3, 3, 17, 3,
+	3, 24, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-	3, 19, 3, 20, 3, 3, 3, 3, 3, 3,
+	3, 20, 3, 21, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-	3, 3, 3, 21, 3, 22,
+	3, 3, 3, 22, 3, 23,
 }
 
 var pyTok2 = [...]int{
 	2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
-	12, 13,
+	12, 13, 14,
 }
 
 var pyTok3 = [...]int{
@@ -489,89 +484,75 @@ pydefault:
 
 	case 2:
 		pyDollar = pyS[pypt-0 : pypt+1]
-//line py_parser.y:38
+//line py_parser.y:36
 		{
 		}
 	case 3:
 		pyDollar = pyS[pypt-2 : pypt+1]
-//line py_parser.y:41
+//line py_parser.y:39
 		{
 			fmt.Println("Comment")
 		}
 	case 4:
 		pyDollar = pyS[pypt-2 : pypt+1]
-//line py_parser.y:45
+//line py_parser.y:43
 		{
-			fmt.Println("Literal")
+			// fmt.Println("DefStmt")
 		}
 	case 5:
 		pyDollar = pyS[pypt-2 : pypt+1]
-//line py_parser.y:49
+//line py_parser.y:47
 		{
-			fmt.Println("Ident")
+			fmt.Println("ReturnStmt")
 		}
 	case 6:
 		pyDollar = pyS[pypt-2 : pypt+1]
-//line py_parser.y:53
+//line py_parser.y:51
 		{
 			fmt.Println("LoadStmt")
 		}
 	case 7:
 		pyDollar = pyS[pypt-2 : pypt+1]
-//line py_parser.y:57
+//line py_parser.y:55
 		{
-			fmt.Println("DefStmt")
+			// fmt.Println("ModuleStmt")
 		}
 	case 8:
 		pyDollar = pyS[pypt-2 : pypt+1]
-//line py_parser.y:61
-		{
-			fmt.Println("ReturnStmt")
-		}
-	case 9:
-		pyDollar = pyS[pypt-1 : pypt+1]
-//line py_parser.y:68
-		{
-			fmt.Println("commentInline")
-		}
-	case 10:
-		pyDollar = pyS[pypt-1 : pypt+1]
-//line py_parser.y:70
-		{
-			fmt.Println("commentMultiline")
-		}
-	case 11:
-		pyDollar = pyS[pypt-1 : pypt+1]
-//line py_parser.y:75
-		{
-		}
-	case 12:
-		pyDollar = pyS[pypt-1 : pypt+1]
-//line py_parser.y:79
+//line py_parser.y:59
 		{
 			fmt.Println("stringLiteral")
 		}
-	case 13:
+	case 10:
 		pyDollar = pyS[pypt-1 : pypt+1]
-//line py_parser.y:82
+//line py_parser.y:66
 		{
-			fmt.Println("integerLiteral")
+		}
+	case 11:
+		pyDollar = pyS[pypt-1 : pypt+1]
+//line py_parser.y:67
+		{
+		}
+	case 12:
+		pyDollar = pyS[pypt-4 : pypt+1]
+//line py_parser.y:72
+		{
+		}
+	case 13:
+		pyDollar = pyS[pypt-5 : pypt+1]
+//line py_parser.y:76
+		{
+			fmt.Println("Named module:", pyDollar[3].token)
 		}
 	case 14:
-		pyDollar = pyS[pypt-1 : pypt+1]
-//line py_parser.y:85
+		pyDollar = pyS[pypt-2 : pypt+1]
+//line py_parser.y:81
 		{
-			fmt.Println("floatLiteral")
+			fmt.Println("Function:", pyDollar[2].token)
 		}
 	case 15:
 		pyDollar = pyS[pypt-1 : pypt+1]
-//line py_parser.y:88
-		{
-			fmt.Println("boolLiteral")
-		}
-	case 16:
-		pyDollar = pyS[pypt-4 : pypt+1]
-//line py_parser.y:94
+//line py_parser.y:86
 		{
 		}
 	}

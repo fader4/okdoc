@@ -26,18 +26,27 @@ type pyLexerTokenIter struct {
 }
 
 func (l *pyLexerTokenIter) Lex(out *pySymType) (symbol int) {
+
+skipToken:
 	if !l.hasNext() {
 		// EOF
 		return 0
 	}
 
-	currentIdx := l.iter
 	token := l.next()
+	if token.skipParser {
+		goto skipToken
+	}
+
+	out.token = &tokenWithData{token: token, lex: l.lex}
+
 	if pyDebug == 1 {
 		fmt.Printf(
-			"[PARSER] next token #%d: %q\n",
-			currentIdx+1,
-			string(token.Read(l.lex.data)),
+			"[PARSER] next token L%d(%d;%d): %q\n",
+			token.pos[0],
+			token.pos[1],
+			token.pos[2],
+			string(token.Read(l.lex)),
 		)
 	}
 	return token.symbol
@@ -66,10 +75,10 @@ func (l *pyLexerTokenIter) current() *token {
 func (l *pyLexerTokenIter) Error(msg string) {
 	token := l.current()
 	msg = fmt.Sprintf(
-		"parser error #%d: err=%q for %q",
+		"parser error #%d: err=%q before %q",
 		l.iter,
 		msg,
-		string(token.Read(l.lex.data)),
+		string(token.Read(l.lex)),
 	)
 	l.errors = append(l.errors, msg)
 }

@@ -44,7 +44,9 @@ type lexer struct {
 	// It is helper structure.
 	stackPairedCharacters stackChars
 
-	tokens tokens
+	tokens               tokens
+	idxNewlines          []int
+	countLineWhiteSpaces int
 }
 
 func (l *lexer) releaseToken(symbol int) {
@@ -56,7 +58,43 @@ func (l *lexer) releaseToken(symbol int) {
 		symbol: symbol,
 		start:  l.ts,
 		end:    l.te,
+		pos:    l.currentPos(),
 	})
+}
+
+func (l *lexer) releaseNEL() {
+	idx := l.tokens.release(&token{
+		symbol:     int(l.data[l.ts]),
+		start:      l.ts,
+		end:        l.te,
+		pos:        l.currentPos(),
+		skipParser: true,
+	})
+	l.idxNewlines = append(l.idxNewlines, idx)
+	l.countLineWhiteSpaces = 0
+}
+
+func (l *lexer) currentPos() [3]int {
+	return [3]int{
+		l.lineNumber(),
+		l.charNumberOnLine(),
+		l.countLineWhiteSpaces}
+}
+
+func (l *lexer) lineNumber() int {
+	return len(l.idxNewlines)
+}
+
+func (l *lexer) releaseWhiteSpace() {
+	l.countLineWhiteSpaces += l.te - l.ts + 1
+}
+
+func (l *lexer) charNumberOnLine() int {
+	if len(l.idxNewlines) == 0 {
+		return 0
+	}
+	lastNewLine := l.tokens[l.idxNewlines[len(l.idxNewlines)-1]]
+	return l.ts - lastNewLine.end - 1
 }
 
 // added to stack for waiting to closed

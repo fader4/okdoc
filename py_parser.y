@@ -9,22 +9,20 @@ import (
 
 
 %union {
-    token int
+    token *tokenWithData
     node *node
 }
 
 %type <node>
 Content Comment
-Ident Literal
 LoadStmt
 
 
 %token <token>
 commentInline commentMultiline
-identToken boolLiteral integerLiteral floatLiteral stringLiteral
-defKeyword loadKeyword returnKeyword
+ident boolLiteral integerLiteral floatLiteral stringLiteral
+defKeyword loadKeyword returnKeyword moduleKeyword
 '.' ',' ':' '(' ')' '[' ']' '{' '}' '=' '*'
-
 
 /*
     p := yylex.(*Parser)
@@ -42,82 +40,60 @@ Content Comment {
     fmt.Println("Comment")
 }
 |
-Content Literal {
-    fmt.Println("Literal")
+Content DefStmt {
+    // fmt.Println("DefStmt")
 }
 |
-Content Ident {
-    fmt.Println("Ident")
+Content ReturnStmt {
+    fmt.Println("ReturnStmt")
 }
 |
 Content LoadStmt {
     fmt.Println("LoadStmt")
 }
 |
-Content DefStmt {
-    fmt.Println("DefStmt")
+Content ModuleStmt {
+    // fmt.Println("ModuleStmt")
 }
 |
-Content ReturnStmt {
-    fmt.Println("ReturnStmt")
+Content stringLiteral {
+    fmt.Println("stringLiteral")
 }
-;
-
+|
+Content FreeTokens;
 
 
 Comment: commentInline {
-    fmt.Println("commentInline")
 } | commentMultiline {
-    fmt.Println("commentMultiline")
 };
 
-
-Ident: identToken {
-};
-
-Literal:
-stringLiteral {
-    fmt.Println("stringLiteral")
-  }
-| integerLiteral {
-    fmt.Println("integerLiteral")
- }
-| floatLiteral {
-    fmt.Println("floatLiteral")
- }
-| boolLiteral {
-    fmt.Println("boolLiteral")
- }
-;
 
 LoadStmt:
     loadKeyword '(' Arguments ')' {
     };
 
+ModuleStmt:
+    moduleKeyword '(' stringLiteral Arguments ')' {
+        fmt.Println("Named module:", $3)
+    };
+
+DefStmt:
+    defKeyword ident {
+        fmt.Println("Function:", $2)
+    };
+
+ReturnStmt:
+    returnKeyword {
+    };
+
 Argument:
     stringLiteral |
-    Ident '=' stringLiteral;
+    ident |
+    Argument '=';
 
 Arguments:
     Argument |
-    Argument ',' |
     Arguments Argument;
 
-DefStmt:
-    defKeyword Ident '(' Parameters ')' ':' |
-    defKeyword Ident '(' ')' ':'
-;
-
-Parameters:
-    Parameter |
-    Parameter ',' |
-    Parameters Parameter
-;
-
-Parameter:
-    Ident |
-    Ident '=' Literal |
-    '*'
-;
-
-ReturnStmt: returnKeyword;
+FreeTokens:
+    ident | '(' | ')' | '=';

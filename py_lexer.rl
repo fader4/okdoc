@@ -10,14 +10,21 @@ import _ "fmt"
     variable p lex.p;
     variable pe lex.pe;
 
-    WhiteSpace = [ \t]+;
-    NewLine    = [\n\r];
+    action incLine {
+        lex.releaseNEL()
+    }
+    action incLineWhiteSpaces {
+        lex.releaseWhiteSpace()
+    }
+
+    WhiteSpace = [ \t]+ @incLineWhiteSpaces;
+    NewLine    = [\n\r] @incLine;
 
     CommentInline = "#" [^\r\n]*;
     CommentMultiline1 = "'''" (any)* :>> "'''";
     CommentMultiline2 = '"""' (any)* :>> '"""';
 
-    keywords = ("def"|"load"|"return");
+    keywords = ("load"|"module"|"def");
 
     Int      = [0-9]+;
     Float    = (([1-9] [0-9]* [.] [0-9]*) | (0? [.] [0-9]+)) ([Ee] [+\-]? [0-9]+)?;
@@ -65,29 +72,32 @@ import _ "fmt"
         "load" => {
             lex.releaseToken(loadKeyword)
         };
+        "module" => {
+            lex.releaseToken(moduleKeyword)
+        };
         "def" => {
-            lex.releaseToken(defKeyword)
+          lex.releaseToken(defKeyword)
         };
         "return" => {
-            lex.releaseToken(returnKeyword)
+           lex.releaseToken(returnKeyword)
         };
-        [=:*] => {
+        [=] => {
             lex.releaseToken(int(lex.data[lex.ts]))
         };
 
 
         Ident    => {
-            lex.releaseToken(identToken)
+            lex.releaseToken(ident)
         };
-        Bool     => {
-            lex.releaseToken(boolLiteral)
-        };
-        Int      => {
-            lex.releaseToken(integerLiteral)
-        };
-        Float    => {
-            lex.releaseToken(floatLiteral)
-        };
+        #Bool     => {
+        #    lex.releaseToken(boolLiteral)
+        #};
+        #Int      => {
+        #    lex.releaseToken(integerLiteral)
+        #};
+        #Float    => {
+        #    lex.releaseToken(floatLiteral)
+        #};
 
         ['] => {
             lex.beginPairedChar('\'')
@@ -104,17 +114,18 @@ import _ "fmt"
             lex.beginPairedChar(')');
             fcall main;
         };
-        "[" => {
-            lex.releaseToken('[')
-            lex.beginPairedChar(']');
-            fcall main;
-        };
-        "{" => {
-            lex.releaseToken('{')
-            lex.beginPairedChar('}');
-            fcall main;
-        };
-        [}\])] => {
+        #"[" => {
+        #    lex.releaseToken('[')
+        #    lex.beginPairedChar(']');
+        #    fcall main;
+        #};
+        #"{" => {
+        #    lex.releaseToken('{')
+        #    lex.beginPairedChar('}');
+        #    fcall main;
+        #};
+        # [}\])] => {
+        [)] => {
             if lex.isEndPairedChar(int(lex.data[lex.ts])) {
                 lex.releaseToken(int(lex.data[lex.ts]))
                 fret;
