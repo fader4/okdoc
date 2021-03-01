@@ -157,7 +157,12 @@ load("foo", bar = "baz")
 
 
 	"""
-	def main(
+def main1(
+	foo,
+	bar = "baz",
+	**kwargs):
+
+	def main2(
 		foo,
 		bar = "baz",
 		**kwargs):
@@ -190,12 +195,55 @@ foo
 		multi line
 		"""
 bar
+
+tasks = module(
+	"tasks",
+	list = _tasks_list,
+	get = _tasks_get,
+	launch = _tasks_launch,
+	launch_id = _tasks_launch_id,
+	reject = _tasks_reject,
+	rollback = _tasks_rollback,
+	bstat = _tasks_bstat,
+	RUNNER_UNKNOWN = api_tasks.RUNNER_UNKNOWN,
+	RUNNER_INSIDE = api_tasks.RUNNER_INSIDE,
+	RUNNER_CHILD = api_tasks.RUNNER_CHILD,
+	RUNNER_REPARENT = api_tasks.RUNNER_REPARENT,
+	STRATEGY_UNKNOWN = api_tasks.STRATEGY_UNKNOWN,
+	STRATEGY_ACTION = api_tasks.STRATEGY_ACTION,
+	STRATEGY_ROLLBACK = api_tasks.STRATEGY_ROLLBACK,
+	STATUS_UNKNOWN = api_tasks.STATUS_UNKNOWN,
+	STATUS_DRAFT = api_tasks.STATUS_DRAFT,
+	STATUS_NEW = api_tasks.STATUS_NEW,
+	STATUS_RUNNING = api_tasks.STATUS_RUNNING,
+	STATUS_RESIDENT_DONE = api_tasks.STATUS_RESIDENT_DONE,
+	STATUS_FAIL = api_tasks.STATUS_FAIL,
+	STATUS_COMPLETED = api_tasks.STATUS_COMPLETED,
+	STATUS_RESIDENT_ACK = api_tasks.STATUS_RESIDENT_ACK,
+	STATUS_REJECTED = api_tasks.STATUS_REJECTED,
+)
 `
 
 func TestPyParse(t *testing.T) {
-	pyDebug = 1
+	// pyDebug = 1
 	// pyErrorVerbose = true
 
-	err := PyParse([]byte(case2))
-	assert.NoError(t, err)
+	t.Run("case1", func(t *testing.T) {
+		res, err := PyParse([]byte(case1))
+		assert.NoError(t, err)
+		assert.Len(t, res.Imports, 3)
+		assert.Len(t, res.Comments, 2)
+		assert.Len(t, res.Functions, 17)
+		assert.Len(t, res.Exports, 3)
+	})
+
+	t.Run("case2", func(t *testing.T) {
+		res, err := PyParse([]byte(case2))
+		assert.NoError(t, err)
+		assert.Len(t, res.Imports, 1)
+		assert.Len(t, res.Comments, 5)
+		assert.Len(t, res.Functions, 2)
+		assert.Len(t, res.Exports, 2)
+	})
+
 }

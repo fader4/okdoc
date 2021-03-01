@@ -38,63 +38,71 @@ type lexer struct {
 	// This must be an array of integers. It is used to store integer values representing states. If the stack must resize dynamically the Pre-push and Post-Pop statements can be used to do this (Sections 5.6 and 5.7).
 	stack []int
 
-	// helper
+	////////////////////////////////
+	// helper fields
+	////////////////////////////////
 
 	// Stack of waiting to closed paired characters.
 	// It is helper structure.
 	stackPairedCharacters stackChars
 
-	tokens                  tokens
-	idxNewlines             []int
-	countLineWhiteSpaces    int
-	countNewLinesInComments int
+	// all tokens mined from the tokenizer
+	tokens tokens
+	// indexes that should be skipped to the parser
+	skipTokenIndx []int
+	// indexes referring to newline tokens
+	NELIndx []int
+	// number of spaces on current line (reset every new line)
+	numSpacesOnCurrentLine int
+	// number of new line in tokens (part of the token).
+	numNotExplicitNEL int
 }
 
-func (l *lexer) releaseToken(symbol int) {
+func (l *lexer) releaseToken(symbol int, labels ...string) int {
 	if symbol == 0 {
 		// if the symbol has no alias in the parser
 		symbol = int(l.data[l.ts])
 	}
-	l.tokens.release(&token{
+	newToken := &token{
 		symbol: symbol,
 		start:  l.ts,
 		end:    l.te,
 		pos:    l.currentPos(),
-	})
+	}
+	newToken.addLabel(labels...)
+	return l.tokens.release(newToken)
 }
 
-func (l *lexer) releaseNEL() {
-	idx := l.tokens.release(&token{
-		symbol:     int(l.data[l.ts]),
-		start:      l.ts,
-		end:        l.te,
-		pos:        l.currentPos(),
-		skipParser: true,
-	})
-	l.idxNewlines = append(l.idxNewlines, idx)
-	l.countLineWhiteSpaces = 0
+func (l *lexer) releaseNEL(labels ...string) {
+	indx := l.releaseToken(int(l.data[l.ts]), labels...)
+
+	l.NELIndx = append(l.NELIndx, indx)
+
+	// reset counter
+	l.numSpacesOnCurrentLine = 0
 }
 
-func (l *lexer) currentPos() [3]int {
-	return [3]int{
-		l.lineNumber() + l.countNewLinesInComments,
-		l.charNumberOnLine(),
-		l.countLineWhiteSpaces}
+func (l *lexer) releaseWhiteSpace(labels ...string) {
+	l.numSpacesOnCurrentLine += l.te - l.ts + 1
 }
 
-func (l *lexer) lineNumber() int {
-	return len(l.idxNewlines)
+func (l *lexer) currentPos() pos {
+	return pos{
+		l.currentLineNumber(),
+		l.charNumberOnCurrentLine(),
+		l.numSpacesOnCurrentLine}
 }
 
-func (l *lexer) releaseWhiteSpace() {
-	l.countLineWhiteSpaces += l.te - l.ts + 1
+// returns the current line number
+func (l *lexer) currentLineNumber() int {
+	return len(l.NELIndx) + l.numNotExplicitNEL
 }
 
-func (l *lexer) charNumberOnLine() int {
-	if len(l.idxNewlines) == 0 {
+func (l *lexer) charNumberOnCurrentLine() int {
+	if len(l.NELIndx) == 0 {
 		return 0
 	}
-	lastNewLine := l.tokens[l.idxNewlines[len(l.idxNewlines)-1]]
+	lastNewLine := l.tokens[l.NELIndx[len(l.NELIndx)-1]]
 	return l.ts - lastNewLine.end - 1
 }
 
@@ -159,30 +167,4 @@ func (l *lexer) validAndReturn() (*lexer, error) {
 		return l, fmt.Errorf("syntax error: not all paired symbols were closed")
 	}
 	return l, nil
-}
-
-type stackChars []int
-
-func (s *stackChars) push(in int) {
-	*s = append(*s, in)
-}
-
-func (s stackChars) top() int {
-	idx := len(s) - 1
-	if idx < 0 {
-		return -1
-	}
-	return s[idx]
-}
-
-func (s *stackChars) pop() int {
-	idx := len(*s) - 1
-	if idx < 0 {
-		return -1
-	}
-
-	top := (*s)[idx]
-	*s = (*s)[:idx]
-
-	return top
 }

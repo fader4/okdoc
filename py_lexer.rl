@@ -21,15 +21,15 @@ import _ "fmt"
     NewLine    = [\n\r] @incLine;
 
     CommentInline = "#" [^\r\n]*;
-    CommentMultiline1 = "'''" (any|[\n\r] @{lex.countNewLinesInComments++})* :>> "'''";
-    CommentMultiline2 = '"""' (any|[\n\r] @{lex.countNewLinesInComments++})* :>> '"""';
+    CommentMultiline1 = "'''" (any|[\n\r] @{lex.numNotExplicitNEL++})* :>> "'''";
+    CommentMultiline2 = '"""' (any|[\n\r] @{lex.numNotExplicitNEL++})* :>> '"""';
 
     keywords = ("load"|"module"|"def");
 
     Int      = [0-9]+;
     Float    = (([1-9] [0-9]* [.] [0-9]*) | (0? [.] [0-9]+)) ([Ee] [+\-]? [0-9]+)?;
     Bool     = "True"|"False";
-    Ident    = ([a-zA-Z] [a-zA-Z0-9_]*) - Bool - keywords;
+    Ident    = ([a-zA-Z_] [a-zA-Z0-9_]*) - Bool - keywords;
 
     singleQuoteString := |*
         ['] => {
@@ -39,7 +39,7 @@ import _ "fmt"
         };
 
         ( [^'\\] | /\\./ )+ => {
-            lex.releaseToken(stringLiteral)
+            lex.releaseToken(stringLiteral, "string")
         };
     *|;
 
@@ -51,7 +51,7 @@ import _ "fmt"
         };
 
         ( [^"\\] | /\\./ )+ => {
-            lex.releaseToken(stringLiteral)
+            lex.releaseToken(stringLiteral, "string")
         };
     *|;
 
@@ -62,32 +62,32 @@ import _ "fmt"
         NewLine;
 
         CommentInline => {
-            lex.releaseToken(commentInline)
+            lex.releaseToken(commentInline, "comment")
         };
         CommentMultiline1|CommentMultiline2 => {
-            lex.releaseToken(commentMultiline)
+            lex.releaseToken(commentMultiline, "comment")
         };
 
         # keywords
         "load" => {
-            lex.releaseToken(loadKeyword)
+            lex.releaseToken(loadKeyword, "keyword")
         };
         "module" => {
-            lex.releaseToken(moduleKeyword)
+            lex.releaseToken(moduleKeyword, "keyword")
         };
         "def" => {
-          lex.releaseToken(defKeyword)
+          lex.releaseToken(defKeyword, "keyword")
         };
         "return" => {
-           lex.releaseToken(returnKeyword)
+           lex.releaseToken(returnKeyword, "keyword")
         };
         [=] => {
-            lex.releaseToken(int(lex.data[lex.ts]))
+            lex.releaseToken(int(lex.data[lex.ts]), "op_and_punct")
         };
 
 
         Ident    => {
-            lex.releaseToken(ident)
+            lex.releaseToken(ident, "ident")
         };
         #Bool     => {
         #    lex.releaseToken(boolLiteral)
@@ -110,7 +110,7 @@ import _ "fmt"
         };
 
         "(" => {
-            lex.releaseToken('(')
+            lex.releaseToken('(', "bracket", "open_bracket")
             lex.beginPairedChar(')');
             fcall main;
         };
@@ -127,7 +127,7 @@ import _ "fmt"
         # [}\])] => {
         [)] => {
             if lex.isEndPairedChar(int(lex.data[lex.ts])) {
-                lex.releaseToken(int(lex.data[lex.ts]))
+                lex.releaseToken(int(lex.data[lex.ts]), "bracket", "close_bracket")
                 fret;
             };
         };

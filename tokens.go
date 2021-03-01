@@ -7,13 +7,29 @@ type token struct {
 	// start and end of data entering the symbol
 	start, end int
 
-	// file position - file line
-	// 1 - line number
-	// 2 - number of characters from the beginning of the line
-	// 3 - number of white spaces from the beginning of the line
-	pos [3]int
+	// name of the group
+	labels map[string]bool
 
-	skipParser bool
+	// file position
+	pos pos
+}
+
+func (t *token) addLabel(labels ...string) {
+	if t.labels == nil {
+		t.labels = map[string]bool{}
+	}
+	for _, label := range labels {
+		t.labels[label] = true
+	}
+}
+
+func (t *token) matchAtLeastOneLabels(labels ...string) bool {
+	for _, label := range labels {
+		if t.labels[label] {
+			return true
+		}
+	}
+	return false
 }
 
 func (t token) Read(lex *lexer) []byte {
@@ -27,15 +43,15 @@ func (t *tokens) release(in ...*token) int {
 	return len(*t) - 1
 }
 
-type node struct {
-	tokens tokens
-}
-
-type tokenWithData struct {
+type tokenWithLexer struct {
 	*token
 	lex *lexer
 }
 
-func (t *tokenWithData) String() string {
+func (t *tokenWithLexer) Pos() pos {
+	return t.pos
+}
+
+func (t *tokenWithLexer) String() string {
 	return string(t.Read(t.lex))
 }

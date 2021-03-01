@@ -14,8 +14,17 @@ import (
 //line py_parser.y:11
 type pySymType struct {
 	yys   int
-	token *tokenWithData
-	node  *node
+	token *tokenWithLexer
+	node  string
+
+	argument   ArgumentNode
+	arguments  []ArgumentNode
+	reportFile *ReportFile
+
+	loadNode    *ReportFile_Import
+	exportNode  *ReportFile_Export
+	fnNode      *ReportFile_Function
+	commentNode *ReportFile_Comment
 }
 
 const commentInline = 57346
@@ -73,51 +82,51 @@ var pyExca = [...]int{
 
 const pyPrivate = 57344
 
-const pyLast = 37
+const pyLast = 34
 
 var pyAct = [...]int{
-	10, 11, 16, 24, 23, 30, 8, 12, 14, 13,
-	15, 22, 26, 26, 17, 18, 25, 25, 21, 26,
-	19, 27, 20, 25, 9, 32, 28, 29, 7, 5,
-	4, 1, 31, 6, 3, 29, 2,
+	9, 10, 15, 26, 31, 22, 19, 11, 13, 12,
+	14, 21, 27, 27, 16, 17, 28, 28, 32, 24,
+	18, 23, 20, 8, 5, 29, 1, 4, 7, 30,
+	25, 2, 6, 3,
 }
 
 var pyPact = [...]int{
 	-1000, -1000, -4, -1000, -1000, -1000, -1000, -1000, -1000, -1000,
-	-1000, -1000, 16, -1000, 0, -7, -1000, -1000, -1000, -1000,
-	-1000, 13, 11, 7, -19, -1000, -1000, 13, -1000, -19,
-	-1000, 6, -1000,
+	-1000, 16, -1000, -7, -13, -1000, -1000, -1000, -1000, -1000,
+	-1000, 11, 9, 7, -1000, 6, -1000, -20, -1000, -1000,
+	-1000, 8, -1000,
 }
 
 var pyPgo = [...]int{
-	0, 36, 34, 33, 31, 30, 29, 28, 24, 4,
-	3,
+	0, 33, 32, 31, 3, 30, 28, 27, 26, 24,
+	23,
 }
 
 var pyR1 = [...]int{
-	0, 4, 1, 1, 1, 1, 1, 1, 1, 1,
-	2, 2, 3, 7, 5, 6, 10, 10, 10, 9,
-	9, 8, 8, 8, 8,
+	0, 8, 3, 3, 3, 3, 3, 3, 3, 1,
+	1, 2, 4, 4, 5, 5, 6, 7, 9, 10,
+	10, 10, 10, 10,
 }
 
 var pyR2 = [...]int{
-	0, 1, 0, 2, 2, 2, 2, 2, 2, 2,
-	1, 1, 4, 5, 2, 1, 1, 1, 2, 1,
-	2, 1, 1, 1, 1,
+	0, 1, 0, 2, 2, 2, 2, 2, 2, 1,
+	1, 5, 3, 1, 1, 2, 3, 2, 1, 1,
+	1, 1, 1, 1,
 }
 
 var pyChk = [...]int{
-	-1000, -4, -1, -2, -5, -6, -3, -7, 10, -8,
-	4, 5, 11, 13, 12, 14, 6, 18, 19, 24,
-	6, 18, 18, -9, -10, 10, 6, 10, 19, -10,
-	24, -9, 19,
+	-1000, -8, -3, -1, -7, -9, -2, -6, -10, 4,
+	5, 11, 13, 12, 14, 6, 18, 19, 24, 10,
+	6, 18, 18, 10, 10, -5, -4, 6, 10, 19,
+	-4, 24, 10,
 }
 
 var pyDef = [...]int{
 	2, -2, 1, 3, 4, 5, 6, 7, 8, 9,
-	10, 11, 0, 15, 0, 0, 21, 22, 23, 24,
-	14, 0, 0, 0, 19, 16, 17, 0, 12, 20,
-	18, 0, 13,
+	10, 0, 18, 0, 0, 19, 20, 21, 22, 23,
+	17, 0, 0, 0, 16, 0, 14, 0, 13, 11,
+	15, 0, 12,
 }
 
 var pyTok1 = [...]int{
@@ -482,77 +491,121 @@ pydefault:
 	// dummy call; replaced with literal code
 	switch pynt {
 
+	case 1:
+		pyDollar = pyS[pypt-1 : pypt+1]
+//line py_parser.y:44
+		{
+			pylex.(reporter).SetReport(pyDollar[1].reportFile)
+		}
 	case 2:
 		pyDollar = pyS[pypt-0 : pypt+1]
-//line py_parser.y:36
+//line py_parser.y:48
 		{
+			pyVAL.reportFile = &ReportFile{}
 		}
 	case 3:
 		pyDollar = pyS[pypt-2 : pypt+1]
-//line py_parser.y:39
+//line py_parser.y:52
 		{
-			fmt.Println("Comment")
+			fmt.Println("Comment:", pyDollar[2].commentNode)
+			pyVAL.reportFile.Comments = append(pyVAL.reportFile.Comments, pyDollar[2].commentNode)
 		}
 	case 4:
 		pyDollar = pyS[pypt-2 : pypt+1]
-//line py_parser.y:43
+//line py_parser.y:57
 		{
-			// fmt.Println("DefStmt")
+			fmt.Println("DefStmt:", pyDollar[2].fnNode)
+			pyVAL.reportFile.Functions = append(pyVAL.reportFile.Functions, pyDollar[2].fnNode)
 		}
 	case 5:
 		pyDollar = pyS[pypt-2 : pypt+1]
-//line py_parser.y:47
+//line py_parser.y:62
 		{
-			fmt.Println("ReturnStmt")
+			// fmt.Println("ReturnStmt")
 		}
 	case 6:
 		pyDollar = pyS[pypt-2 : pypt+1]
-//line py_parser.y:51
+//line py_parser.y:66
 		{
-			fmt.Println("LoadStmt")
+			fmt.Println("LoadStmt:", pyDollar[2].loadNode)
+			pyVAL.reportFile.Imports = append(pyVAL.reportFile.Imports, pyDollar[2].loadNode)
 		}
 	case 7:
 		pyDollar = pyS[pypt-2 : pypt+1]
-//line py_parser.y:55
+//line py_parser.y:71
 		{
-			// fmt.Println("ModuleStmt")
+			fmt.Println("ModuleStmt:", pyDollar[2].exportNode)
+			pyVAL.reportFile.Exports = append(pyVAL.reportFile.Exports, pyDollar[2].exportNode)
 		}
-	case 8:
-		pyDollar = pyS[pypt-2 : pypt+1]
-//line py_parser.y:59
+	case 9:
+		pyDollar = pyS[pypt-1 : pypt+1]
+//line py_parser.y:79
 		{
-			fmt.Println("stringLiteral")
+			pyVAL.commentNode = &ReportFile_Comment{
+				Value: pyDollar[1].token.String(),
+				Pos:   pyDollar[1].token.Pos(),
+			}
 		}
 	case 10:
 		pyDollar = pyS[pypt-1 : pypt+1]
-//line py_parser.y:66
+//line py_parser.y:84
 		{
+			pyVAL.commentNode = &ReportFile_Comment{
+				Value:     pyDollar[1].token.String(),
+				MultiLine: true,
+				Pos:       pyDollar[1].token.Pos(),
+			}
 		}
 	case 11:
-		pyDollar = pyS[pypt-1 : pypt+1]
-//line py_parser.y:67
+		pyDollar = pyS[pypt-5 : pypt+1]
+//line py_parser.y:94
 		{
+			pyVAL.loadNode = &ReportFile_Import{Name: pyDollar[3].token.String(), Args: pyDollar[4].arguments, Pos: pyDollar[1].token.Pos()}
 		}
 	case 12:
-		pyDollar = pyS[pypt-4 : pypt+1]
-//line py_parser.y:72
+		pyDollar = pyS[pypt-3 : pypt+1]
+//line py_parser.y:99
 		{
+			pyVAL.argument = ArgumentNode{
+				ArgumentNode_Value{Ident: pyDollar[1].token.String()},
+				ArgumentNode_Value{StringLiteral: pyDollar[3].token.String()},
+			}
 		}
 	case 13:
-		pyDollar = pyS[pypt-5 : pypt+1]
-//line py_parser.y:76
+		pyDollar = pyS[pypt-1 : pypt+1]
+//line py_parser.y:105
 		{
-			fmt.Println("Named module:", pyDollar[3].token)
+			pyVAL.argument = ArgumentNode{
+				ArgumentNode_Value{StringLiteral: pyDollar[1].token.String()},
+			}
 		}
 	case 14:
-		pyDollar = pyS[pypt-2 : pypt+1]
-//line py_parser.y:81
+		pyDollar = pyS[pypt-1 : pypt+1]
+//line py_parser.y:110
 		{
-			fmt.Println("Function:", pyDollar[2].token)
+			pyVAL.arguments = []ArgumentNode{pyDollar[1].argument}
 		}
 	case 15:
+		pyDollar = pyS[pypt-2 : pypt+1]
+//line py_parser.y:112
+		{
+			pyVAL.arguments = append(pyDollar[1].arguments, pyDollar[2].argument)
+		}
+	case 16:
+		pyDollar = pyS[pypt-3 : pypt+1]
+//line py_parser.y:117
+		{
+			pyVAL.exportNode = &ReportFile_Export{Name: pyDollar[3].token.String(), Pos: pyDollar[1].token.Pos()}
+		}
+	case 17:
+		pyDollar = pyS[pypt-2 : pypt+1]
+//line py_parser.y:122
+		{
+			pyVAL.fnNode = &ReportFile_Function{Name: pyDollar[2].token.String(), Pos: pyDollar[1].token.Pos()}
+		}
+	case 18:
 		pyDollar = pyS[pypt-1 : pypt+1]
-//line py_parser.y:86
+//line py_parser.y:127
 		{
 		}
 	}

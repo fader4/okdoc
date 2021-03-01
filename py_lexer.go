@@ -239,7 +239,7 @@ func pyLex(data []byte) (*lexer, error) {
 //line py_lexer.rl:67
 		lex.te = (lex.p) + 1
 		{
-			lex.releaseToken(commentMultiline)
+			lex.releaseToken(commentMultiline, "comment")
 		}
 		goto st12
 	tr6:
@@ -261,7 +261,7 @@ func pyLex(data []byte) (*lexer, error) {
 //line py_lexer.rl:89
 		(lex.p) = (lex.te) - 1
 		{
-			lex.releaseToken(ident)
+			lex.releaseToken(ident, "ident")
 		}
 		goto st12
 	tr17:
@@ -282,7 +282,7 @@ func pyLex(data []byte) (*lexer, error) {
 //line py_lexer.rl:112
 		lex.te = (lex.p) + 1
 		{
-			lex.releaseToken('(')
+			lex.releaseToken('(', "bracket", "open_bracket")
 			lex.beginPairedChar(')')
 			{
 				lex.stackGrowth()
@@ -299,7 +299,7 @@ func pyLex(data []byte) (*lexer, error) {
 		lex.te = (lex.p) + 1
 		{
 			if lex.isEndPairedChar(int(lex.data[lex.ts])) {
-				lex.releaseToken(int(lex.data[lex.ts]))
+				lex.releaseToken(int(lex.data[lex.ts]), "bracket", "close_bracket")
 				{
 					lex.top--
 					lex.cs = lex.stack[lex.top]
@@ -312,7 +312,7 @@ func pyLex(data []byte) (*lexer, error) {
 //line py_lexer.rl:84
 		lex.te = (lex.p) + 1
 		{
-			lex.releaseToken(int(lex.data[lex.ts]))
+			lex.releaseToken(int(lex.data[lex.ts]), "op_and_punct")
 		}
 		goto st12
 	tr32:
@@ -342,7 +342,7 @@ func pyLex(data []byte) (*lexer, error) {
 		lex.te = (lex.p)
 		(lex.p)--
 		{
-			lex.releaseToken(commentInline)
+			lex.releaseToken(commentInline, "comment")
 		}
 		goto st12
 	tr36:
@@ -368,31 +368,31 @@ func pyLex(data []byte) (*lexer, error) {
 			{
 				(lex.p) = (lex.te) - 1
 
-				lex.releaseToken(loadKeyword)
+				lex.releaseToken(loadKeyword, "keyword")
 			}
 		case 10:
 			{
 				(lex.p) = (lex.te) - 1
 
-				lex.releaseToken(moduleKeyword)
+				lex.releaseToken(moduleKeyword, "keyword")
 			}
 		case 11:
 			{
 				(lex.p) = (lex.te) - 1
 
-				lex.releaseToken(defKeyword)
+				lex.releaseToken(defKeyword, "keyword")
 			}
 		case 12:
 			{
 				(lex.p) = (lex.te) - 1
 
-				lex.releaseToken(returnKeyword)
+				lex.releaseToken(returnKeyword, "keyword")
 			}
 		case 14:
 			{
 				(lex.p) = (lex.te) - 1
 
-				lex.releaseToken(ident)
+				lex.releaseToken(ident, "ident")
 			}
 		}
 
@@ -402,7 +402,7 @@ func pyLex(data []byte) (*lexer, error) {
 		lex.te = (lex.p)
 		(lex.p)--
 		{
-			lex.releaseToken(ident)
+			lex.releaseToken(ident, "ident")
 		}
 		goto st12
 	st12:
@@ -442,6 +442,8 @@ func pyLex(data []byte) (*lexer, error) {
 			goto st18
 		case 84:
 			goto st22
+		case 95:
+			goto tr12
 		case 100:
 			goto st24
 		case 108:
@@ -471,7 +473,7 @@ func pyLex(data []byte) (*lexer, error) {
 			goto _test_eof13
 		}
 	st_case_13:
-//line py_lexer.go:437
+//line py_lexer.go:439
 		switch lex.data[(lex.p)] {
 		case 9:
 			goto tr18
@@ -489,7 +491,7 @@ func pyLex(data []byte) (*lexer, error) {
 			goto _test_eof14
 		}
 	st_case_14:
-//line py_lexer.go:455
+//line py_lexer.go:457
 		if lex.data[(lex.p)] == 34 {
 			goto st1
 		}
@@ -505,14 +507,14 @@ func pyLex(data []byte) (*lexer, error) {
 		goto tr0
 	tr2:
 //line py_lexer.rl:25
-		lex.countNewLinesInComments++
+		lex.numNotExplicitNEL++
 		goto st2
 	st2:
 		if (lex.p)++; (lex.p) == (lex.pe) {
 			goto _test_eof2
 		}
 	st_case_2:
-//line py_lexer.go:478
+//line py_lexer.go:480
 		switch lex.data[(lex.p)] {
 		case 10:
 			goto tr2
@@ -572,7 +574,7 @@ func pyLex(data []byte) (*lexer, error) {
 			goto _test_eof16
 		}
 	st_case_16:
-//line py_lexer.go:538
+//line py_lexer.go:540
 		if lex.data[(lex.p)] == 39 {
 			goto st5
 		}
@@ -588,14 +590,14 @@ func pyLex(data []byte) (*lexer, error) {
 		goto tr6
 	tr8:
 //line py_lexer.rl:24
-		lex.countNewLinesInComments++
+		lex.numNotExplicitNEL++
 		goto st6
 	st6:
 		if (lex.p)++; (lex.p) == (lex.pe) {
 			goto _test_eof6
 		}
 	st_case_6:
-//line py_lexer.go:561
+//line py_lexer.go:563
 		switch lex.data[(lex.p)] {
 		case 10:
 			goto tr8
@@ -673,7 +675,7 @@ func pyLex(data []byte) (*lexer, error) {
 			goto _test_eof17
 		}
 	st_case_17:
-//line py_lexer.go:639
+//line py_lexer.go:641
 		if lex.data[(lex.p)] == 95 {
 			goto tr12
 		}
@@ -772,7 +774,7 @@ func pyLex(data []byte) (*lexer, error) {
 			goto _test_eof21
 		}
 	st_case_21:
-//line py_lexer.go:738
+//line py_lexer.go:740
 		switch lex.data[(lex.p)] {
 		case 95:
 			goto tr12
@@ -1234,7 +1236,7 @@ func pyLex(data []byte) (*lexer, error) {
 			{
 				(lex.p) = (lex.te) - 1
 
-				lex.releaseToken(stringLiteral)
+				lex.releaseToken(stringLiteral, "string")
 			}
 		}
 
@@ -1257,7 +1259,7 @@ func pyLex(data []byte) (*lexer, error) {
 		lex.te = (lex.p)
 		(lex.p)--
 		{
-			lex.releaseToken(stringLiteral)
+			lex.releaseToken(stringLiteral, "string")
 		}
 		goto st39
 	st39:
@@ -1274,7 +1276,7 @@ func pyLex(data []byte) (*lexer, error) {
 //line NONE:1
 		lex.ts = (lex.p)
 
-//line py_lexer.go:1231
+//line py_lexer.go:1233
 		switch lex.data[(lex.p)] {
 		case 39:
 			goto tr60
@@ -1294,7 +1296,7 @@ func pyLex(data []byte) (*lexer, error) {
 			goto _test_eof40
 		}
 	st_case_40:
-//line py_lexer.go:1251
+//line py_lexer.go:1253
 		switch lex.data[(lex.p)] {
 		case 39:
 			goto tr62
@@ -1321,7 +1323,7 @@ func pyLex(data []byte) (*lexer, error) {
 			{
 				(lex.p) = (lex.te) - 1
 
-				lex.releaseToken(stringLiteral)
+				lex.releaseToken(stringLiteral, "string")
 			}
 		}
 
@@ -1344,7 +1346,7 @@ func pyLex(data []byte) (*lexer, error) {
 		lex.te = (lex.p)
 		(lex.p)--
 		{
-			lex.releaseToken(stringLiteral)
+			lex.releaseToken(stringLiteral, "string")
 		}
 		goto st41
 	st41:
@@ -1361,7 +1363,7 @@ func pyLex(data []byte) (*lexer, error) {
 //line NONE:1
 		lex.ts = (lex.p)
 
-//line py_lexer.go:1309
+//line py_lexer.go:1311
 		switch lex.data[(lex.p)] {
 		case 34:
 			goto tr63
@@ -1381,7 +1383,7 @@ func pyLex(data []byte) (*lexer, error) {
 			goto _test_eof42
 		}
 	st_case_42:
-//line py_lexer.go:1329
+//line py_lexer.go:1331
 		switch lex.data[(lex.p)] {
 		case 34:
 			goto tr65

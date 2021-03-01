@@ -6,23 +6,46 @@ import (
 	"github.com/pkg/errors"
 )
 
-func PyParse(dat []byte) error {
+func PyParse(dat []byte) (*ReportFile, error) {
 	lex, err := pyLex(dat)
 	if err != nil {
-		return errors.Wrap(err, "tokenization error")
+		return nil, errors.Wrap(err, "tokenization error")
 	}
-	lexForParser := &pyLexerTokenIter{lex: lex}
+	lexForParser := &pyLexerTokenIter{lex: lex, onlyTokens: []string{
+		"bracket",
+		"string",
+		"comment",
+		"keyword",
+		"op_and_punct",
+		"ident",
+	}}
 	out := pyParse(lexForParser)
 	if out != 0 {
-		return fmt.Errorf("parser error: %v", lexForParser.errors)
+		return nil, fmt.Errorf("parser error: %v", lexForParser.errors)
 	}
-	return nil
+	return lexForParser.res, nil
 }
 
+var _ reporter = (*pyLexerTokenIter)(nil)
+
 type pyLexerTokenIter struct {
-	lex    *lexer
-	iter   int
-	errors []string
+	// associated tokenizer
+	lex *lexer
+	// iterator of tokens
+	iter int
+	// filter tokens interesting to the parser by labels
+	onlyTokens []string
+	errors     []string
+
+	res *ReportFile
+}
+
+func (l *pyLexerTokenIter) SetReport(r *ReportFile) {
+	l.res = r
+}
+
+type reporter interface {
+	SetReport(*ReportFile)
 }
 
 func (l *pyLexerTokenIter) Lex(out *pySymType) (symbol int) {
@@ -34,11 +57,13 @@ skipToken:
 	}
 
 	token := l.next()
-	if token.skipParser {
+
+	// if sets filter and not matched - skip token for current parser
+	if len(l.onlyTokens) != 0 && !token.matchAtLeastOneLabels(l.onlyTokens...) {
 		goto skipToken
 	}
 
-	out.token = &tokenWithData{token: token, lex: l.lex}
+	out.token = &tokenWithLexer{token: token, lex: l.lex}
 
 	if pyDebug == 1 {
 		firstChar := token.pos[1] == token.pos[2]

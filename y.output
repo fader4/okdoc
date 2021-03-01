@@ -3,7 +3,7 @@ state 0
 	$accept: .doc $end 
 	Content: .    (2)
 
-	.  reduce 2 (src line 36)
+	.  reduce 2 (src line 48)
 
 	Content  goto 2
 	doc  goto 1
@@ -22,244 +22,233 @@ state 2
 	Content:  Content.ReturnStmt 
 	Content:  Content.LoadStmt 
 	Content:  Content.ModuleStmt 
-	Content:  Content.stringLiteral 
 	Content:  Content.FreeTokens 
 
-	commentInline  shift 10
-	commentMultiline  shift 11
-	ident  shift 16
-	stringLiteral  shift 8
-	defKeyword  shift 12
-	loadKeyword  shift 14
-	returnKeyword  shift 13
-	moduleKeyword  shift 15
-	'('  shift 17
-	')'  shift 18
-	'='  shift 19
-	.  reduce 1 (src line 34)
+	commentInline  shift 9
+	commentMultiline  shift 10
+	ident  shift 15
+	stringLiteral  shift 19
+	defKeyword  shift 11
+	loadKeyword  shift 13
+	returnKeyword  shift 12
+	moduleKeyword  shift 14
+	'('  shift 16
+	')'  shift 17
+	'='  shift 18
+	.  reduce 1 (src line 44)
 
 	Comment  goto 3
 	LoadStmt  goto 6
+	ModuleStmt  goto 7
 	DefStmt  goto 4
 	ReturnStmt  goto 5
-	ModuleStmt  goto 7
-	FreeTokens  goto 9
+	FreeTokens  goto 8
 
 state 3
 	Content:  Content Comment.    (3)
 
-	.  reduce 3 (src line 38)
+	.  reduce 3 (src line 51)
 
 
 state 4
 	Content:  Content DefStmt.    (4)
 
-	.  reduce 4 (src line 42)
+	.  reduce 4 (src line 56)
 
 
 state 5
 	Content:  Content ReturnStmt.    (5)
 
-	.  reduce 5 (src line 46)
+	.  reduce 5 (src line 61)
 
 
 state 6
 	Content:  Content LoadStmt.    (6)
 
-	.  reduce 6 (src line 50)
+	.  reduce 6 (src line 65)
 
 
 state 7
 	Content:  Content ModuleStmt.    (7)
 
-	.  reduce 7 (src line 54)
+	.  reduce 7 (src line 70)
 
 
 state 8
-	Content:  Content stringLiteral.    (8)
+	Content:  Content FreeTokens.    (8)
 
-	.  reduce 8 (src line 58)
+	.  reduce 8 (src line 75)
 
 
 state 9
-	Content:  Content FreeTokens.    (9)
+	Comment:  commentInline.    (9)
 
-	.  reduce 9 (src line 62)
+	.  reduce 9 (src line 79)
 
 
 state 10
-	Comment:  commentInline.    (10)
+	Comment:  commentMultiline.    (10)
 
-	.  reduce 10 (src line 66)
+	.  reduce 10 (src line 84)
 
 
 state 11
-	Comment:  commentMultiline.    (11)
-
-	.  reduce 11 (src line 67)
-
-
-state 12
 	DefStmt:  defKeyword.ident 
 
 	ident  shift 20
 	.  error
 
 
+state 12
+	ReturnStmt:  returnKeyword.    (18)
+
+	.  reduce 18 (src line 126)
+
+
 state 13
-	ReturnStmt:  returnKeyword.    (15)
-
-	.  reduce 15 (src line 85)
-
-
-state 14
-	LoadStmt:  loadKeyword.'(' Arguments ')' 
+	LoadStmt:  loadKeyword.'(' stringLiteral LoadStmtArguments ')' 
 
 	'('  shift 21
 	.  error
 
 
-state 15
-	ModuleStmt:  moduleKeyword.'(' stringLiteral Arguments ')' 
+state 14
+	ModuleStmt:  moduleKeyword.'(' stringLiteral 
 
 	'('  shift 22
 	.  error
 
 
-state 16
-	FreeTokens:  ident.    (21)
+state 15
+	FreeTokens:  ident.    (19)
 
-	.  reduce 21 (src line 98)
+	.  reduce 19 (src line 130)
+
+
+state 16
+	FreeTokens:  '('.    (20)
+
+	.  reduce 20 (src line 131)
 
 
 state 17
-	FreeTokens:  '('.    (22)
+	FreeTokens:  ')'.    (21)
 
-	.  reduce 22 (src line 99)
+	.  reduce 21 (src line 131)
 
 
 state 18
-	FreeTokens:  ')'.    (23)
+	FreeTokens:  '='.    (22)
 
-	.  reduce 23 (src line 99)
+	.  reduce 22 (src line 131)
 
 
 state 19
-	FreeTokens:  '='.    (24)
+	FreeTokens:  stringLiteral.    (23)
 
-	.  reduce 24 (src line 99)
+	.  reduce 23 (src line 131)
 
 
 state 20
-	DefStmt:  defKeyword ident.    (14)
+	DefStmt:  defKeyword ident.    (17)
 
-	.  reduce 14 (src line 80)
+	.  reduce 17 (src line 121)
 
 
 state 21
-	LoadStmt:  loadKeyword '('.Arguments ')' 
+	LoadStmt:  loadKeyword '('.stringLiteral LoadStmtArguments ')' 
 
-	ident  shift 26
-	stringLiteral  shift 25
+	stringLiteral  shift 23
 	.  error
 
-	Arguments  goto 23
-	Argument  goto 24
 
 state 22
-	ModuleStmt:  moduleKeyword '('.stringLiteral Arguments ')' 
+	ModuleStmt:  moduleKeyword '('.stringLiteral 
 
-	stringLiteral  shift 27
+	stringLiteral  shift 24
 	.  error
 
 
 state 23
-	LoadStmt:  loadKeyword '(' Arguments.')' 
-	Arguments:  Arguments.Argument 
+	LoadStmt:  loadKeyword '(' stringLiteral.LoadStmtArguments ')' 
 
-	ident  shift 26
-	stringLiteral  shift 25
-	')'  shift 28
+	ident  shift 27
+	stringLiteral  shift 28
 	.  error
 
-	Argument  goto 29
+	LoadStmtArgument  goto 26
+	LoadStmtArguments  goto 25
 
 state 24
-	Argument:  Argument.'=' 
-	Arguments:  Argument.    (19)
+	ModuleStmt:  moduleKeyword '(' stringLiteral.    (16)
 
-	'='  shift 30
-	.  reduce 19 (src line 94)
+	.  reduce 16 (src line 116)
 
 
 state 25
-	Argument:  stringLiteral.    (16)
+	LoadStmt:  loadKeyword '(' stringLiteral LoadStmtArguments.')' 
+	LoadStmtArguments:  LoadStmtArguments.LoadStmtArgument 
 
-	.  reduce 16 (src line 89)
+	ident  shift 27
+	stringLiteral  shift 28
+	')'  shift 29
+	.  error
 
+	LoadStmtArgument  goto 30
 
 state 26
-	Argument:  ident.    (17)
+	LoadStmtArguments:  LoadStmtArgument.    (14)
 
-	.  reduce 17 (src line 90)
+	.  reduce 14 (src line 110)
 
 
 state 27
-	ModuleStmt:  moduleKeyword '(' stringLiteral.Arguments ')' 
+	LoadStmtArgument:  ident.'=' stringLiteral 
 
-	ident  shift 26
-	stringLiteral  shift 25
+	'='  shift 31
 	.  error
 
-	Arguments  goto 31
-	Argument  goto 24
 
 state 28
-	LoadStmt:  loadKeyword '(' Arguments ')'.    (12)
+	LoadStmtArgument:  stringLiteral.    (13)
 
-	.  reduce 12 (src line 71)
+	.  reduce 13 (src line 104)
 
 
 state 29
-	Argument:  Argument.'=' 
-	Arguments:  Arguments Argument.    (20)
+	LoadStmt:  loadKeyword '(' stringLiteral LoadStmtArguments ')'.    (11)
 
-	'='  shift 30
-	.  reduce 20 (src line 95)
+	.  reduce 11 (src line 93)
 
 
 state 30
-	Argument:  Argument '='.    (18)
+	LoadStmtArguments:  LoadStmtArguments LoadStmtArgument.    (15)
 
-	.  reduce 18 (src line 91)
+	.  reduce 15 (src line 112)
 
 
 state 31
-	ModuleStmt:  moduleKeyword '(' stringLiteral Arguments.')' 
-	Arguments:  Arguments.Argument 
+	LoadStmtArgument:  ident '='.stringLiteral 
 
-	ident  shift 26
-	stringLiteral  shift 25
-	')'  shift 32
+	stringLiteral  shift 32
 	.  error
 
-	Argument  goto 29
 
 state 32
-	ModuleStmt:  moduleKeyword '(' stringLiteral Arguments ')'.    (13)
+	LoadStmtArgument:  ident '=' stringLiteral.    (12)
 
-	.  reduce 13 (src line 75)
+	.  reduce 12 (src line 98)
 
 
 25 terminals, 11 nonterminals
-25 grammar rules, 33/16000 states
+24 grammar rules, 33/16000 states
 0 shift/reduce, 0 reduce/reduce conflicts reported
 60 working sets used
-memory: parser 12/240000
+memory: parser 10/240000
 0 extra closures
-27 shift entries, 1 exceptions
-13 goto entries
-1 entries saved by goto default
-Optimizer space used: output 37/240000
-37 table entries, 0 zero
-maximum spread: 24, maximum offset: 31
+23 shift entries, 1 exceptions
+11 goto entries
+0 entries saved by goto default
+Optimizer space used: output 34/240000
+34 table entries, 0 zero
+maximum spread: 24, maximum offset: 25
