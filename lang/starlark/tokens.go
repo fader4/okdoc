@@ -1,4 +1,4 @@
-package okdoc
+package starlark
 
 // Token it is recognized character group. Used by the parser.
 type token struct {

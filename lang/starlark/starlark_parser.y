@@ -1,5 +1,5 @@
 %{
-package okdoc
+package starlark
 
 import (
     "fmt"
@@ -44,7 +44,7 @@ defKeyword loadKeyword returnKeyword moduleKeyword
 %%
 
 doc : Content {
-    pylex.(reporter).SetReport($1)
+    starlarklex.(reporter).SetReport($1)
 };
 
 Content: /*empty*/ {

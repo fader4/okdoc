@@ -1,4 +1,4 @@
-package okdoc
+package starlark
 
 type Report struct {
 	Files []*ReportFile

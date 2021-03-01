@@ -1,4 +1,4 @@
-package okdoc
+package starlark
 
 import (
 	"fmt"
@@ -6,12 +6,12 @@ import (
 	"github.com/pkg/errors"
 )
 
-func PyParse(dat []byte) (*ReportFile, error) {
-	lex, err := pyLex(dat)
+func Parse(dat []byte) (*ReportFile, error) {
+	lex, err := starlarkLex(dat)
 	if err != nil {
 		return nil, errors.Wrap(err, "tokenization error")
 	}
-	lexForParser := &pyLexerTokenIter{lex: lex, onlyTokens: []string{
+	lexForParser := &lexerTokenIter{lex: lex, onlyTokens: []string{
 		"bracket",
 		"string",
 		"comment",
@@ -19,7 +19,7 @@ func PyParse(dat []byte) (*ReportFile, error) {
 		"op_and_punct",
 		"ident",
 	}}
-	out := pyParse(lexForParser)
+	out := starlarkParse(lexForParser)
 	if out != 0 {
 		return nil, fmt.Errorf("parser error: %v", lexForParser.errors)
 	}
@@ -36,9 +36,9 @@ func PyParse(dat []byte) (*ReportFile, error) {
 	return lexForParser.res, nil
 }
 
-var _ reporter = (*pyLexerTokenIter)(nil)
+var _ reporter = (*lexerTokenIter)(nil)
 
-type pyLexerTokenIter struct {
+type lexerTokenIter struct {
 	// associated tokenizer
 	lex *lexer
 	// iterator of tokens
@@ -50,7 +50,7 @@ type pyLexerTokenIter struct {
 	res *ReportFile
 }
 
-func (l *pyLexerTokenIter) SetReport(r *ReportFile) {
+func (l *lexerTokenIter) SetReport(r *ReportFile) {
 	l.res = r
 }
 
@@ -58,7 +58,7 @@ type reporter interface {
 	SetReport(*ReportFile)
 }
 
-func (l *pyLexerTokenIter) Lex(out *pySymType) (symbol int) {
+func (l *lexerTokenIter) Lex(out *starlarkSymType) (symbol int) {
 
 skipToken:
 	if !l.hasNext() {
@@ -75,7 +75,7 @@ skipToken:
 
 	out.token = &tokenWithLexer{token: token, lex: l.lex}
 
-	if pyDebug == 1 {
+	if starlarkDebug == 1 {
 		firstChar := token.pos[1] == token.pos[2]
 
 		lineInfo := fmt.Sprintf("\t>%d:\t", token.pos[1])
@@ -92,7 +92,7 @@ skipToken:
 	return token.symbol
 }
 
-func (l *pyLexerTokenIter) next() *token {
+func (l *lexerTokenIter) next() *token {
 	if !l.hasNext() {
 		return nil
 	}
@@ -101,18 +101,18 @@ func (l *pyLexerTokenIter) next() *token {
 	return token
 }
 
-func (l *pyLexerTokenIter) hasNext() bool {
+func (l *lexerTokenIter) hasNext() bool {
 	if l.iter == len(l.lex.tokens) {
 		return false
 	}
 	return true
 }
 
-func (l *pyLexerTokenIter) current() *token {
+func (l *lexerTokenIter) current() *token {
 	return l.lex.tokens[l.iter]
 }
 
-func (l *pyLexerTokenIter) Error(msg string) {
+func (l *lexerTokenIter) Error(msg string) {
 	token := l.current()
 	msg = fmt.Sprintf(
 		"parser error #%d: err=%q before %q",

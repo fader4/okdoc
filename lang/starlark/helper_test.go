@@ -1,4 +1,4 @@
-package okdoc
+package starlark
 
 import (
 	"testing"

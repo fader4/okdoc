@@ -1,4 +1,4 @@
-package okdoc
+package starlark
 
 import (
 	"testing"
@@ -229,7 +229,7 @@ func TestPyParse(t *testing.T) {
 	// pyErrorVerbose = true
 
 	t.Run("case1", func(t *testing.T) {
-		res, err := PyParse([]byte(case1))
+		res, err := Parse([]byte(case1))
 		assert.NoError(t, err)
 		assert.Len(t, res.Imports, 3)
 		assert.Len(t, res.Comments, 2)
@@ -238,7 +238,7 @@ func TestPyParse(t *testing.T) {
 	})
 
 	t.Run("case2", func(t *testing.T) {
-		res, err := PyParse([]byte(case2))
+		res, err := Parse([]byte(case2))
 		assert.NoError(t, err)
 		assert.Len(t, res.Imports, 1)
 		assert.Len(t, res.Comments, 5)

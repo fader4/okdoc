@@ -1,10 +1,10 @@
-package okdoc
+package starlark
 
 import _ "fmt"
 
 %%{
 
-    machine py_lang;
+    machine starlark_lang;
 
     access lex.;
     variable p lex.p;
@@ -142,7 +142,7 @@ import _ "fmt"
 
 %% write data;
 
-func pyLex(data []byte) (*lexer, error) {
+func starlarkLex(data []byte) (*lexer, error) {
     lex, eof := newLexer(data)
 
     %% write init;

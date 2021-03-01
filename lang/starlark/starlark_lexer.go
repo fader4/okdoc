@@ -1,36 +1,36 @@
-//line py_lexer.rl:1
-package okdoc
+//line starlark_lexer.rl:1
+package starlark
 
 import _ "fmt"
 
-//line py_lexer.rl:141
+//line starlark_lexer.rl:141
 
-//line py_lexer.go:13
-const py_lang_start int = 12
-const py_lang_first_final int = 12
-const py_lang_error int = 0
+//line starlark_lexer.go:13
+const starlark_lang_start int = 12
+const starlark_lang_first_final int = 12
+const starlark_lang_error int = 0
 
-const py_lang_en_singleQuoteString int = 39
-const py_lang_en_doubleQuoteString int = 41
-const py_lang_en_main int = 12
+const starlark_lang_en_singleQuoteString int = 39
+const starlark_lang_en_doubleQuoteString int = 41
+const starlark_lang_en_main int = 12
 
-//line py_lexer.rl:144
+//line starlark_lexer.rl:144
 
-func pyLex(data []byte) (*lexer, error) {
+func starlarkLex(data []byte) (*lexer, error) {
 	lex, eof := newLexer(data)
 
-//line py_lexer.go:29
+//line starlark_lexer.go:29
 	{
-		lex.cs = py_lang_start
+		lex.cs = starlark_lang_start
 		lex.top = 0
 		lex.ts = 0
 		lex.te = 0
 		lex.act = 0
 	}
 
-//line py_lexer.rl:149
+//line starlark_lexer.rl:149
 
-//line py_lexer.go:40
+//line starlark_lexer.go:40
 	{
 		if (lex.p) == (lex.pe) {
 			goto _test_eof
@@ -221,7 +221,7 @@ func pyLex(data []byte) (*lexer, error) {
 		}
 		goto st_out
 	tr0:
-//line py_lexer.rl:107
+//line starlark_lexer.rl:107
 		(lex.p) = (lex.te) - 1
 		{
 			lex.beginPairedChar('"')
@@ -236,14 +236,14 @@ func pyLex(data []byte) (*lexer, error) {
 		}
 		goto st12
 	tr5:
-//line py_lexer.rl:67
+//line starlark_lexer.rl:67
 		lex.te = (lex.p) + 1
 		{
 			lex.releaseToken(commentMultiline, "comment")
 		}
 		goto st12
 	tr6:
-//line py_lexer.rl:102
+//line starlark_lexer.rl:102
 		(lex.p) = (lex.te) - 1
 		{
 			lex.beginPairedChar('\'')
@@ -258,28 +258,28 @@ func pyLex(data []byte) (*lexer, error) {
 		}
 		goto st12
 	tr11:
-//line py_lexer.rl:89
+//line starlark_lexer.rl:89
 		(lex.p) = (lex.te) - 1
 		{
 			lex.releaseToken(ident, "ident")
 		}
 		goto st12
 	tr17:
-//line py_lexer.rl:135
+//line starlark_lexer.rl:135
 		lex.te = (lex.p) + 1
 
 		goto st12
 	tr19:
-//line py_lexer.rl:13
+//line starlark_lexer.rl:13
 
 		lex.releaseNEL()
 
-//line py_lexer.rl:62
+//line starlark_lexer.rl:62
 		lex.te = (lex.p) + 1
 
 		goto st12
 	tr23:
-//line py_lexer.rl:112
+//line starlark_lexer.rl:112
 		lex.te = (lex.p) + 1
 		{
 			lex.releaseToken('(', "bracket", "open_bracket")
@@ -295,7 +295,7 @@ func pyLex(data []byte) (*lexer, error) {
 		}
 		goto st12
 	tr24:
-//line py_lexer.rl:128
+//line starlark_lexer.rl:128
 		lex.te = (lex.p) + 1
 		{
 			if lex.isEndPairedChar(int(lex.data[lex.ts])) {
@@ -309,20 +309,20 @@ func pyLex(data []byte) (*lexer, error) {
 		}
 		goto st12
 	tr25:
-//line py_lexer.rl:84
+//line starlark_lexer.rl:84
 		lex.te = (lex.p) + 1
 		{
 			lex.releaseToken(int(lex.data[lex.ts]), "op_and_punct")
 		}
 		goto st12
 	tr32:
-//line py_lexer.rl:61
+//line starlark_lexer.rl:61
 		lex.te = (lex.p)
 		(lex.p)--
 
 		goto st12
 	tr33:
-//line py_lexer.rl:107
+//line starlark_lexer.rl:107
 		lex.te = (lex.p)
 		(lex.p)--
 		{
@@ -338,7 +338,7 @@ func pyLex(data []byte) (*lexer, error) {
 		}
 		goto st12
 	tr35:
-//line py_lexer.rl:64
+//line starlark_lexer.rl:64
 		lex.te = (lex.p)
 		(lex.p)--
 		{
@@ -346,7 +346,7 @@ func pyLex(data []byte) (*lexer, error) {
 		}
 		goto st12
 	tr36:
-//line py_lexer.rl:102
+//line starlark_lexer.rl:102
 		lex.te = (lex.p)
 		(lex.p)--
 		{
@@ -398,7 +398,7 @@ func pyLex(data []byte) (*lexer, error) {
 
 		goto st12
 	tr39:
-//line py_lexer.rl:89
+//line starlark_lexer.rl:89
 		lex.te = (lex.p)
 		(lex.p)--
 		{
@@ -416,7 +416,7 @@ func pyLex(data []byte) (*lexer, error) {
 //line NONE:1
 		lex.ts = (lex.p)
 
-//line py_lexer.go:382
+//line starlark_lexer.go:382
 		switch lex.data[(lex.p)] {
 		case 9:
 			goto tr18
@@ -463,7 +463,7 @@ func pyLex(data []byte) (*lexer, error) {
 		}
 		goto tr17
 	tr18:
-//line py_lexer.rl:16
+//line starlark_lexer.rl:16
 
 		lex.releaseWhiteSpace()
 
@@ -473,7 +473,7 @@ func pyLex(data []byte) (*lexer, error) {
 			goto _test_eof13
 		}
 	st_case_13:
-//line py_lexer.go:439
+//line starlark_lexer.go:439
 		switch lex.data[(lex.p)] {
 		case 9:
 			goto tr18
@@ -491,7 +491,7 @@ func pyLex(data []byte) (*lexer, error) {
 			goto _test_eof14
 		}
 	st_case_14:
-//line py_lexer.go:457
+//line starlark_lexer.go:457
 		if lex.data[(lex.p)] == 34 {
 			goto st1
 		}
@@ -506,7 +506,7 @@ func pyLex(data []byte) (*lexer, error) {
 		}
 		goto tr0
 	tr2:
-//line py_lexer.rl:25
+//line starlark_lexer.rl:25
 		lex.numNotExplicitNEL++
 		goto st2
 	st2:
@@ -514,7 +514,7 @@ func pyLex(data []byte) (*lexer, error) {
 			goto _test_eof2
 		}
 	st_case_2:
-//line py_lexer.go:480
+//line starlark_lexer.go:480
 		switch lex.data[(lex.p)] {
 		case 10:
 			goto tr2
@@ -574,7 +574,7 @@ func pyLex(data []byte) (*lexer, error) {
 			goto _test_eof16
 		}
 	st_case_16:
-//line py_lexer.go:540
+//line starlark_lexer.go:540
 		if lex.data[(lex.p)] == 39 {
 			goto st5
 		}
@@ -589,7 +589,7 @@ func pyLex(data []byte) (*lexer, error) {
 		}
 		goto tr6
 	tr8:
-//line py_lexer.rl:24
+//line starlark_lexer.rl:24
 		lex.numNotExplicitNEL++
 		goto st6
 	st6:
@@ -597,7 +597,7 @@ func pyLex(data []byte) (*lexer, error) {
 			goto _test_eof6
 		}
 	st_case_6:
-//line py_lexer.go:563
+//line starlark_lexer.go:563
 		switch lex.data[(lex.p)] {
 		case 10:
 			goto tr8
@@ -639,35 +639,35 @@ func pyLex(data []byte) (*lexer, error) {
 //line NONE:1
 		lex.te = (lex.p) + 1
 
-//line py_lexer.rl:89
+//line starlark_lexer.rl:89
 		lex.act = 14
 		goto st17
 	tr46:
 //line NONE:1
 		lex.te = (lex.p) + 1
 
-//line py_lexer.rl:78
+//line starlark_lexer.rl:78
 		lex.act = 11
 		goto st17
 	tr49:
 //line NONE:1
 		lex.te = (lex.p) + 1
 
-//line py_lexer.rl:72
+//line starlark_lexer.rl:72
 		lex.act = 9
 		goto st17
 	tr54:
 //line NONE:1
 		lex.te = (lex.p) + 1
 
-//line py_lexer.rl:75
+//line starlark_lexer.rl:75
 		lex.act = 10
 		goto st17
 	tr59:
 //line NONE:1
 		lex.te = (lex.p) + 1
 
-//line py_lexer.rl:81
+//line starlark_lexer.rl:81
 		lex.act = 12
 		goto st17
 	st17:
@@ -675,7 +675,7 @@ func pyLex(data []byte) (*lexer, error) {
 			goto _test_eof17
 		}
 	st_case_17:
-//line py_lexer.go:641
+//line starlark_lexer.go:641
 		if lex.data[(lex.p)] == 95 {
 			goto tr12
 		}
@@ -774,7 +774,7 @@ func pyLex(data []byte) (*lexer, error) {
 			goto _test_eof21
 		}
 	st_case_21:
-//line py_lexer.go:740
+//line starlark_lexer.go:740
 		switch lex.data[(lex.p)] {
 		case 95:
 			goto tr12
@@ -1242,7 +1242,7 @@ func pyLex(data []byte) (*lexer, error) {
 
 		goto st39
 	tr60:
-//line py_lexer.rl:35
+//line starlark_lexer.rl:35
 		lex.te = (lex.p) + 1
 		{
 			if lex.isEndPairedChar('\'') {
@@ -1255,7 +1255,7 @@ func pyLex(data []byte) (*lexer, error) {
 		}
 		goto st39
 	tr62:
-//line py_lexer.rl:41
+//line starlark_lexer.rl:41
 		lex.te = (lex.p)
 		(lex.p)--
 		{
@@ -1276,7 +1276,7 @@ func pyLex(data []byte) (*lexer, error) {
 //line NONE:1
 		lex.ts = (lex.p)
 
-//line py_lexer.go:1233
+//line starlark_lexer.go:1233
 		switch lex.data[(lex.p)] {
 		case 39:
 			goto tr60
@@ -1288,7 +1288,7 @@ func pyLex(data []byte) (*lexer, error) {
 //line NONE:1
 		lex.te = (lex.p) + 1
 
-//line py_lexer.rl:41
+//line starlark_lexer.rl:41
 		lex.act = 2
 		goto st40
 	st40:
@@ -1296,7 +1296,7 @@ func pyLex(data []byte) (*lexer, error) {
 			goto _test_eof40
 		}
 	st_case_40:
-//line py_lexer.go:1253
+//line starlark_lexer.go:1253
 		switch lex.data[(lex.p)] {
 		case 39:
 			goto tr62
@@ -1329,7 +1329,7 @@ func pyLex(data []byte) (*lexer, error) {
 
 		goto st41
 	tr63:
-//line py_lexer.rl:47
+//line starlark_lexer.rl:47
 		lex.te = (lex.p) + 1
 		{
 			if lex.isEndPairedChar('"') {
@@ -1342,7 +1342,7 @@ func pyLex(data []byte) (*lexer, error) {
 		}
 		goto st41
 	tr65:
-//line py_lexer.rl:53
+//line starlark_lexer.rl:53
 		lex.te = (lex.p)
 		(lex.p)--
 		{
@@ -1363,7 +1363,7 @@ func pyLex(data []byte) (*lexer, error) {
 //line NONE:1
 		lex.ts = (lex.p)
 
-//line py_lexer.go:1311
+//line starlark_lexer.go:1311
 		switch lex.data[(lex.p)] {
 		case 34:
 			goto tr63
@@ -1375,7 +1375,7 @@ func pyLex(data []byte) (*lexer, error) {
 //line NONE:1
 		lex.te = (lex.p) + 1
 
-//line py_lexer.rl:53
+//line starlark_lexer.rl:53
 		lex.act = 4
 		goto st42
 	st42:
@@ -1383,7 +1383,7 @@ func pyLex(data []byte) (*lexer, error) {
 			goto _test_eof42
 		}
 	st_case_42:
-//line py_lexer.go:1331
+//line starlark_lexer.go:1331
 		switch lex.data[(lex.p)] {
 		case 34:
 			goto tr65
@@ -1620,7 +1620,7 @@ func pyLex(data []byte) (*lexer, error) {
 		}
 	}
 
-//line py_lexer.rl:150
+//line starlark_lexer.rl:150
 
 	return lex.validAndReturn()
 }
