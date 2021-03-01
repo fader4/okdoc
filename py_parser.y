@@ -20,6 +20,7 @@ import (
     exportNode *ReportFile_Export
     fnNode *ReportFile_Function
     commentNode *ReportFile_Comment
+    returnNode *ReportFile_Return
 }
 
 %type <commentNode> Comment
@@ -31,6 +32,7 @@ LoadStmtArgument
 LoadStmtArguments
 %type <exportNode> ModuleStmt
 %type <fnNode> DefStmt
+%type <returnNode> ReturnStmt
 
 %token <token>
 commentInline commentMultiline
@@ -61,6 +63,7 @@ Content DefStmt {
 |
 Content ReturnStmt {
     // fmt.Println("ReturnStmt")
+    $$.Returns = append($$.Returns, $2)
 }
 |
 Content LoadStmt {
@@ -125,6 +128,7 @@ DefStmt:
 
 ReturnStmt:
     returnKeyword {
+        $$ = &ReportFile_Return{Pos: $1.Pos()}
     };
 
 FreeTokens:

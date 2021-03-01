@@ -25,6 +25,7 @@ type pySymType struct {
 	exportNode  *ReportFile_Export
 	fnNode      *ReportFile_Function
 	commentNode *ReportFile_Comment
+	returnNode  *ReportFile_Return
 }
 
 const commentInline = 57346
@@ -87,7 +88,7 @@ const pyLast = 34
 var pyAct = [...]int{
 	9, 10, 15, 26, 31, 22, 19, 11, 13, 12,
 	14, 21, 27, 27, 16, 17, 28, 28, 32, 24,
-	18, 23, 20, 8, 5, 29, 1, 4, 7, 30,
+	18, 23, 20, 8, 1, 29, 5, 4, 7, 30,
 	25, 2, 6, 3,
 }
 
@@ -104,8 +105,8 @@ var pyPgo = [...]int{
 }
 
 var pyR1 = [...]int{
-	0, 8, 3, 3, 3, 3, 3, 3, 3, 1,
-	1, 2, 4, 4, 5, 5, 6, 7, 9, 10,
+	0, 9, 3, 3, 3, 3, 3, 3, 3, 1,
+	1, 2, 4, 4, 5, 5, 6, 7, 8, 10,
 	10, 10, 10, 10,
 }
 
@@ -116,7 +117,7 @@ var pyR2 = [...]int{
 }
 
 var pyChk = [...]int{
-	-1000, -8, -3, -1, -7, -9, -2, -6, -10, 4,
+	-1000, -9, -3, -1, -7, -8, -2, -6, -10, 4,
 	5, 11, 13, 12, 14, 6, 18, 19, 24, 10,
 	6, 18, 18, 10, 10, -5, -4, 6, 10, 19,
 	-4, 24, 10,
@@ -493,53 +494,54 @@ pydefault:
 
 	case 1:
 		pyDollar = pyS[pypt-1 : pypt+1]
-//line py_parser.y:44
+//line py_parser.y:46
 		{
 			pylex.(reporter).SetReport(pyDollar[1].reportFile)
 		}
 	case 2:
 		pyDollar = pyS[pypt-0 : pypt+1]
-//line py_parser.y:48
+//line py_parser.y:50
 		{
 			pyVAL.reportFile = &ReportFile{}
 		}
 	case 3:
 		pyDollar = pyS[pypt-2 : pypt+1]
-//line py_parser.y:52
+//line py_parser.y:54
 		{
 			fmt.Println("Comment:", pyDollar[2].commentNode)
 			pyVAL.reportFile.Comments = append(pyVAL.reportFile.Comments, pyDollar[2].commentNode)
 		}
 	case 4:
 		pyDollar = pyS[pypt-2 : pypt+1]
-//line py_parser.y:57
+//line py_parser.y:59
 		{
 			fmt.Println("DefStmt:", pyDollar[2].fnNode)
 			pyVAL.reportFile.Functions = append(pyVAL.reportFile.Functions, pyDollar[2].fnNode)
 		}
 	case 5:
 		pyDollar = pyS[pypt-2 : pypt+1]
-//line py_parser.y:62
+//line py_parser.y:64
 		{
 			// fmt.Println("ReturnStmt")
+			pyVAL.reportFile.Returns = append(pyVAL.reportFile.Returns, pyDollar[2].returnNode)
 		}
 	case 6:
 		pyDollar = pyS[pypt-2 : pypt+1]
-//line py_parser.y:66
+//line py_parser.y:69
 		{
 			fmt.Println("LoadStmt:", pyDollar[2].loadNode)
 			pyVAL.reportFile.Imports = append(pyVAL.reportFile.Imports, pyDollar[2].loadNode)
 		}
 	case 7:
 		pyDollar = pyS[pypt-2 : pypt+1]
-//line py_parser.y:71
+//line py_parser.y:74
 		{
 			fmt.Println("ModuleStmt:", pyDollar[2].exportNode)
 			pyVAL.reportFile.Exports = append(pyVAL.reportFile.Exports, pyDollar[2].exportNode)
 		}
 	case 9:
 		pyDollar = pyS[pypt-1 : pypt+1]
-//line py_parser.y:79
+//line py_parser.y:82
 		{
 			pyVAL.commentNode = &ReportFile_Comment{
 				Value: pyDollar[1].token.String(),
@@ -548,7 +550,7 @@ pydefault:
 		}
 	case 10:
 		pyDollar = pyS[pypt-1 : pypt+1]
-//line py_parser.y:84
+//line py_parser.y:87
 		{
 			pyVAL.commentNode = &ReportFile_Comment{
 				Value:     pyDollar[1].token.String(),
@@ -558,13 +560,13 @@ pydefault:
 		}
 	case 11:
 		pyDollar = pyS[pypt-5 : pypt+1]
-//line py_parser.y:94
+//line py_parser.y:97
 		{
 			pyVAL.loadNode = &ReportFile_Import{Name: pyDollar[3].token.String(), Args: pyDollar[4].arguments, Pos: pyDollar[1].token.Pos()}
 		}
 	case 12:
 		pyDollar = pyS[pypt-3 : pypt+1]
-//line py_parser.y:99
+//line py_parser.y:102
 		{
 			pyVAL.argument = ArgumentNode{
 				ArgumentNode_Value{Ident: pyDollar[1].token.String()},
@@ -573,7 +575,7 @@ pydefault:
 		}
 	case 13:
 		pyDollar = pyS[pypt-1 : pypt+1]
-//line py_parser.y:105
+//line py_parser.y:108
 		{
 			pyVAL.argument = ArgumentNode{
 				ArgumentNode_Value{StringLiteral: pyDollar[1].token.String()},
@@ -581,32 +583,33 @@ pydefault:
 		}
 	case 14:
 		pyDollar = pyS[pypt-1 : pypt+1]
-//line py_parser.y:110
+//line py_parser.y:113
 		{
 			pyVAL.arguments = []ArgumentNode{pyDollar[1].argument}
 		}
 	case 15:
 		pyDollar = pyS[pypt-2 : pypt+1]
-//line py_parser.y:112
+//line py_parser.y:115
 		{
 			pyVAL.arguments = append(pyDollar[1].arguments, pyDollar[2].argument)
 		}
 	case 16:
 		pyDollar = pyS[pypt-3 : pypt+1]
-//line py_parser.y:117
+//line py_parser.y:120
 		{
 			pyVAL.exportNode = &ReportFile_Export{Name: pyDollar[3].token.String(), Pos: pyDollar[1].token.Pos()}
 		}
 	case 17:
 		pyDollar = pyS[pypt-2 : pypt+1]
-//line py_parser.y:122
+//line py_parser.y:125
 		{
 			pyVAL.fnNode = &ReportFile_Function{Name: pyDollar[2].token.String(), Pos: pyDollar[1].token.Pos()}
 		}
 	case 18:
 		pyDollar = pyS[pypt-1 : pypt+1]
-//line py_parser.y:127
+//line py_parser.y:130
 		{
+			pyVAL.returnNode = &ReportFile_Return{Pos: pyDollar[1].token.Pos()}
 		}
 	}
 	goto pystack /* stack new state and value */

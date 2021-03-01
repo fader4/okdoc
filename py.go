@@ -23,6 +23,16 @@ func PyParse(dat []byte) (*ReportFile, error) {
 	if out != 0 {
 		return nil, fmt.Errorf("parser error: %v", lexForParser.errors)
 	}
+
+	// hydrate comments to each function (if exists)
+	for _, fn := range lexForParser.res.Functions {
+		for _, comment := range lexForParser.res.Comments {
+			if comment.Pos.Line() == fn.Pos.Line()-1 {
+				fn.Comment = comment
+			}
+		}
+	}
+
 	return lexForParser.res, nil
 }
 

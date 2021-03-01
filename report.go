@@ -8,7 +8,9 @@ type ReportFile struct {
 	Imports   []*ReportFile_Import
 	Exports   []*ReportFile_Export
 	Functions []*ReportFile_Function
-	Comments  []*ReportFile_Comment
+
+	Comments []*ReportFile_Comment
+	Returns  []*ReportFile_Return
 }
 
 type ReportFile_Comment struct {
@@ -38,8 +40,12 @@ type ReportFile_Export struct {
 
 type ReportFile_Function struct {
 	Name    string
-	Comment ReportFile_Comment
+	Comment *ReportFile_Comment
 
 	Pos          pos
 	PosOfReturns []pos
+}
+
+type ReportFile_Return struct {
+	Pos pos
 }

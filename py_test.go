@@ -243,6 +243,8 @@ func TestPyParse(t *testing.T) {
 		assert.Len(t, res.Imports, 1)
 		assert.Len(t, res.Comments, 5)
 		assert.Len(t, res.Functions, 2)
+		assert.NotEmpty(t, res.Functions[0].Comment)
+		assert.Empty(t, res.Functions[1].Comment)
 		assert.Len(t, res.Exports, 2)
 	})
 
