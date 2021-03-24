@@ -14,7 +14,7 @@ import (
 }
 
 %token <token>
-ident '(' ')' '@' '=' ',' '{' '}'
+ident '(' ')' '@' '=' ',' '{' '}' '[' ']'
 stringLiteral boolLiteral integerLiteral floatLiteral
 
 %type <token> Content Annotation Field Fields
@@ -48,7 +48,8 @@ Field:
     Ident {} |
     ident '=' Ident {} |
     ident '=' Literal {} |
-    ident '=' Array {}
+    ident '=' Array {} |
+    ident '=' Struct {}
 ;
 
 Ident: ident | Ident '.' ident;
@@ -56,8 +57,8 @@ Ident: ident | Ident '.' ident;
 Literal: stringLiteral {} | boolLiteral {} | integerLiteral {} | floatLiteral {};
 
 Array:
-    '{' ArrayFields '}' |
-    '{' '}';
+    '[' ArrayFields ']' |
+    '[' ']';
 
 ArrayFields:
     ArrayField |
@@ -65,4 +66,20 @@ ArrayFields:
 
 ArrayField:
     Literal {} |
-    Array {} ;
+    Array {} |
+    Struct {};
+
+Struct:
+    '{' '}' |
+    '{' StructFields '}';
+
+StructFields:
+    StructField |
+    StructFields ',' StructField;
+
+StructField:
+    ident '=' Literal |
+    ident '=' Array |
+    ident '=' Ident |
+    ident '=' Struct
+;

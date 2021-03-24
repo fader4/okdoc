@@ -32,7 +32,18 @@ text',b)
     synopsis = "Enable time-travel",
     engineer = "Mr. Peabody",
     date     = "4/1/3007",
-	tags = 	{"a", "b"}
+	tags = 	["a", "b"],
+	obj = {
+		foo = "bar",
+		arr = ["a", "b"],
+		baz = {
+			foo = "bar",
+			baz = baz,
+			arr = ["a", "b"],
+			arr = [{}, {b = "b"}],
+			arr = [[1,2], [2,3,4]]
+		}
+	}
 )
 
 `

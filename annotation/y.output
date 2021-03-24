@@ -102,34 +102,35 @@ state 12
 	Field:  ident.'=' Ident 
 	Field:  ident.'=' Literal 
 	Field:  ident.'=' Array 
-	Ident:  ident.    (14)
+	Field:  ident.'=' Struct 
+	Ident:  ident.    (15)
 
 	'='  shift 20
-	.  reduce 14 (src line 54)
+	.  reduce 15 (src line 55)
 
 
 state 13
-	Literal:  stringLiteral.    (16)
+	Literal:  stringLiteral.    (17)
 
-	.  reduce 16 (src line 56)
+	.  reduce 17 (src line 57)
 
 
 state 14
-	Literal:  boolLiteral.    (17)
+	Literal:  boolLiteral.    (18)
 
-	.  reduce 17 (src line 56)
+	.  reduce 18 (src line 57)
 
 
 state 15
-	Literal:  integerLiteral.    (18)
+	Literal:  integerLiteral.    (19)
 
-	.  reduce 18 (src line 56)
+	.  reduce 19 (src line 57)
 
 
 state 16
-	Literal:  floatLiteral.    (19)
+	Literal:  floatLiteral.    (20)
 
-	.  reduce 19 (src line 56)
+	.  reduce 20 (src line 57)
 
 
 state 17
@@ -163,9 +164,11 @@ state 20
 	Field:  ident '='.Ident 
 	Field:  ident '='.Literal 
 	Field:  ident '='.Array 
+	Field:  ident '='.Struct 
 
-	ident  shift 26
-	'{'  shift 27
+	ident  shift 27
+	'{'  shift 29
+	'['  shift 28
 	stringLiteral  shift 13
 	boolLiteral  shift 14
 	integerLiteral  shift 15
@@ -175,6 +178,7 @@ state 20
 	Literal  goto 24
 	Ident  goto 23
 	Array  goto 25
+	Struct  goto 26
 
 state 21
 	Fields:  Fields ',' Field.    (7)
@@ -183,9 +187,9 @@ state 21
 
 
 state 22
-	Ident:  Ident '.' ident.    (15)
+	Ident:  Ident '.' ident.    (16)
 
-	.  reduce 15 (src line 54)
+	.  reduce 16 (src line 55)
 
 
 state 23
@@ -209,96 +213,220 @@ state 25
 
 
 state 26
-	Ident:  ident.    (14)
+	Field:  ident '=' Struct.    (14)
 
-	.  reduce 14 (src line 54)
+	.  reduce 14 (src line 51)
 
 
 state 27
-	Array:  '{'.ArrayFields '}' 
-	Array:  '{'.'}' 
+	Ident:  ident.    (15)
 
-	'{'  shift 27
-	'}'  shift 29
+	.  reduce 15 (src line 55)
+
+
+state 28
+	Array:  '['.ArrayFields ']' 
+	Array:  '['.']' 
+
+	'{'  shift 29
+	'['  shift 28
+	']'  shift 31
 	stringLiteral  shift 13
 	boolLiteral  shift 14
 	integerLiteral  shift 15
 	floatLiteral  shift 16
 	.  error
 
-	Literal  goto 31
-	Array  goto 32
-	ArrayFields  goto 28
-	ArrayField  goto 30
-
-state 28
-	Array:  '{' ArrayFields.'}' 
-	ArrayFields:  ArrayFields.',' ArrayField 
-
-	','  shift 34
-	'}'  shift 33
-	.  error
-
+	Literal  goto 33
+	Array  goto 34
+	Struct  goto 35
+	ArrayFields  goto 30
+	ArrayField  goto 32
 
 state 29
-	Array:  '{' '}'.    (21)
+	Struct:  '{'.'}' 
+	Struct:  '{'.StructFields '}' 
 
-	.  reduce 21 (src line 59)
+	ident  shift 39
+	'}'  shift 36
+	.  error
 
+	StructFields  goto 37
+	StructField  goto 38
 
 state 30
-	ArrayFields:  ArrayField.    (22)
+	Array:  '[' ArrayFields.']' 
+	ArrayFields:  ArrayFields.',' ArrayField 
 
-	.  reduce 22 (src line 62)
+	','  shift 41
+	']'  shift 40
+	.  error
 
 
 state 31
-	ArrayField:  Literal.    (24)
+	Array:  '[' ']'.    (22)
 
-	.  reduce 24 (src line 66)
+	.  reduce 22 (src line 60)
 
 
 state 32
-	ArrayField:  Array.    (25)
-
-	.  reduce 25 (src line 67)
-
-
-state 33
-	Array:  '{' ArrayFields '}'.    (20)
-
-	.  reduce 20 (src line 58)
-
-
-state 34
-	ArrayFields:  ArrayFields ','.ArrayField 
-
-	'{'  shift 27
-	stringLiteral  shift 13
-	boolLiteral  shift 14
-	integerLiteral  shift 15
-	floatLiteral  shift 16
-	.  error
-
-	Literal  goto 31
-	Array  goto 32
-	ArrayField  goto 35
-
-state 35
-	ArrayFields:  ArrayFields ',' ArrayField.    (23)
+	ArrayFields:  ArrayField.    (23)
 
 	.  reduce 23 (src line 63)
 
 
-16 terminals, 11 nonterminals
-26 grammar rules, 36/16000 states
+state 33
+	ArrayField:  Literal.    (25)
+
+	.  reduce 25 (src line 67)
+
+
+state 34
+	ArrayField:  Array.    (26)
+
+	.  reduce 26 (src line 68)
+
+
+state 35
+	ArrayField:  Struct.    (27)
+
+	.  reduce 27 (src line 69)
+
+
+state 36
+	Struct:  '{' '}'.    (28)
+
+	.  reduce 28 (src line 72)
+
+
+state 37
+	Struct:  '{' StructFields.'}' 
+	StructFields:  StructFields.',' StructField 
+
+	','  shift 43
+	'}'  shift 42
+	.  error
+
+
+state 38
+	StructFields:  StructField.    (30)
+
+	.  reduce 30 (src line 76)
+
+
+state 39
+	StructField:  ident.'=' Literal 
+	StructField:  ident.'=' Array 
+	StructField:  ident.'=' Ident 
+	StructField:  ident.'=' Struct 
+
+	'='  shift 44
+	.  error
+
+
+state 40
+	Array:  '[' ArrayFields ']'.    (21)
+
+	.  reduce 21 (src line 59)
+
+
+state 41
+	ArrayFields:  ArrayFields ','.ArrayField 
+
+	'{'  shift 29
+	'['  shift 28
+	stringLiteral  shift 13
+	boolLiteral  shift 14
+	integerLiteral  shift 15
+	floatLiteral  shift 16
+	.  error
+
+	Literal  goto 33
+	Array  goto 34
+	Struct  goto 35
+	ArrayField  goto 45
+
+state 42
+	Struct:  '{' StructFields '}'.    (29)
+
+	.  reduce 29 (src line 73)
+
+
+state 43
+	StructFields:  StructFields ','.StructField 
+
+	ident  shift 39
+	.  error
+
+	StructField  goto 46
+
+state 44
+	StructField:  ident '='.Literal 
+	StructField:  ident '='.Array 
+	StructField:  ident '='.Ident 
+	StructField:  ident '='.Struct 
+
+	ident  shift 27
+	'{'  shift 29
+	'['  shift 28
+	stringLiteral  shift 13
+	boolLiteral  shift 14
+	integerLiteral  shift 15
+	floatLiteral  shift 16
+	.  error
+
+	Literal  goto 47
+	Ident  goto 49
+	Array  goto 48
+	Struct  goto 50
+
+state 45
+	ArrayFields:  ArrayFields ',' ArrayField.    (24)
+
+	.  reduce 24 (src line 64)
+
+
+state 46
+	StructFields:  StructFields ',' StructField.    (31)
+
+	.  reduce 31 (src line 77)
+
+
+state 47
+	StructField:  ident '=' Literal.    (32)
+
+	.  reduce 32 (src line 80)
+
+
+state 48
+	StructField:  ident '=' Array.    (33)
+
+	.  reduce 33 (src line 81)
+
+
+state 49
+	Ident:  Ident.'.' ident 
+	StructField:  ident '=' Ident.    (34)
+
+	'.'  shift 19
+	.  reduce 34 (src line 82)
+
+
+state 50
+	StructField:  ident '=' Struct.    (35)
+
+	.  reduce 35 (src line 83)
+
+
+18 terminals, 14 nonterminals
+36 grammar rules, 51/16000 states
 0 shift/reduce, 0 reduce/reduce conflicts reported
-60 working sets used
-memory: parser 24/240000
-8 extra closures
-39 shift entries, 1 exceptions
-17 goto entries
-3 entries saved by goto default
-Optimizer space used: output 55/240000
-55 table entries, 0 zero
-maximum spread: 16, maximum offset: 34
+63 working sets used
+memory: parser 31/240000
+15 extra closures
+56 shift entries, 1 exceptions
+26 goto entries
+4 entries saved by goto default
+Optimizer space used: output 73/240000
+73 table entries, 0 zero
+maximum spread: 18, maximum offset: 44

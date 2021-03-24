@@ -105,18 +105,17 @@ import (
             lex.BeginPairedChar(')');
             fcall main;
         };
-        #"[" => {
-        #    lex.ReleaseToken('[')
-        #    lex.BeginPairedChar(']');
-        #    fcall main;
-        #};
         "{" => {
             lex.ReleaseToken('{', "bracket", "open_bracket")
             lex.BeginPairedChar('}');
             fcall main;
         };
-        # [}\])] => {
-        [)}] => {
+        "[" => {
+            lex.ReleaseToken('[', "bracket", "open_bracket")
+            lex.BeginPairedChar(']');
+            fcall main;
+        };
+        [)\]}] => {
             if lex.IsEndPairedChar(int(lex.Data[lex.Ts])) {
                 lex.ReleaseSymbol("bracket", "close_bracket")
                 fret;

@@ -36,6 +36,8 @@ var annotationToknames = [...]string{
 	"','",
 	"'{'",
 	"'}'",
+	"'['",
+	"']'",
 	"stringLiteral",
 	"boolLiteral",
 	"integerLiteral",
@@ -58,53 +60,63 @@ var annotationExca = [...]int{
 
 const annotationPrivate = 57344
 
-const annotationLast = 55
+const annotationLast = 73
 
 var annotationAct = [...]int{
-	10, 30, 32, 11, 27, 29, 13, 14, 15, 16,
-	27, 9, 13, 14, 15, 16, 34, 19, 33, 17,
-	20, 24, 18, 25, 23, 3, 6, 22, 31, 5,
-	21, 26, 28, 1, 8, 31, 35, 27, 12, 13,
-	14, 15, 16, 12, 4, 7, 13, 14, 15, 16,
-	2, 13, 14, 15, 16,
+	10, 35, 34, 11, 27, 38, 9, 19, 32, 44,
+	29, 43, 28, 42, 13, 14, 15, 16, 20, 3,
+	39, 24, 26, 25, 23, 21, 12, 36, 29, 33,
+	28, 31, 13, 14, 15, 16, 13, 14, 15, 16,
+	41, 6, 33, 39, 40, 47, 50, 48, 49, 46,
+	45, 29, 12, 28, 7, 13, 14, 15, 16, 22,
+	5, 37, 13, 14, 15, 16, 17, 30, 1, 18,
+	8, 4, 2,
 }
 
 var annotationPact = [...]int{
-	-1000, -1000, 18, 25, -1000, 21, 39, -1000, 13, -1000,
-	-1000, 1, 12, -1000, -1000, -1000, -1000, -1000, 34, 23,
-	27, -1000, -1000, 1, -1000, -1000, -1000, -6, 7, -1000,
-	-1000, -1000, -1000, -1000, 0, -1000,
+	-1000, -1000, 12, 56, -1000, 36, 48, -1000, 60, -1000,
+	-1000, -11, 10, -1000, -1000, -1000, -1000, -1000, 22, 55,
+	0, -1000, -1000, -11, -1000, -1000, -1000, -1000, 18, 16,
+	31, -1000, -1000, -1000, -1000, -1000, -1000, 2, -1000, 1,
+	-1000, 41, -1000, 39, 0, -1000, -1000, -1000, -1000, -11,
+	-1000,
 }
 
 var annotationPgo = [...]int{
-	0, 50, 44, 11, 34, 33, 0, 3, 2, 32,
-	1,
+	0, 72, 71, 6, 70, 68, 0, 3, 2, 1,
+	67, 8, 61, 5,
 }
 
 var annotationR1 = [...]int{
 	0, 5, 1, 1, 2, 2, 2, 4, 4, 3,
-	3, 3, 3, 3, 7, 7, 6, 6, 6, 6,
-	8, 8, 9, 9, 10, 10,
+	3, 3, 3, 3, 3, 7, 7, 6, 6, 6,
+	6, 8, 8, 10, 10, 11, 11, 11, 9, 9,
+	12, 12, 13, 13, 13, 13,
 }
 
 var annotationR2 = [...]int{
 	0, 1, 0, 3, 1, 3, 4, 3, 1, 1,
-	1, 3, 3, 3, 1, 3, 1, 1, 1, 1,
-	3, 2, 1, 3, 1, 1,
+	1, 3, 3, 3, 3, 1, 3, 1, 1, 1,
+	1, 3, 2, 1, 3, 1, 1, 1, 2, 3,
+	1, 3, 3, 3, 3, 3,
 }
 
 var annotationChk = [...]int{
 	-1000, -5, -1, 7, -2, 4, 5, 6, -4, -3,
-	-6, -7, 4, 12, 13, 14, 15, 6, 9, 16,
-	8, -3, 4, -7, -6, -8, 4, 10, -9, 11,
-	-10, -6, -8, 11, 9, -10,
+	-6, -7, 4, 14, 15, 16, 17, 6, 9, 18,
+	8, -3, 4, -7, -6, -8, -9, 4, 12, 10,
+	-10, 13, -11, -6, -8, -9, 11, -12, -13, 4,
+	13, 9, 11, 9, 8, -11, -13, -6, -8, -7,
+	-9,
 }
 
 var annotationDef = [...]int{
 	2, -2, 1, 0, 3, 4, 0, 5, 0, 8,
-	9, 10, 14, 16, 17, 18, 19, 6, 0, 0,
-	0, 7, 15, 11, 12, 13, 14, 0, 0, 21,
-	22, 24, 25, 20, 0, 23,
+	9, 10, 15, 17, 18, 19, 20, 6, 0, 0,
+	0, 7, 16, 11, 12, 13, 14, 15, 0, 0,
+	0, 22, 23, 25, 26, 27, 28, 0, 30, 0,
+	21, 0, 29, 0, 0, 24, 31, 32, 33, 34,
+	35,
 }
 
 var annotationTok1 = [...]int{
@@ -112,19 +124,19 @@ var annotationTok1 = [...]int{
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-	5, 6, 3, 3, 9, 3, 16, 3, 3, 3,
+	5, 6, 3, 3, 9, 3, 18, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 8, 3, 3, 7, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+	3, 12, 3, 13, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 10, 3, 11,
 }
 
 var annotationTok2 = [...]int{
-	2, 3, 4, 12, 13, 14, 15,
+	2, 3, 4, 14, 15, 16, 17,
 }
 
 var annotationTok3 = [...]int{
@@ -526,34 +538,44 @@ annotationdefault:
 //line parser.y:51
 		{
 		}
-	case 16:
-		annotationDollar = annotationS[annotationpt-1 : annotationpt+1]
-//line parser.y:56
+	case 14:
+		annotationDollar = annotationS[annotationpt-3 : annotationpt+1]
+//line parser.y:52
 		{
 		}
 	case 17:
 		annotationDollar = annotationS[annotationpt-1 : annotationpt+1]
-//line parser.y:56
+//line parser.y:57
 		{
 		}
 	case 18:
 		annotationDollar = annotationS[annotationpt-1 : annotationpt+1]
-//line parser.y:56
+//line parser.y:57
 		{
 		}
 	case 19:
 		annotationDollar = annotationS[annotationpt-1 : annotationpt+1]
-//line parser.y:56
+//line parser.y:57
 		{
 		}
-	case 24:
+	case 20:
 		annotationDollar = annotationS[annotationpt-1 : annotationpt+1]
-//line parser.y:67
+//line parser.y:57
 		{
 		}
 	case 25:
 		annotationDollar = annotationS[annotationpt-1 : annotationpt+1]
 //line parser.y:68
+		{
+		}
+	case 26:
+		annotationDollar = annotationS[annotationpt-1 : annotationpt+1]
+//line parser.y:69
+		{
+		}
+	case 27:
+		annotationDollar = annotationS[annotationpt-1 : annotationpt+1]
+//line parser.y:70
 		{
 		}
 	}
