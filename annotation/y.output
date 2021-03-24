@@ -1,0 +1,304 @@
+
+state 0
+	$accept: .doc $end 
+	Content: .    (2)
+
+	.  reduce 2 (src line 30)
+
+	Content  goto 2
+	doc  goto 1
+
+state 1
+	$accept:  doc.$end 
+
+	$end  accept
+	.  error
+
+
+state 2
+	doc:  Content.    (1)
+	Content:  Content.'@' Annotation 
+
+	'@'  shift 3
+	.  reduce 1 (src line 26)
+
+
+state 3
+	Content:  Content '@'.Annotation 
+
+	ident  shift 5
+	.  error
+
+	Annotation  goto 4
+
+state 4
+	Content:  Content '@' Annotation.    (3)
+
+	.  reduce 3 (src line 33)
+
+
+state 5
+	Annotation:  ident.    (4)
+	Annotation:  ident.'(' ')' 
+	Annotation:  ident.'(' Fields ')' 
+
+	'('  shift 6
+	.  reduce 4 (src line 39)
+
+
+state 6
+	Annotation:  ident '('.')' 
+	Annotation:  ident '('.Fields ')' 
+
+	ident  shift 12
+	')'  shift 7
+	stringLiteral  shift 13
+	boolLiteral  shift 14
+	integerLiteral  shift 15
+	floatLiteral  shift 16
+	.  error
+
+	Field  goto 9
+	Fields  goto 8
+	Literal  goto 10
+	Ident  goto 11
+
+state 7
+	Annotation:  ident '(' ')'.    (5)
+
+	.  reduce 5 (src line 40)
+
+
+state 8
+	Annotation:  ident '(' Fields.')' 
+	Fields:  Fields.',' Field 
+
+	')'  shift 17
+	','  shift 18
+	.  error
+
+
+state 9
+	Fields:  Field.    (8)
+
+	.  reduce 8 (src line 44)
+
+
+state 10
+	Field:  Literal.    (9)
+
+	.  reduce 9 (src line 46)
+
+
+state 11
+	Field:  Ident.    (10)
+	Ident:  Ident.'.' ident 
+
+	'.'  shift 19
+	.  reduce 10 (src line 47)
+
+
+state 12
+	Field:  ident.'=' Ident 
+	Field:  ident.'=' Literal 
+	Field:  ident.'=' Array 
+	Ident:  ident.    (14)
+
+	'='  shift 20
+	.  reduce 14 (src line 54)
+
+
+state 13
+	Literal:  stringLiteral.    (16)
+
+	.  reduce 16 (src line 56)
+
+
+state 14
+	Literal:  boolLiteral.    (17)
+
+	.  reduce 17 (src line 56)
+
+
+state 15
+	Literal:  integerLiteral.    (18)
+
+	.  reduce 18 (src line 56)
+
+
+state 16
+	Literal:  floatLiteral.    (19)
+
+	.  reduce 19 (src line 56)
+
+
+state 17
+	Annotation:  ident '(' Fields ')'.    (6)
+
+	.  reduce 6 (src line 41)
+
+
+state 18
+	Fields:  Fields ','.Field 
+
+	ident  shift 12
+	stringLiteral  shift 13
+	boolLiteral  shift 14
+	integerLiteral  shift 15
+	floatLiteral  shift 16
+	.  error
+
+	Field  goto 21
+	Literal  goto 10
+	Ident  goto 11
+
+state 19
+	Ident:  Ident '.'.ident 
+
+	ident  shift 22
+	.  error
+
+
+state 20
+	Field:  ident '='.Ident 
+	Field:  ident '='.Literal 
+	Field:  ident '='.Array 
+
+	ident  shift 26
+	'{'  shift 27
+	stringLiteral  shift 13
+	boolLiteral  shift 14
+	integerLiteral  shift 15
+	floatLiteral  shift 16
+	.  error
+
+	Literal  goto 24
+	Ident  goto 23
+	Array  goto 25
+
+state 21
+	Fields:  Fields ',' Field.    (7)
+
+	.  reduce 7 (src line 44)
+
+
+state 22
+	Ident:  Ident '.' ident.    (15)
+
+	.  reduce 15 (src line 54)
+
+
+state 23
+	Field:  ident '=' Ident.    (11)
+	Ident:  Ident.'.' ident 
+
+	'.'  shift 19
+	.  reduce 11 (src line 48)
+
+
+state 24
+	Field:  ident '=' Literal.    (12)
+
+	.  reduce 12 (src line 49)
+
+
+state 25
+	Field:  ident '=' Array.    (13)
+
+	.  reduce 13 (src line 50)
+
+
+state 26
+	Ident:  ident.    (14)
+
+	.  reduce 14 (src line 54)
+
+
+state 27
+	Array:  '{'.ArrayFields '}' 
+	Array:  '{'.'}' 
+
+	'{'  shift 27
+	'}'  shift 29
+	stringLiteral  shift 13
+	boolLiteral  shift 14
+	integerLiteral  shift 15
+	floatLiteral  shift 16
+	.  error
+
+	Literal  goto 31
+	Array  goto 32
+	ArrayFields  goto 28
+	ArrayField  goto 30
+
+state 28
+	Array:  '{' ArrayFields.'}' 
+	ArrayFields:  ArrayFields.',' ArrayField 
+
+	','  shift 34
+	'}'  shift 33
+	.  error
+
+
+state 29
+	Array:  '{' '}'.    (21)
+
+	.  reduce 21 (src line 59)
+
+
+state 30
+	ArrayFields:  ArrayField.    (22)
+
+	.  reduce 22 (src line 62)
+
+
+state 31
+	ArrayField:  Literal.    (24)
+
+	.  reduce 24 (src line 66)
+
+
+state 32
+	ArrayField:  Array.    (25)
+
+	.  reduce 25 (src line 67)
+
+
+state 33
+	Array:  '{' ArrayFields '}'.    (20)
+
+	.  reduce 20 (src line 58)
+
+
+state 34
+	ArrayFields:  ArrayFields ','.ArrayField 
+
+	'{'  shift 27
+	stringLiteral  shift 13
+	boolLiteral  shift 14
+	integerLiteral  shift 15
+	floatLiteral  shift 16
+	.  error
+
+	Literal  goto 31
+	Array  goto 32
+	ArrayField  goto 35
+
+state 35
+	ArrayFields:  ArrayFields ',' ArrayField.    (23)
+
+	.  reduce 23 (src line 63)
+
+
+16 terminals, 11 nonterminals
+26 grammar rules, 36/16000 states
+0 shift/reduce, 0 reduce/reduce conflicts reported
+60 working sets used
+memory: parser 24/240000
+8 extra closures
+39 shift entries, 1 exceptions
+17 goto entries
+3 entries saved by goto default
+Optimizer space used: output 55/240000
+55 table entries, 0 zero
+maximum spread: 16, maximum offset: 34

@@ -1,4 +1,4 @@
-package meta
+package annotation
 
 import (
 	"fmt"
@@ -14,11 +14,12 @@ func Parse(dat []byte) error {
 	}
 	lexForParser := &lexerTokenIter{lex: lex, onlyTokens: []string{
 		"bracket",
-		"string",
+		"at",
 		"op_and_punct",
 		"ident",
+		"literal",
 	}}
-	out := metaParse(lexForParser)
+	out := annotationParse(lexForParser)
 	if out != 0 {
 		return fmt.Errorf("parser error: %v", lexForParser.errors)
 	}
@@ -36,7 +37,7 @@ type lexerTokenIter struct {
 	errors     []string
 }
 
-func (l *lexerTokenIter) Lex(out *metaSymType) (symbol int) {
+func (l *lexerTokenIter) Lex(out *annotationSymType) (symbol int) {
 skipToken:
 	if !l.hasNext() {
 		// EOF
@@ -45,8 +46,6 @@ skipToken:
 
 	token := l.next()
 
-	fmt.Println("call Lex", token.Labels)
-
 	// if sets filter and not matched - skip token for current parser
 	if len(l.onlyTokens) != 0 && !token.MatchAtLeastOneLabels(l.onlyTokens...) {
 		goto skipToken
@@ -54,7 +53,7 @@ skipToken:
 
 	out.token = token
 
-	if metaDebug == 1 {
+	if annotationDebug == 1 {
 		firstChar := token.Pos[1] == token.Pos[2]
 
 		lineInfo := fmt.Sprintf("\t>%d:\t", token.Pos[1])
@@ -94,7 +93,7 @@ func (l *lexerTokenIter) current() *syntax.Token {
 }
 
 func (l *lexerTokenIter) Error(msg string) {
-	token := l.current()
+	token := l.lex.Tokens[l.iter-1]
 	tokenBytes, _ := l.lex.Data.Render(token)
 	msg = fmt.Sprintf(
 		"parser error #%d: err=%q before %q",

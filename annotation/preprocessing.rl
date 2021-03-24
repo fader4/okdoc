@@ -1,4 +1,4 @@
-package meta
+package annotation
 
 import (
     "github.com/fader4/okdoc/syntax"
@@ -7,7 +7,7 @@ import (
 
 %%{
 
-    machine meta;
+    machine annotation_preprocessing;
 
     variable p lex.P;
     variable pe lex.Pe;
@@ -29,14 +29,12 @@ import (
     WhiteSpace = [ \t] @incLineWhiteSpaces;
     NewLine    = [\n\r] @incLine;
 
-    CommentInline = "#" [^\r\n]*;
-    CommentMultiline1 = "'''" (any|[\n\r] @{lex.ReleaseNewLine("CR", "CR_nested")})* :>> "'''";
-    CommentMultiline2 = '"""' (any|[\n\r] @{lex.ReleaseNewLine("CR", "CR_nested")})* :>> '"""';
-
-    # Int      = [0-9]+;
-    # Float    = (([1-9] [0-9]* [.] [0-9]*) | (0? [.] [0-9]+)) ([Ee] [+\-]? [0-9]+)?;
+    AT = "@";
     Bool     = "True"|"False";
     Ident    = ([a-zA-Z_] [a-zA-Z0-9_]*) - Bool;
+
+    Annotation1 = AT Ident NewLine;
+    Annotation2 = AT Ident "(" (any|[\n\r] @{lex.ReleaseNewLine("CR", "CR_nested")})* :>> ")";
 
     singleQuoteString := |*
         ['] => {
@@ -46,7 +44,7 @@ import (
         };
 
         ( [^'\\] | /\\./ )+ => {
-            lex.ReleaseToken(stringLiteral, "string")
+            lex.ReleaseToken(stringLiteral, "literal", "string")
         };
     *|;
 
@@ -58,7 +56,7 @@ import (
         };
 
         ( [^"\\] | /\\./ )+ => {
-            lex.ReleaseToken(stringLiteral, "string")
+            lex.ReleaseToken(stringLiteral, "literal", "string")
         };
     *|;
 
@@ -68,57 +66,29 @@ import (
         WhiteSpace;
         NewLine;
 
-        # CommentInline => {
-        #    lex.ReleaseToken(commentInline, "comment")
-        #};
-        #CommentMultiline1|CommentMultiline2 => {
-        #    lex.ReleaseToken(commentMultiline, "comment")
-        #};
-
-        [=] => {
-            lex.ReleaseSymbol("op_and_punct")
+        AT => {
+            lex.ReleaseSymbol("at")
         };
 
 
         Ident    => {
             lex.ReleaseToken(ident, "ident")
         };
-        #Bool     => {
-        #    lex.ReleaseToken(boolLiteral)
-        #};
-        #Int      => {
-        #    lex.ReleaseToken(integerLiteral)
-        #};
-        #Float    => {
-        #    lex.ReleaseToken(floatLiteral)
-        #};
 
-        ['] => {
-            lex.BeginPairedChar('\'')
-            fcall singleQuoteString;
+        Annotation1 => {
+            lex.ReleaseToken(1, "annotation")
         };
 
-        ["] => {
-            lex.BeginPairedChar('"')
-            fcall doubleQuoteString;
+        Annotation2 => {
+            lex.ReleaseToken(2, "annotation")
         };
+
 
         "(" => {
             lex.ReleaseToken('(', "bracket", "open_bracket")
             lex.BeginPairedChar(')');
             fcall main;
         };
-        #"[" => {
-        #    lex.ReleaseToken('[')
-        #    lex.BeginPairedChar(']');
-        #    fcall main;
-        #};
-        #"{" => {
-        #    lex.ReleaseToken('{')
-        #    lex.BeginPairedChar('}');
-        #    fcall main;
-        #};
-        # [}\])] => {
         [)] => {
             if lex.IsEndPairedChar(int(lex.Data[lex.Ts])) {
                 lex.ReleaseSymbol("bracket", "close_bracket")
@@ -136,7 +106,7 @@ import (
 
 %% write data;
 
-func newTokenizer(data []byte) (*syntax.Lexer, error) {
+func newPreprocessing(data []byte) (*syntax.Lexer, error) {
     lex := syntax.NewLexer(data)
 
     %% write init;
