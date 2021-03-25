@@ -7,7 +7,7 @@ import (
 )
 
 func TestExtract(t *testing.T) {
-	// annotationDebug = 1
+	annotationDebug = 1
 
 	dat := `
 any symbol
@@ -42,14 +42,13 @@ qwdqwdqw
 	t.Log("Num annotations:", len(annotations))
 
 	for _, annot := range annotations {
-		t.Logf(">>%d L%d-L%d(%d): %q\n",
-			annot.StartToken.Pos.Spaces(),
-			annot.StartToken.Pos.Line(),
-			annot.EndToken.Pos.Line(),
-			annot.Token.Pos.Char(),
-			string(annot.RawData),
+		t.Logf(">>%d L%d-L%d(%d):\n",
+			annot.Start.Pos.Spaces(),
+			annot.Start.Pos.Line(),
+			annot.End.Pos.Line(),
+			annot.Token().Pos.Char(),
 		)
-		assert.NoError(t, Parse(annot.RawData))
+		assert.NoError(t, Parse([]byte(dat[annot.Token().Start:annot.Token().End])))
 
 	}
 }
