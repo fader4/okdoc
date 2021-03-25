@@ -31,10 +31,8 @@ import (
 
     AT = "@";
     Bool     = "True"|"False";
-    Ident    = ([a-zA-Z_] [a-zA-Z0-9_]*) - Bool;
+    Ident    = ([A-Z] [a-zA-Z0-9_]*) - Bool;
 
-    Annotation1 = AT Ident NewLine;
-    Annotation2 = AT Ident "(" (any|[\n\r] @{lex.ReleaseNewLine("CR", "CR_nested")})* :>> ")";
 
     singleQuoteString := |*
         ['] => {
@@ -43,9 +41,7 @@ import (
             };
         };
 
-        ( [^'\\] | /\\./ )+ => {
-            lex.ReleaseToken(stringLiteral, "literal", "string")
-        };
+        ( [^'\\] | /\\./ )+;
     *|;
 
     doubleQuoteString := |*
@@ -55,9 +51,36 @@ import (
             };
         };
 
-        ( [^"\\] | /\\./ )+ => {
-            lex.ReleaseToken(stringLiteral, "literal", "string")
+        ( [^"\\] | /\\./ )+;
+    *|;
+
+    annotationBody := |*
+        NewLine;
+
+        ['] => {
+            lex.BeginPairedChar('\'')
+            fcall singleQuoteString;
         };
+
+        ["] => {
+            lex.BeginPairedChar('"')
+            fcall doubleQuoteString;
+        };
+
+
+        "(" => {
+           lex.BeginPairedChar(')');
+        };
+        ")" => {
+            if lex.IsEndPairedChar(endAnnotation) {
+                lex.ReleaseToken(endAnnotation, "annotation")
+                fret;
+            }
+           if lex.IsEndPairedChar(int(lex.Data[lex.Ts])) {
+           };
+        };
+
+        any;
     *|;
 
 
@@ -66,34 +89,10 @@ import (
         WhiteSpace;
         NewLine;
 
-        AT => {
-            lex.ReleaseSymbol("at")
-        };
-
-
-        Ident    => {
-            lex.ReleaseToken(ident, "ident")
-        };
-
-        Annotation1 => {
-            lex.ReleaseToken(1, "annotation")
-        };
-
-        Annotation2 => {
-            lex.ReleaseToken(2, "annotation")
-        };
-
-
-        "(" => {
-            lex.ReleaseToken('(', "bracket", "open_bracket")
-            lex.BeginPairedChar(')');
-            fcall main;
-        };
-        [)] => {
-            if lex.IsEndPairedChar(int(lex.Data[lex.Ts])) {
-                lex.ReleaseSymbol("bracket", "close_bracket")
-                fret;
-            };
+        AT Ident "(" => {
+            lex.ReleaseToken(beginAnnotation, "annotation")
+            lex.BeginPairedChar(endAnnotation)
+            fcall annotationBody;
         };
 
         any;

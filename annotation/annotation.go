@@ -54,22 +54,20 @@ skipToken:
 	out.token = token
 
 	if annotationDebug == 1 {
-		firstChar := token.Pos[1] == token.Pos[2]
-
-		lineInfo := fmt.Sprintf("\t>%d:\t", token.Pos[1])
-		if firstChar {
-			lineInfo = fmt.Sprintf("L%dSP%d:", token.Pos[0], token.Pos[2])
-		}
-
-		tokenBytes, _ := l.lex.Data.Render(token)
-		charInfo := fmt.Sprintf("%q", string(tokenBytes))
-		fmt.Println(
-			"[PARSER]",
-			lineInfo,
-			charInfo,
-		)
+		l.PrintToken(token)
 	}
 	return token.Symbol
+}
+
+func (l *lexerTokenIter) PrintToken(token *syntax.Token) {
+	lineInfo := fmt.Sprintf("L%dSP%dLEN%d:", token.Pos[0], token.Pos[2], token.Pos[1])
+
+	tokenBytes, _ := l.lex.Data.Render(token)
+	charInfo := fmt.Sprintf("%q", string(tokenBytes))
+	fmt.Println(
+		lineInfo,
+		charInfo,
+	)
 }
 
 func (l *lexerTokenIter) next() *syntax.Token {

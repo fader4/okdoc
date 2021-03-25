@@ -17,6 +17,9 @@ import (
 ident '(' ')' '@' '=' ',' '{' '}' '[' ']'
 stringLiteral boolLiteral integerLiteral floatLiteral
 
+// special tokents for pre processing
+annotation beginAnnotation endAnnotation
+
 %type <token> Content Annotation Field Fields
 
 
