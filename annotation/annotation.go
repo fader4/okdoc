@@ -7,6 +7,50 @@ import (
 	"github.com/pkg/errors"
 )
 
+type Annotation struct {
+	RawToken *syntax.Token
+	RawData  []byte
+}
+
+// Extract returns found annotations.
+func Extract(dat []byte) ([]*Annotation, error) {
+	lex, err := newPreprocessing([]byte(dat))
+	if err != nil {
+		return nil, err
+	}
+	lexForParser := &lexerTokenIter{lex: lex, onlyTokens: []string{
+		"annotation",
+	}}
+	var annotations = []*Annotation{}
+	var nextAnnotation *syntax.Token
+	for {
+		container := &annotationSymType{}
+		symbol := lexForParser.Lex(container)
+		if symbol == 0 {
+			break
+		}
+
+		switch symbol {
+		case beginAnnotation:
+			nextAnnotation = &syntax.Token{
+				Symbol: annotation,
+				Start:  container.token.Start,
+				Pos:    container.token.Pos,
+			}
+		case endAnnotation:
+			nextAnnotation.End = container.token.End
+			nextAnnotation.Pos[1] = nextAnnotation.End - nextAnnotation.Start
+			annotations = append(annotations, &Annotation{
+				RawToken: nextAnnotation,
+				RawData:  dat[nextAnnotation.Start:nextAnnotation.End],
+			})
+			nextAnnotation = nil
+		}
+	}
+
+	return annotations, nil
+}
+
 func Parse(dat []byte) error {
 	lex, err := newTokenizer(dat)
 	if err != nil {

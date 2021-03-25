@@ -1,4 +1,4 @@
-//line preprocessing.rl:1
+//line extractor.rl:1
 package annotation
 
 import (
@@ -6,35 +6,35 @@ import (
 	"github.com/fader4/okdoc/syntax"
 )
 
-//line preprocessing.rl:104
+//line extractor.rl:109
 
-//line preprocessing.go:16
-const annotation_preprocessing_start int = 11
-const annotation_preprocessing_first_final int = 11
-const annotation_preprocessing_error int = 0
+//line extractor.go:16
+const annotation_extractor_start int = 6
+const annotation_extractor_first_final int = 6
+const annotation_extractor_error int = 0
 
-const annotation_preprocessing_en_singleQuoteString int = 13
-const annotation_preprocessing_en_doubleQuoteString int = 15
-const annotation_preprocessing_en_annotationBody int = 17
-const annotation_preprocessing_en_main int = 11
+const annotation_extractor_en_singleQuoteString int = 14
+const annotation_extractor_en_doubleQuoteString int = 16
+const annotation_extractor_en_annotationBody int = 18
+const annotation_extractor_en_main int = 6
 
-//line preprocessing.rl:107
+//line extractor.rl:112
 
 func newPreprocessing(data []byte) (*syntax.Lexer, error) {
 	lex := syntax.NewLexer(data)
 
-//line preprocessing.go:33
+//line extractor.go:33
 	{
-		(lex.Cs) = annotation_preprocessing_start
+		(lex.Cs) = annotation_extractor_start
 		(lex.Top) = 0
 		(lex.Ts) = 0
 		(lex.Te) = 0
 		(lex.Act) = 0
 	}
 
-//line preprocessing.rl:112
+//line extractor.rl:117
 
-//line preprocessing.go:44
+//line extractor.go:44
 	{
 		if (lex.P) == (lex.Pe) {
 			goto _test_eof
@@ -43,40 +43,42 @@ func newPreprocessing(data []byte) (*syntax.Lexer, error) {
 
 	_again:
 		switch lex.Cs {
-		case 11:
-			goto st11
-		case 12:
-			goto st12
-		case 1:
-			goto st1
-		case 2:
-			goto st2
-		case 3:
-			goto st3
-		case 4:
-			goto st4
-		case 5:
-			goto st5
 		case 6:
 			goto st6
 		case 7:
 			goto st7
+		case 1:
+			goto st1
 		case 8:
 			goto st8
+		case 2:
+			goto st2
+		case 9:
+			goto st9
+		case 10:
+			goto st10
+		case 11:
+			goto st11
+		case 12:
+			goto st12
+		case 3:
+			goto st3
 		case 13:
 			goto st13
 		case 14:
 			goto st14
-		case 9:
-			goto st9
 		case 15:
 			goto st15
+		case 4:
+			goto st4
 		case 16:
 			goto st16
-		case 10:
-			goto st10
 		case 17:
 			goto st17
+		case 5:
+			goto st5
+		case 18:
+			goto st18
 		case 0:
 			goto st0
 		}
@@ -86,51 +88,73 @@ func newPreprocessing(data []byte) (*syntax.Lexer, error) {
 		}
 	_resume:
 		switch lex.Cs {
-		case 11:
-			goto st_case_11
-		case 12:
-			goto st_case_12
-		case 1:
-			goto st_case_1
-		case 2:
-			goto st_case_2
-		case 3:
-			goto st_case_3
-		case 4:
-			goto st_case_4
-		case 5:
-			goto st_case_5
 		case 6:
 			goto st_case_6
 		case 7:
 			goto st_case_7
+		case 1:
+			goto st_case_1
 		case 8:
 			goto st_case_8
+		case 2:
+			goto st_case_2
+		case 9:
+			goto st_case_9
+		case 10:
+			goto st_case_10
+		case 11:
+			goto st_case_11
+		case 12:
+			goto st_case_12
+		case 3:
+			goto st_case_3
 		case 13:
 			goto st_case_13
 		case 14:
 			goto st_case_14
-		case 9:
-			goto st_case_9
 		case 15:
 			goto st_case_15
+		case 4:
+			goto st_case_4
 		case 16:
 			goto st_case_16
-		case 10:
-			goto st_case_10
 		case 17:
 			goto st_case_17
+		case 5:
+			goto st_case_5
+		case 18:
+			goto st_case_18
 		case 0:
 			goto st_case_0
 		}
 		goto st_out
 	tr0:
-//line preprocessing.rl:98
-		(lex.P) = (lex.Te) - 1
+//line NONE:1
+		switch lex.Act {
+		case 13:
+			{
+				(lex.P) = (lex.Te) - 1
 
-		goto st11
+				lex.ReleaseToken(beginAnnotation, "annotation")
+				lex.ReleaseToken(endAnnotation, "annotation")
+			}
+		default:
+			{
+				(lex.P) = (lex.Te) - 1
+			}
+		}
+
+		goto st6
 	tr1:
-//line preprocessing.rl:92
+//line extractor.rl:93
+		(lex.Te) = (lex.P) + 1
+		{
+			lex.ReleaseToken(beginAnnotation, "annotation")
+			lex.ReleaseToken(endAnnotation, "annotation")
+		}
+		goto st6
+	tr2:
+//line extractor.rl:97
 		(lex.Te) = (lex.P) + 1
 		{
 			lex.ReleaseToken(beginAnnotation, "annotation")
@@ -138,88 +162,104 @@ func newPreprocessing(data []byte) (*syntax.Lexer, error) {
 			{
 				lex.StackGrowth()
 				{
-					(lex.Stack)[(lex.Top)] = 11
+					(lex.Stack)[(lex.Top)] = 6
 					(lex.Top)++
-					goto st17
+					goto st18
 				}
 			}
 		}
-		goto st11
-	tr12:
-//line preprocessing.rl:98
+		goto st6
+	tr4:
+//line extractor.rl:103
+		(lex.P) = (lex.Te) - 1
+
+		goto st6
+	tr11:
+//line extractor.rl:103
 		(lex.Te) = (lex.P) + 1
 
-		goto st11
-	tr13:
-//line preprocessing.rl:25
+		goto st6
+	tr12:
+//line extractor.rl:25
 
 		lex.ReleaseSymbol("SP")
 
-//line preprocessing.rl:89
+//line extractor.rl:89
 		(lex.Te) = (lex.P) + 1
 
-		goto st11
-	tr14:
-//line preprocessing.rl:22
+		goto st6
+	tr13:
+//line extractor.rl:22
 
 		lex.ReleaseSymbol("CR")
 
-//line preprocessing.rl:90
+//line extractor.rl:90
 		(lex.Te) = (lex.P) + 1
 
-		goto st11
-	tr16:
-//line preprocessing.rl:98
+		goto st6
+	tr15:
+//line extractor.rl:103
 		(lex.Te) = (lex.P)
 		(lex.P)--
 
-		goto st11
-	st11:
+		goto st6
+	tr19:
+//line extractor.rl:93
+		(lex.Te) = (lex.P)
+		(lex.P)--
+		{
+			lex.ReleaseToken(beginAnnotation, "annotation")
+			lex.ReleaseToken(endAnnotation, "annotation")
+		}
+		goto st6
+	st6:
 //line NONE:1
 		(lex.Ts) = 0
 
 		if (lex.P)++; (lex.P) == (lex.Pe) {
-			goto _test_eof11
+			goto _test_eof6
 		}
-	st_case_11:
+	st_case_6:
 //line NONE:1
 		(lex.Ts) = (lex.P)
 
-//line preprocessing.go:188
+//line extractor.go:224
 		switch data[(lex.P)] {
 		case 9:
-			goto tr13
+			goto tr12
 		case 10:
-			goto tr14
-		case 13:
-			goto tr14
-		case 32:
 			goto tr13
+		case 13:
+			goto tr13
+		case 32:
+			goto tr12
 		case 64:
-			goto tr15
+			goto tr14
 		}
-		goto tr12
-	tr15:
+		goto tr11
+	tr14:
 //line NONE:1
 		(lex.Te) = (lex.P) + 1
 
-		goto st12
-	st12:
+//line extractor.rl:103
+		(lex.Act) = 15
+		goto st7
+	st7:
 		if (lex.P)++; (lex.P) == (lex.Pe) {
-			goto _test_eof12
+			goto _test_eof7
 		}
-	st_case_12:
-//line preprocessing.go:212
+	st_case_7:
+//line extractor.go:250
 		switch data[(lex.P)] {
 		case 70:
 			goto st2
 		case 84:
-			goto st7
+			goto st3
 		}
 		if 65 <= data[(lex.P)] && data[(lex.P)] <= 90 {
 			goto st1
 		}
-		goto tr16
+		goto tr15
 	st1:
 		if (lex.P)++; (lex.P) == (lex.Pe) {
 			goto _test_eof1
@@ -227,23 +267,47 @@ func newPreprocessing(data []byte) (*syntax.Lexer, error) {
 	st_case_1:
 		switch data[(lex.P)] {
 		case 40:
-			goto tr1
+			goto tr2
 		case 95:
-			goto st1
+			goto st8
 		}
 		switch {
 		case data[(lex.P)] < 65:
 			if 48 <= data[(lex.P)] && data[(lex.P)] <= 57 {
-				goto st1
+				goto st8
 			}
 		case data[(lex.P)] > 90:
 			if 97 <= data[(lex.P)] && data[(lex.P)] <= 122 {
-				goto st1
+				goto st8
 			}
 		default:
-			goto st1
+			goto st8
 		}
-		goto tr0
+		goto tr1
+	st8:
+		if (lex.P)++; (lex.P) == (lex.Pe) {
+			goto _test_eof8
+		}
+	st_case_8:
+		switch data[(lex.P)] {
+		case 40:
+			goto tr2
+		case 95:
+			goto st8
+		}
+		switch {
+		case data[(lex.P)] < 65:
+			if 48 <= data[(lex.P)] && data[(lex.P)] <= 57 {
+				goto st8
+			}
+		case data[(lex.P)] > 90:
+			if 97 <= data[(lex.P)] && data[(lex.P)] <= 122 {
+				goto st8
+			}
+		default:
+			goto st8
+		}
+		goto tr1
 	st2:
 		if (lex.P)++; (lex.P) == (lex.Pe) {
 			goto _test_eof2
@@ -251,108 +315,116 @@ func newPreprocessing(data []byte) (*syntax.Lexer, error) {
 	st_case_2:
 		switch data[(lex.P)] {
 		case 40:
-			goto tr1
+			goto tr2
 		case 95:
-			goto st1
+			goto st8
 		case 97:
-			goto st3
+			goto st9
 		}
 		switch {
 		case data[(lex.P)] < 65:
 			if 48 <= data[(lex.P)] && data[(lex.P)] <= 57 {
-				goto st1
+				goto st8
 			}
 		case data[(lex.P)] > 90:
 			if 98 <= data[(lex.P)] && data[(lex.P)] <= 122 {
-				goto st1
+				goto st8
 			}
 		default:
-			goto st1
+			goto st8
 		}
-		goto tr0
-	st3:
+		goto tr1
+	st9:
 		if (lex.P)++; (lex.P) == (lex.Pe) {
-			goto _test_eof3
+			goto _test_eof9
 		}
-	st_case_3:
+	st_case_9:
 		switch data[(lex.P)] {
 		case 40:
-			goto tr1
+			goto tr2
 		case 95:
-			goto st1
+			goto st8
 		case 108:
-			goto st4
+			goto st10
 		}
 		switch {
 		case data[(lex.P)] < 65:
 			if 48 <= data[(lex.P)] && data[(lex.P)] <= 57 {
-				goto st1
+				goto st8
 			}
 		case data[(lex.P)] > 90:
 			if 97 <= data[(lex.P)] && data[(lex.P)] <= 122 {
-				goto st1
+				goto st8
 			}
 		default:
-			goto st1
+			goto st8
 		}
-		goto tr0
-	st4:
+		goto tr1
+	st10:
 		if (lex.P)++; (lex.P) == (lex.Pe) {
-			goto _test_eof4
+			goto _test_eof10
 		}
-	st_case_4:
+	st_case_10:
 		switch data[(lex.P)] {
 		case 40:
-			goto tr1
+			goto tr2
 		case 95:
-			goto st1
+			goto st8
 		case 115:
-			goto st5
+			goto st11
 		}
 		switch {
 		case data[(lex.P)] < 65:
 			if 48 <= data[(lex.P)] && data[(lex.P)] <= 57 {
-				goto st1
+				goto st8
 			}
 		case data[(lex.P)] > 90:
 			if 97 <= data[(lex.P)] && data[(lex.P)] <= 122 {
-				goto st1
+				goto st8
 			}
 		default:
-			goto st1
+			goto st8
 		}
-		goto tr0
-	st5:
+		goto tr1
+	st11:
 		if (lex.P)++; (lex.P) == (lex.Pe) {
-			goto _test_eof5
+			goto _test_eof11
 		}
-	st_case_5:
+	st_case_11:
 		switch data[(lex.P)] {
 		case 40:
-			goto tr1
+			goto tr2
 		case 95:
-			goto st1
+			goto st8
 		case 101:
-			goto st6
+			goto tr22
 		}
 		switch {
 		case data[(lex.P)] < 65:
 			if 48 <= data[(lex.P)] && data[(lex.P)] <= 57 {
-				goto st1
+				goto st8
 			}
 		case data[(lex.P)] > 90:
 			if 97 <= data[(lex.P)] && data[(lex.P)] <= 122 {
-				goto st1
+				goto st8
 			}
 		default:
-			goto st1
+			goto st8
 		}
-		goto tr0
-	st6:
+		goto tr1
+	tr22:
+//line NONE:1
+		(lex.Te) = (lex.P) + 1
+
+//line extractor.rl:93
+		(lex.Act) = 13
+		goto st12
+	st12:
 		if (lex.P)++; (lex.P) == (lex.Pe) {
-			goto _test_eof6
+			goto _test_eof12
 		}
-	st_case_6:
+	st_case_12:
+//line extractor.go:425
 		if data[(lex.P)] == 95 {
 			goto st1
 		}
@@ -368,60 +440,60 @@ func newPreprocessing(data []byte) (*syntax.Lexer, error) {
 		default:
 			goto st1
 		}
-		goto tr0
-	st7:
+		goto tr19
+	st3:
 		if (lex.P)++; (lex.P) == (lex.Pe) {
-			goto _test_eof7
+			goto _test_eof3
 		}
-	st_case_7:
+	st_case_3:
 		switch data[(lex.P)] {
 		case 40:
-			goto tr1
+			goto tr2
 		case 95:
-			goto st1
+			goto st8
 		case 114:
+			goto st13
+		}
+		switch {
+		case data[(lex.P)] < 65:
+			if 48 <= data[(lex.P)] && data[(lex.P)] <= 57 {
+				goto st8
+			}
+		case data[(lex.P)] > 90:
+			if 97 <= data[(lex.P)] && data[(lex.P)] <= 122 {
+				goto st8
+			}
+		default:
 			goto st8
 		}
-		switch {
-		case data[(lex.P)] < 65:
-			if 48 <= data[(lex.P)] && data[(lex.P)] <= 57 {
-				goto st1
-			}
-		case data[(lex.P)] > 90:
-			if 97 <= data[(lex.P)] && data[(lex.P)] <= 122 {
-				goto st1
-			}
-		default:
-			goto st1
-		}
-		goto tr0
-	st8:
+		goto tr1
+	st13:
 		if (lex.P)++; (lex.P) == (lex.Pe) {
-			goto _test_eof8
+			goto _test_eof13
 		}
-	st_case_8:
+	st_case_13:
 		switch data[(lex.P)] {
 		case 40:
-			goto tr1
+			goto tr2
 		case 95:
-			goto st1
+			goto st8
 		case 117:
-			goto st5
+			goto st11
 		}
 		switch {
 		case data[(lex.P)] < 65:
 			if 48 <= data[(lex.P)] && data[(lex.P)] <= 57 {
-				goto st1
+				goto st8
 			}
 		case data[(lex.P)] > 90:
 			if 97 <= data[(lex.P)] && data[(lex.P)] <= 122 {
-				goto st1
+				goto st8
 			}
 		default:
-			goto st1
+			goto st8
 		}
-		goto tr0
-	tr8:
+		goto tr1
+	tr7:
 //line NONE:1
 		switch lex.Act {
 		case 0:
@@ -436,9 +508,9 @@ func newPreprocessing(data []byte) (*syntax.Lexer, error) {
 			}
 		}
 
-		goto st13
-	tr19:
-//line preprocessing.rl:38
+		goto st14
+	tr23:
+//line extractor.rl:38
 		(lex.Te) = (lex.P) + 1
 		{
 			if lex.IsEndPairedChar('\'') {
@@ -449,14 +521,14 @@ func newPreprocessing(data []byte) (*syntax.Lexer, error) {
 				}
 			}
 		}
-		goto st13
-	tr21:
-//line preprocessing.rl:44
+		goto st14
+	tr25:
+//line extractor.rl:44
 		(lex.Te) = (lex.P)
 		(lex.P)--
 
-		goto st13
-	st13:
+		goto st14
+	st14:
 //line NONE:1
 		(lex.Ts) = 0
 
@@ -464,47 +536,47 @@ func newPreprocessing(data []byte) (*syntax.Lexer, error) {
 		(lex.Act) = 0
 
 		if (lex.P)++; (lex.P) == (lex.Pe) {
-			goto _test_eof13
-		}
-	st_case_13:
-//line NONE:1
-		(lex.Ts) = (lex.P)
-
-//line preprocessing.go:464
-		switch data[(lex.P)] {
-		case 39:
-			goto tr19
-		case 92:
-			goto st9
-		}
-		goto tr9
-	tr9:
-//line NONE:1
-		(lex.Te) = (lex.P) + 1
-
-//line preprocessing.rl:44
-		(lex.Act) = 2
-		goto st14
-	st14:
-		if (lex.P)++; (lex.P) == (lex.Pe) {
 			goto _test_eof14
 		}
 	st_case_14:
-//line preprocessing.go:484
+//line NONE:1
+		(lex.Ts) = (lex.P)
+
+//line extractor.go:534
 		switch data[(lex.P)] {
 		case 39:
-			goto tr21
+			goto tr23
 		case 92:
-			goto st9
+			goto st4
 		}
-		goto tr9
-	st9:
+		goto tr8
+	tr8:
+//line NONE:1
+		(lex.Te) = (lex.P) + 1
+
+//line extractor.rl:44
+		(lex.Act) = 2
+		goto st15
+	st15:
 		if (lex.P)++; (lex.P) == (lex.Pe) {
-			goto _test_eof9
+			goto _test_eof15
 		}
-	st_case_9:
-		goto tr9
-	tr10:
+	st_case_15:
+//line extractor.go:554
+		switch data[(lex.P)] {
+		case 39:
+			goto tr25
+		case 92:
+			goto st4
+		}
+		goto tr8
+	st4:
+		if (lex.P)++; (lex.P) == (lex.Pe) {
+			goto _test_eof4
+		}
+	st_case_4:
+		goto tr8
+	tr9:
 //line NONE:1
 		switch lex.Act {
 		case 0:
@@ -519,9 +591,9 @@ func newPreprocessing(data []byte) (*syntax.Lexer, error) {
 			}
 		}
 
-		goto st15
-	tr22:
-//line preprocessing.rl:48
+		goto st16
+	tr26:
+//line extractor.rl:48
 		(lex.Te) = (lex.P) + 1
 		{
 			if lex.IsEndPairedChar('"') {
@@ -532,14 +604,14 @@ func newPreprocessing(data []byte) (*syntax.Lexer, error) {
 				}
 			}
 		}
-		goto st15
-	tr24:
-//line preprocessing.rl:54
+		goto st16
+	tr28:
+//line extractor.rl:54
 		(lex.Te) = (lex.P)
 		(lex.P)--
 
-		goto st15
-	st15:
+		goto st16
+	st16:
 //line NONE:1
 		(lex.Ts) = 0
 
@@ -547,99 +619,99 @@ func newPreprocessing(data []byte) (*syntax.Lexer, error) {
 		(lex.Act) = 0
 
 		if (lex.P)++; (lex.P) == (lex.Pe) {
-			goto _test_eof15
-		}
-	st_case_15:
-//line NONE:1
-		(lex.Ts) = (lex.P)
-
-//line preprocessing.go:538
-		switch data[(lex.P)] {
-		case 34:
-			goto tr22
-		case 92:
-			goto st10
-		}
-		goto tr11
-	tr11:
-//line NONE:1
-		(lex.Te) = (lex.P) + 1
-
-//line preprocessing.rl:54
-		(lex.Act) = 4
-		goto st16
-	st16:
-		if (lex.P)++; (lex.P) == (lex.Pe) {
 			goto _test_eof16
 		}
 	st_case_16:
-//line preprocessing.go:558
+//line NONE:1
+		(lex.Ts) = (lex.P)
+
+//line extractor.go:608
 		switch data[(lex.P)] {
 		case 34:
-			goto tr24
+			goto tr26
 		case 92:
-			goto st10
+			goto st5
 		}
-		goto tr11
-	st10:
-		if (lex.P)++; (lex.P) == (lex.Pe) {
-			goto _test_eof10
-		}
-	st_case_10:
-		goto tr11
-	tr25:
-//line preprocessing.rl:83
+		goto tr10
+	tr10:
+//line NONE:1
 		(lex.Te) = (lex.P) + 1
 
+//line extractor.rl:54
+		(lex.Act) = 4
 		goto st17
-	tr26:
-//line preprocessing.rl:22
+	st17:
+		if (lex.P)++; (lex.P) == (lex.Pe) {
+			goto _test_eof17
+		}
+	st_case_17:
+//line extractor.go:628
+		switch data[(lex.P)] {
+		case 34:
+			goto tr28
+		case 92:
+			goto st5
+		}
+		goto tr10
+	st5:
+		if (lex.P)++; (lex.P) == (lex.Pe) {
+			goto _test_eof5
+		}
+	st_case_5:
+		goto tr10
+	tr29:
+//line extractor.rl:83
+		(lex.Te) = (lex.P) + 1
+
+		goto st18
+	tr30:
+//line extractor.rl:22
 
 		lex.ReleaseSymbol("CR")
 
-//line preprocessing.rl:58
+//line extractor.rl:58
 		(lex.Te) = (lex.P) + 1
 
-		goto st17
-	tr27:
-//line preprocessing.rl:65
+		goto st18
+	tr31:
+//line extractor.rl:65
 		(lex.Te) = (lex.P) + 1
 		{
 			lex.BeginPairedChar('"')
 			{
 				lex.StackGrowth()
 				{
-					(lex.Stack)[(lex.Top)] = 17
+					(lex.Stack)[(lex.Top)] = 18
 					(lex.Top)++
-					goto st15
+					goto st16
 				}
 			}
 		}
-		goto st17
-	tr28:
-//line preprocessing.rl:60
+		goto st18
+	tr32:
+//line extractor.rl:60
 		(lex.Te) = (lex.P) + 1
 		{
 			lex.BeginPairedChar('\'')
 			{
 				lex.StackGrowth()
 				{
-					(lex.Stack)[(lex.Top)] = 17
+					(lex.Stack)[(lex.Top)] = 18
 					(lex.Top)++
-					goto st13
+					goto st14
 				}
 			}
 		}
-		goto st17
-	tr29:
-//line preprocessing.rl:71
+		goto st18
+	tr33:
+//line extractor.rl:71
 		(lex.Te) = (lex.P) + 1
 		{
 			lex.BeginPairedChar(')')
 		}
-		goto st17
-	tr30:
-//line preprocessing.rl:74
+		goto st18
+	tr34:
+//line extractor.rl:74
 		(lex.Te) = (lex.P) + 1
 		{
 			if lex.IsEndPairedChar(endAnnotation) {
@@ -653,68 +725,68 @@ func newPreprocessing(data []byte) (*syntax.Lexer, error) {
 			if lex.IsEndPairedChar(int(lex.Data[lex.Ts])) {
 			}
 		}
-		goto st17
-	st17:
+		goto st18
+	st18:
 //line NONE:1
 		(lex.Ts) = 0
 
 		if (lex.P)++; (lex.P) == (lex.Pe) {
-			goto _test_eof17
+			goto _test_eof18
 		}
-	st_case_17:
+	st_case_18:
 //line NONE:1
 		(lex.Ts) = (lex.P)
 
-//line preprocessing.go:632
+//line extractor.go:702
 		switch data[(lex.P)] {
 		case 10:
-			goto tr26
-		case 13:
-			goto tr26
-		case 34:
-			goto tr27
-		case 39:
-			goto tr28
-		case 40:
-			goto tr29
-		case 41:
 			goto tr30
+		case 13:
+			goto tr30
+		case 34:
+			goto tr31
+		case 39:
+			goto tr32
+		case 40:
+			goto tr33
+		case 41:
+			goto tr34
 		}
-		goto tr25
+		goto tr29
 	st_case_0:
 	st0:
 		(lex.Cs) = 0
 		goto _out
 	st_out:
-	_test_eof11:
-		(lex.Cs) = 11
-		goto _test_eof
-	_test_eof12:
-		(lex.Cs) = 12
-		goto _test_eof
-	_test_eof1:
-		(lex.Cs) = 1
-		goto _test_eof
-	_test_eof2:
-		(lex.Cs) = 2
-		goto _test_eof
-	_test_eof3:
-		(lex.Cs) = 3
-		goto _test_eof
-	_test_eof4:
-		(lex.Cs) = 4
-		goto _test_eof
-	_test_eof5:
-		(lex.Cs) = 5
-		goto _test_eof
 	_test_eof6:
 		(lex.Cs) = 6
 		goto _test_eof
 	_test_eof7:
 		(lex.Cs) = 7
 		goto _test_eof
+	_test_eof1:
+		(lex.Cs) = 1
+		goto _test_eof
 	_test_eof8:
 		(lex.Cs) = 8
+		goto _test_eof
+	_test_eof2:
+		(lex.Cs) = 2
+		goto _test_eof
+	_test_eof9:
+		(lex.Cs) = 9
+		goto _test_eof
+	_test_eof10:
+		(lex.Cs) = 10
+		goto _test_eof
+	_test_eof11:
+		(lex.Cs) = 11
+		goto _test_eof
+	_test_eof12:
+		(lex.Cs) = 12
+		goto _test_eof
+	_test_eof3:
+		(lex.Cs) = 3
 		goto _test_eof
 	_test_eof13:
 		(lex.Cs) = 13
@@ -722,20 +794,23 @@ func newPreprocessing(data []byte) (*syntax.Lexer, error) {
 	_test_eof14:
 		(lex.Cs) = 14
 		goto _test_eof
-	_test_eof9:
-		(lex.Cs) = 9
-		goto _test_eof
 	_test_eof15:
 		(lex.Cs) = 15
+		goto _test_eof
+	_test_eof4:
+		(lex.Cs) = 4
 		goto _test_eof
 	_test_eof16:
 		(lex.Cs) = 16
 		goto _test_eof
-	_test_eof10:
-		(lex.Cs) = 10
-		goto _test_eof
 	_test_eof17:
 		(lex.Cs) = 17
+		goto _test_eof
+	_test_eof5:
+		(lex.Cs) = 5
+		goto _test_eof
+	_test_eof18:
+		(lex.Cs) = 18
 		goto _test_eof
 
 	_test_eof:
@@ -743,32 +818,34 @@ func newPreprocessing(data []byte) (*syntax.Lexer, error) {
 		}
 		if (lex.P) == (lex.EOF) {
 			switch lex.Cs {
-			case 12:
-				goto tr16
+			case 7:
+				goto tr15
 			case 1:
 				goto tr0
-			case 2:
-				goto tr0
-			case 3:
-				goto tr0
-			case 4:
-				goto tr0
-			case 5:
-				goto tr0
-			case 6:
-				goto tr0
-			case 7:
-				goto tr0
 			case 8:
-				goto tr0
-			case 14:
-				goto tr21
+				goto tr19
+			case 2:
+				goto tr4
 			case 9:
-				goto tr8
-			case 16:
-				goto tr24
+				goto tr19
 			case 10:
-				goto tr10
+				goto tr19
+			case 11:
+				goto tr19
+			case 12:
+				goto tr19
+			case 3:
+				goto tr4
+			case 13:
+				goto tr19
+			case 15:
+				goto tr25
+			case 4:
+				goto tr7
+			case 17:
+				goto tr28
+			case 5:
+				goto tr9
 			}
 		}
 
@@ -777,7 +854,7 @@ func newPreprocessing(data []byte) (*syntax.Lexer, error) {
 		}
 	}
 
-//line preprocessing.rl:113
+//line extractor.rl:118
 
 	if err := lex.Valid(); err != nil {
 		return lex, err

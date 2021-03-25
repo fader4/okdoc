@@ -6,6 +6,45 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestExtract(t *testing.T) {
+	annotationDebug = 1
+
+	dat := `
+any symbol
+@Baz
+@Foo(foo = "wqd", z = ["q"], qwd, qwd )
+@Foobar(
+	id       = 2868724,
+	synopsis = "Enable time-travel",
+	engineer = "Mr. Peabody",
+	date     = "4/1/3007",
+	tags = 	["a", "b"]
+)
+
+@CamelCase(bar =
+	"b\"a)r",
+	baz = "qwdq"
+)
+qwd
+
+	  	@CamelCase(
+		bar = "b\"a)r(",
+		baz = "qwdq"
+	)
+
+qwdqwdqw
+@CamelCase(bar = "b\"a)r", baz = "qwdq")
+`
+	annotations, err := Extract([]byte(dat))
+	assert.NoError(t, err)
+	t.Log("Num annotations:", len(annotations))
+
+	for _, annot := range annotations {
+		t.Logf("%q\n", string(annot.RawData))
+		assert.NoError(t, Parse(annot.RawData))
+	}
+}
+
 func TestParse(t *testing.T) {
 	annotationDebug = 1
 	dat := `

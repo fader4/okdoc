@@ -7,7 +7,7 @@ import (
 
 %%{
 
-    machine annotation_preprocessing;
+    machine annotation_extractor;
 
     variable p lex.P;
     variable pe lex.Pe;
@@ -89,6 +89,11 @@ import (
         WhiteSpace;
         NewLine;
 
+
+        AT Ident [^(] => {
+            lex.ReleaseToken(beginAnnotation, "annotation")
+            lex.ReleaseToken(endAnnotation, "annotation")
+        };
         AT Ident "(" => {
             lex.ReleaseToken(beginAnnotation, "annotation")
             lex.BeginPairedChar(endAnnotation)
