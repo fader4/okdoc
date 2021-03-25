@@ -13,6 +13,8 @@ func TestExtract(t *testing.T) {
 any symbol
 @Baz
 @Foo(foo = "wqd", z = ["q"], qwd, qwd )
+@Bar
+@Foo(foo = "wqd", z = ["q"], qwd, qwd )
 @Foobar(
 	id       = 2868724,
 	synopsis = "Enable time-travel",

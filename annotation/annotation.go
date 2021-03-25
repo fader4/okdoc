@@ -35,7 +35,13 @@ func Extract(dat []byte) ([]*Annotation, error) {
 			nextAnnotation = &syntax.Token{
 				Symbol: annotation,
 				Start:  container.token.Start,
-				Pos:    container.token.Pos,
+				Pos: syntax.Pos{
+					container.token.Pos[0],
+					// NOTE: Pos[1] computed when end is found
+					0,
+					// NOTE: Pos[2] save number of spaces before the first token
+					container.token.Pos[2],
+				},
 			}
 		case endAnnotation:
 			nextAnnotation.End = container.token.End
