@@ -509,7 +509,7 @@ func newPreprocessing(data []byte) (*syntax.Lexer, error) {
 		}
 
 		goto st14
-	tr23:
+	tr24:
 //line extractor.rl:38
 		(lex.Te) = (lex.P) + 1
 		{
@@ -522,7 +522,7 @@ func newPreprocessing(data []byte) (*syntax.Lexer, error) {
 			}
 		}
 		goto st14
-	tr25:
+	tr26:
 //line extractor.rl:44
 		(lex.Te) = (lex.P)
 		(lex.P)--
@@ -544,8 +544,12 @@ func newPreprocessing(data []byte) (*syntax.Lexer, error) {
 
 //line extractor.go:534
 		switch data[(lex.P)] {
-		case 39:
+		case 10:
 			goto tr23
+		case 13:
+			goto tr23
+		case 39:
+			goto tr24
 		case 92:
 			goto st4
 		}
@@ -557,15 +561,30 @@ func newPreprocessing(data []byte) (*syntax.Lexer, error) {
 //line extractor.rl:44
 		(lex.Act) = 2
 		goto st15
+	tr23:
+//line NONE:1
+		(lex.Te) = (lex.P) + 1
+
+//line extractor.rl:22
+
+		lex.ReleaseSymbol("CR")
+
+//line extractor.rl:44
+		(lex.Act) = 2
+		goto st15
 	st15:
 		if (lex.P)++; (lex.P) == (lex.Pe) {
 			goto _test_eof15
 		}
 	st_case_15:
-//line extractor.go:554
+//line extractor.go:569
 		switch data[(lex.P)] {
+		case 10:
+			goto tr23
+		case 13:
+			goto tr23
 		case 39:
-			goto tr25
+			goto tr26
 		case 92:
 			goto st4
 		}
@@ -592,7 +611,7 @@ func newPreprocessing(data []byte) (*syntax.Lexer, error) {
 		}
 
 		goto st16
-	tr26:
+	tr28:
 //line extractor.rl:48
 		(lex.Te) = (lex.P) + 1
 		{
@@ -605,7 +624,7 @@ func newPreprocessing(data []byte) (*syntax.Lexer, error) {
 			}
 		}
 		goto st16
-	tr28:
+	tr30:
 //line extractor.rl:54
 		(lex.Te) = (lex.P)
 		(lex.P)--
@@ -625,10 +644,14 @@ func newPreprocessing(data []byte) (*syntax.Lexer, error) {
 //line NONE:1
 		(lex.Ts) = (lex.P)
 
-//line extractor.go:608
+//line extractor.go:627
 		switch data[(lex.P)] {
+		case 10:
+			goto tr27
+		case 13:
+			goto tr27
 		case 34:
-			goto tr26
+			goto tr28
 		case 92:
 			goto st5
 		}
@@ -640,15 +663,30 @@ func newPreprocessing(data []byte) (*syntax.Lexer, error) {
 //line extractor.rl:54
 		(lex.Act) = 4
 		goto st17
+	tr27:
+//line NONE:1
+		(lex.Te) = (lex.P) + 1
+
+//line extractor.rl:22
+
+		lex.ReleaseSymbol("CR")
+
+//line extractor.rl:54
+		(lex.Act) = 4
+		goto st17
 	st17:
 		if (lex.P)++; (lex.P) == (lex.Pe) {
 			goto _test_eof17
 		}
 	st_case_17:
-//line extractor.go:628
+//line extractor.go:662
 		switch data[(lex.P)] {
+		case 10:
+			goto tr27
+		case 13:
+			goto tr27
 		case 34:
-			goto tr28
+			goto tr30
 		case 92:
 			goto st5
 		}
@@ -659,12 +697,12 @@ func newPreprocessing(data []byte) (*syntax.Lexer, error) {
 		}
 	st_case_5:
 		goto tr10
-	tr29:
+	tr31:
 //line extractor.rl:83
 		(lex.Te) = (lex.P) + 1
 
 		goto st18
-	tr30:
+	tr32:
 //line extractor.rl:22
 
 		lex.ReleaseSymbol("CR")
@@ -673,7 +711,7 @@ func newPreprocessing(data []byte) (*syntax.Lexer, error) {
 		(lex.Te) = (lex.P) + 1
 
 		goto st18
-	tr31:
+	tr33:
 //line extractor.rl:65
 		(lex.Te) = (lex.P) + 1
 		{
@@ -688,7 +726,7 @@ func newPreprocessing(data []byte) (*syntax.Lexer, error) {
 			}
 		}
 		goto st18
-	tr32:
+	tr34:
 //line extractor.rl:60
 		(lex.Te) = (lex.P) + 1
 		{
@@ -703,14 +741,14 @@ func newPreprocessing(data []byte) (*syntax.Lexer, error) {
 			}
 		}
 		goto st18
-	tr33:
+	tr35:
 //line extractor.rl:71
 		(lex.Te) = (lex.P) + 1
 		{
 			lex.BeginPairedChar(')')
 		}
 		goto st18
-	tr34:
+	tr36:
 //line extractor.rl:74
 		(lex.Te) = (lex.P) + 1
 		{
@@ -737,22 +775,22 @@ func newPreprocessing(data []byte) (*syntax.Lexer, error) {
 //line NONE:1
 		(lex.Ts) = (lex.P)
 
-//line extractor.go:702
+//line extractor.go:740
 		switch data[(lex.P)] {
 		case 10:
-			goto tr30
-		case 13:
-			goto tr30
-		case 34:
-			goto tr31
-		case 39:
 			goto tr32
-		case 40:
+		case 13:
+			goto tr32
+		case 34:
 			goto tr33
-		case 41:
+		case 39:
 			goto tr34
+		case 40:
+			goto tr35
+		case 41:
+			goto tr36
 		}
-		goto tr29
+		goto tr31
 	st_case_0:
 	st0:
 		(lex.Cs) = 0
@@ -839,11 +877,11 @@ func newPreprocessing(data []byte) (*syntax.Lexer, error) {
 			case 13:
 				goto tr19
 			case 15:
-				goto tr25
+				goto tr26
 			case 4:
 				goto tr7
 			case 17:
-				goto tr28
+				goto tr30
 			case 5:
 				goto tr9
 			}

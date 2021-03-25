@@ -8,8 +8,10 @@ import (
 )
 
 type Annotation struct {
-	RawToken *syntax.Token
-	RawData  []byte
+	StartToken *syntax.Token
+	EndToken   *syntax.Token
+	Token      *syntax.Token
+	RawData    []byte
 }
 
 // Extract returns found annotations.
@@ -22,7 +24,7 @@ func Extract(dat []byte) ([]*Annotation, error) {
 		"annotation",
 	}}
 	var annotations = []*Annotation{}
-	var nextAnnotation *syntax.Token
+	var startToken, nextAnnotation *syntax.Token
 	for {
 		container := &annotationSymType{}
 		symbol := lexForParser.Lex(container)
@@ -32,6 +34,7 @@ func Extract(dat []byte) ([]*Annotation, error) {
 
 		switch symbol {
 		case beginAnnotation:
+			startToken = container.token
 			nextAnnotation = &syntax.Token{
 				Symbol: annotation,
 				Start:  container.token.Start,
@@ -47,8 +50,10 @@ func Extract(dat []byte) ([]*Annotation, error) {
 			nextAnnotation.End = container.token.End
 			nextAnnotation.Pos[1] = nextAnnotation.End - nextAnnotation.Start
 			annotations = append(annotations, &Annotation{
-				RawToken: nextAnnotation,
-				RawData:  dat[nextAnnotation.Start:nextAnnotation.End],
+				StartToken: startToken,
+				EndToken:   container.token,
+				Token:      nextAnnotation,
+				RawData:    dat[nextAnnotation.Start:nextAnnotation.End],
 			})
 			nextAnnotation = nil
 		}

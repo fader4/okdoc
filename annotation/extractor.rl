@@ -41,7 +41,7 @@ import (
             };
         };
 
-        ( [^'\\] | /\\./ )+;
+        ( [^'\\] | /\\./ | NewLine )+;
     *|;
 
     doubleQuoteString := |*
@@ -51,7 +51,7 @@ import (
             };
         };
 
-        ( [^"\\] | /\\./ )+;
+        ( [^"\\] | /\\./ | NewLine )+;
     *|;
 
     annotationBody := |*

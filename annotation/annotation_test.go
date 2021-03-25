@@ -7,15 +7,15 @@ import (
 )
 
 func TestExtract(t *testing.T) {
-	annotationDebug = 1
+	// annotationDebug = 1
 
 	dat := `
 any symbol
 @Baz
+	@Foo(foo = "wqd", z = ["q"], qwd, qwd )
+	@Bar
 @Foo(foo = "wqd", z = ["q"], qwd, qwd )
-@Bar
-@Foo(foo = "wqd", z = ["q"], qwd, qwd )
-@Foobar(
+	@Foobar(
 	id       = 2868724,
 	synopsis = "Enable time-travel",
 	engineer = "Mr. Peabody",
@@ -42,8 +42,15 @@ qwdqwdqw
 	t.Log("Num annotations:", len(annotations))
 
 	for _, annot := range annotations {
-		t.Logf("%q\n", string(annot.RawData))
+		t.Logf(">>%d L%d-L%d(%d): %q\n",
+			annot.StartToken.Pos.Spaces(),
+			annot.StartToken.Pos.Line(),
+			annot.EndToken.Pos.Line(),
+			annot.Token.Pos.Char(),
+			string(annot.RawData),
+		)
 		assert.NoError(t, Parse(annot.RawData))
+
 	}
 }
 
