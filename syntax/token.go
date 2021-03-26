@@ -2,6 +2,7 @@ package syntax
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 
 	"github.com/pkg/errors"
@@ -19,6 +20,47 @@ type Token struct {
 
 	// file position
 	Pos Pos
+}
+
+func (t *Token) Bytes(in interface{}) ([]byte, error) {
+	switch in := in.(type) {
+	case BytesRendererer:
+		return in.Render(t)
+	case []byte:
+		return DataBytes(in).Render(t)
+	}
+	return nil, fmt.Errorf("syntax.Token#HumanString: not supported payload %T", in)
+}
+
+func (t *Token) HumanString(in interface{}) (string, error) {
+
+	// L - num of line
+	// SP - num of spaces to left
+	// CL - num of chars to left
+	lineInfo := t.Pos.String()
+	var tokenBytes []byte
+	var err error
+
+	switch in := in.(type) {
+	case BytesRendererer:
+		tokenBytes, err = in.Render(t)
+		if err != nil {
+			return "", err
+		}
+	case []byte:
+		tokenBytes, err = DataBytes(in).Render(t)
+		if err != nil {
+			return "", err
+		}
+	default:
+		fmt.Printf("syntax.Token#HumanString: not supported payload %T\n", in)
+	}
+	charInfo := fmt.Sprintf("%q", string(tokenBytes))
+	return fmt.Sprint(
+		lineInfo,
+		":\t",
+		charInfo,
+	), nil
 }
 
 func (t *Token) AddLabels(labels ...string) {
@@ -47,6 +89,10 @@ func (t *Tokens) Add(in ...*Token) int {
 }
 
 type DataBytes []byte
+
+type BytesRendererer interface {
+	Render(t *Token) ([]byte, error)
+}
 
 func (dat DataBytes) Render(t *Token) ([]byte, error) {
 	r := bytes.NewReader(dat)

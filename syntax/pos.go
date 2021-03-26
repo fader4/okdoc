@@ -1,5 +1,7 @@
 package syntax
 
+import "fmt"
+
 // Pos position info
 // #1 - line number
 // #2 - number of characters from the beginning of the line
@@ -24,4 +26,11 @@ func (p Pos) Spaces() int {
 // First returns true if first character on line.
 func (p Pos) First() bool {
 	return p.Char() == p.Spaces()
+}
+
+func (p Pos) String() string {
+	if p.First() {
+		return fmt.Sprintf("L%d\t(SP%d CL%d)", p.Line(), p.Spaces(), p.Char())
+	}
+	return fmt.Sprintf("\t(SP%d CL%d)", p.Spaces(), p.Char())
 }
