@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"strconv"
+	"strings"
 
 	"github.com/fader4/okdoc/syntax"
 )
@@ -56,6 +57,12 @@ type Ident_ []string
 
 func (i Ident_) Append(in Ident_) Ident_ {
 	return append(i, in...)
+}
+
+func (m Ident_) MarshalJSON() ([]byte, error) {
+	return json.Marshal(map[string]string{
+		"$ident": strings.Join(m, "."),
+	})
 }
 
 func String(in []byte) StringLiteral {

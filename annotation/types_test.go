@@ -43,6 +43,8 @@ func Test_TypesMarshal(t *testing.T) {
 		in       Value
 		expected string
 	}{
+		{Ident_{"a"}, `{"$ident":"a"}`},
+		{Ident_{"a", "b"}, `{"$ident":"a.b"}`},
 		{Null_{}, `null`},
 		{StringLiteral("a"), `"a"`},
 		{BoolLiteral(true), `true`},

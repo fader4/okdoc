@@ -9,9 +9,11 @@ import __yyfmt__ "fmt"
 
 import (
 	_ "fmt"
+	"log"
+	"strings"
 )
 
-//line parser.y:11
+//line parser.y:13
 type annotationSymType struct {
 	yys         int
 	token       *Token
@@ -19,7 +21,9 @@ type annotationSymType struct {
 	annotField  *AnnotationField
 	annotFields []*AnnotationField
 
-	val Value
+	val  Value
+	arr  Array
+	map_ Map
 }
 
 const ident = 57346
@@ -81,8 +85,8 @@ var annotationAct = [...]int{
 	34, 29, 32, 17, 13, 14, 15, 16, 17, 13,
 	14, 15, 16, 34, 6, 40, 48, 51, 49, 50,
 	47, 46, 30, 12, 29, 7, 17, 13, 14, 15,
-	16, 23, 5, 17, 13, 14, 15, 16, 42, 38,
-	18, 31, 41, 19, 1, 8, 4, 2,
+	16, 23, 5, 17, 13, 14, 15, 16, 42, 1,
+	18, 31, 41, 19, 38, 8, 4, 2,
 }
 
 var annotationPact = [...]int{
@@ -95,15 +99,15 @@ var annotationPact = [...]int{
 }
 
 var annotationPgo = [...]int{
-	0, 0, 3, 77, 76, 7, 75, 74, 2, 1,
-	71, 8, 69, 5,
+	0, 0, 3, 8, 77, 76, 7, 75, 5, 74,
+	71, 2, 1, 69,
 }
 
 var annotationR1 = [...]int{
-	0, 7, 3, 3, 4, 4, 4, 6, 6, 5,
-	5, 5, 5, 5, 5, 2, 2, 1, 1, 1,
-	1, 1, 8, 8, 10, 10, 11, 11, 11, 9,
-	9, 12, 12, 13, 13, 13, 13,
+	0, 13, 4, 4, 5, 5, 5, 7, 7, 6,
+	6, 6, 6, 6, 6, 2, 2, 1, 1, 1,
+	1, 1, 11, 11, 10, 10, 3, 3, 3, 12,
+	12, 9, 9, 8, 8, 8, 8,
 }
 
 var annotationR2 = [...]int{
@@ -114,12 +118,12 @@ var annotationR2 = [...]int{
 }
 
 var annotationChk = [...]int{
-	-1000, -7, -3, 7, -4, 4, 5, 6, -6, -5,
+	-1000, -13, -4, 7, -5, 4, 5, 6, -7, -6,
 	-1, -2, 4, 15, 16, 17, 18, 14, 6, 9,
-	22, 8, -5, 4, -2, -1, -8, -9, 4, 12,
-	10, -10, 13, -11, -1, -8, -9, 11, -12, -13,
-	4, 13, 9, 11, 9, 8, -11, -13, -1, -8,
-	-2, -9,
+	22, 8, -6, 4, -2, -1, -11, -12, 4, 12,
+	10, -10, 13, -3, -1, -11, -12, 11, -9, -8,
+	4, 13, 9, 11, 9, 8, -3, -8, -1, -11,
+	-2, -12,
 }
 
 var annotationDef = [...]int{
@@ -495,35 +499,35 @@ annotationdefault:
 
 	case 2:
 		annotationDollar = annotationS[annotationpt-0 : annotationpt+1]
-//line parser.y:38
+//line parser.y:44
 		{
 			annotationVAL.annot = annotationlex.(*annotationLex).annot
 		}
 	case 3:
 		annotationDollar = annotationS[annotationpt-3 : annotationpt+1]
-//line parser.y:42
+//line parser.y:46
 		{
-			annotationlex.(*annotationLex).annot.Name = annotationDollar[3].annot.Name
-			annotationlex.(*annotationLex).annot.Fields = annotationDollar[3].annot.Fields
+			annotationlex.(*annotationLex).annot.name = annotationDollar[3].annot.name
+			annotationlex.(*annotationLex).annot.fields = annotationDollar[3].annot.fields
 			annotationVAL.annot = annotationlex.(*annotationLex).annot
 		}
 	case 4:
 		annotationDollar = annotationS[annotationpt-1 : annotationpt+1]
-//line parser.y:50
+//line parser.y:52
 		{
-			annotationVAL.annot = &Annotation{Name: annotationDollar[1].token.Ident()}
+			annotationVAL.annot = &Annotation{name: annotationDollar[1].token.Ident()}
 		}
 	case 5:
 		annotationDollar = annotationS[annotationpt-3 : annotationpt+1]
-//line parser.y:53
+//line parser.y:54
 		{
-			annotationVAL.annot = &Annotation{Name: annotationDollar[1].token.Ident()}
+			annotationVAL.annot = &Annotation{name: annotationDollar[1].token.Ident()}
 		}
 	case 6:
 		annotationDollar = annotationS[annotationpt-4 : annotationpt+1]
 //line parser.y:56
 		{
-			annotationVAL.annot = &Annotation{Name: annotationDollar[1].token.Ident(), Fields: annotationDollar[3].annotFields}
+			annotationVAL.annot = &Annotation{name: annotationDollar[1].token.Ident(), fields: annotationDollar[3].annotFields}
 		}
 	case 7:
 		annotationDollar = annotationS[annotationpt-3 : annotationpt+1]
@@ -567,26 +571,26 @@ annotationdefault:
 		{
 			annotationVAL.annotField = &AnnotationField{
 				Key:   annotationDollar[1].token.Ident(),
-				Value: annotationDollar[2].token,
+				Value: annotationDollar[3].val,
 			}
 		}
 	case 13:
 		annotationDollar = annotationS[annotationpt-3 : annotationpt+1]
 //line parser.y:88
 		{
-			// $$ = &AnnotationField{
-			//     Key: PromiseIdent($1),
-			//     Value: $1,
-			// }
+			annotationVAL.annotField = &AnnotationField{
+				Key:   annotationDollar[1].token.Ident(),
+				Value: annotationDollar[3].arr,
+			}
 		}
 	case 14:
 		annotationDollar = annotationS[annotationpt-3 : annotationpt+1]
 //line parser.y:94
 		{
-			// $$ = &AnnotationField{
-			//     Key: PromiseIdent($1),
-			//     Value: $1,
-			// }
+			annotationVAL.annotField = &AnnotationField{
+				Key:   annotationDollar[1].token.Ident(),
+				Value: annotationDollar[3].map_,
+			}
 		}
 	case 15:
 		annotationDollar = annotationS[annotationpt-1 : annotationpt+1]
@@ -630,20 +634,115 @@ annotationdefault:
 		{
 			annotationVAL.val = annotationDollar[1].token.Null()
 		}
+	case 22:
+		annotationDollar = annotationS[annotationpt-3 : annotationpt+1]
+//line parser.y:120
+		{
+			annotationVAL.arr = annotationDollar[2].arr
+		}
+	case 23:
+		annotationDollar = annotationS[annotationpt-2 : annotationpt+1]
+//line parser.y:122
+		{
+			annotationVAL.arr = Array{}
+		}
+	case 24:
+		annotationDollar = annotationS[annotationpt-1 : annotationpt+1]
+//line parser.y:126
+		{
+			annotationVAL.arr = Array{annotationDollar[1].val}
+		}
+	case 25:
+		annotationDollar = annotationS[annotationpt-3 : annotationpt+1]
+//line parser.y:128
+		{
+			annotationDollar[1].arr.Add(annotationDollar[1].arr)
+			annotationVAL.arr = annotationDollar[1].arr
+		}
 	case 26:
 		annotationDollar = annotationS[annotationpt-1 : annotationpt+1]
-//line parser.y:129
+//line parser.y:133
 		{
+			annotationVAL.val = annotationDollar[1].val
 		}
 	case 27:
 		annotationDollar = annotationS[annotationpt-1 : annotationpt+1]
-//line parser.y:130
+//line parser.y:135
 		{
+			annotationVAL.val = annotationDollar[1].arr
 		}
 	case 28:
 		annotationDollar = annotationS[annotationpt-1 : annotationpt+1]
-//line parser.y:131
+//line parser.y:137
 		{
+			annotationVAL.val = annotationDollar[1].map_
+		}
+	case 29:
+		annotationDollar = annotationS[annotationpt-2 : annotationpt+1]
+//line parser.y:141
+		{
+			annotationVAL.map_ = Map{}
+		}
+	case 30:
+		annotationDollar = annotationS[annotationpt-3 : annotationpt+1]
+//line parser.y:143
+		{
+			annotationVAL.map_ = Map{}
+			for _, item := range annotationDollar[2].arr {
+				key := item.(Array)[0]
+				switch in := key.(type) {
+				case StringLiteral:
+					annotationVAL.map_.Keys = append(annotationVAL.map_.Keys, string(in))
+				case Ident_:
+					if len(in) > 0 {
+						annotationVAL.map_.Keys = append(annotationVAL.map_.Keys, string(strings.Join(in, ".")))
+					} else {
+						annotationVAL.map_.Keys = append(annotationVAL.map_.Keys, "")
+					}
+				case nil:
+					annotationVAL.map_.Keys = append(annotationVAL.map_.Keys, "")
+				default:
+					log.Printf("Annotation#Fields: not supported key type %T\n", key)
+				}
+				annotationVAL.map_.Values.Add(item.(Array)[1])
+			}
+		}
+	case 31:
+		annotationDollar = annotationS[annotationpt-1 : annotationpt+1]
+//line parser.y:165
+		{
+			annotationVAL.arr = Array{annotationDollar[1].arr}
+		}
+	case 32:
+		annotationDollar = annotationS[annotationpt-3 : annotationpt+1]
+//line parser.y:167
+		{
+			annotationDollar[1].arr.Add(annotationDollar[3].arr)
+			annotationVAL.arr = annotationDollar[1].arr
+		}
+	case 33:
+		annotationDollar = annotationS[annotationpt-3 : annotationpt+1]
+//line parser.y:172
+		{
+			annotationVAL.arr = Array{annotationDollar[1].token.Ident(), annotationDollar[3].val}
+		}
+	case 34:
+		annotationDollar = annotationS[annotationpt-3 : annotationpt+1]
+//line parser.y:174
+		{
+			annotationVAL.arr = Array{annotationDollar[1].token.Ident(), annotationDollar[3].arr}
+		}
+	case 35:
+		annotationDollar = annotationS[annotationpt-3 : annotationpt+1]
+//line parser.y:176
+		{
+			annotationVAL.arr = Array{annotationDollar[1].token.Ident(), annotationDollar[3].val}
+		}
+	case 36:
+		annotationDollar = annotationS[annotationpt-3 : annotationpt+1]
+//line parser.y:178
+		{
+			annotationVAL.arr = Array{annotationDollar[1].token.Ident(), annotationDollar[3].map_}
 		}
 	}
 	goto annotationstack /* stack new state and value */

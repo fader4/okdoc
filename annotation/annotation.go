@@ -2,6 +2,7 @@ package annotation
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/fader4/okdoc/syntax"
 	"github.com/pkg/errors"
@@ -9,8 +10,36 @@ import (
 
 type Annotation struct {
 	Start, End *syntax.Token
-	Name       Ident_
-	Fields     AnnotationFields
+	name       Ident_
+	fields     AnnotationFields
+}
+
+func (a Annotation) Name() string {
+	if len(a.name) == 0 {
+		return ""
+	}
+	return a.name[0]
+}
+
+func (a Annotation) Fields() Array {
+	res := Array{}
+	for _, field := range a.fields {
+		switch in := field.Key.(type) {
+		case StringLiteral:
+			res.Add(Array{string(in), field.Value})
+		case Ident_:
+			if len(in) > 0 {
+				res.Add(Array{string(in[0]), field.Value})
+			} else {
+				res.Add(Array{Null_{}, field.Value})
+			}
+		case nil:
+			res.Add(Array{Null_{}, field.Value})
+		default:
+			log.Printf("Annotation#Fields: not supported key type %T\n", field.Key)
+		}
+	}
+	return res
 }
 
 type AnnotationFields []*AnnotationField

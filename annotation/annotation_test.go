@@ -1,6 +1,7 @@
 package annotation
 
 import (
+	"encoding/json"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -35,7 +36,7 @@ qwd
 	)
 
 qwdqwdqw
-@CamelCase(bar = "b\"a)r", baz = "qwdq")
+@CamelCase(bar = "b\"a)r", baz = "qwdq", obj = {a = "b", c = d.wd})
 `
 	annotations, err := Parse([]byte(dat))
 	assert.NoError(t, err)
@@ -45,12 +46,16 @@ qwdqwdqw
 		annotDat, _ := annot.Token().Bytes([]byte(dat))
 		err := parseAnnotation(annot, annotDat)
 		assert.NoError(t, err)
-		t.Logf(">>%d L%d-L%d(%d): %q\n",
+		fieldJson, err := json.Marshal(annot.Fields())
+		assert.NoError(t, err)
+		t.Logf(">>%d L%d-L%d(%d): %q %d %q\n",
 			annot.Start.Pos.Spaces(),
 			annot.Start.Pos.Line(),
 			annot.End.Pos.Line(),
 			annot.Len(), // Size of content of token
-			annot.Name,
+			annot.Name(),
+			len(annot.fields),
+			string(fieldJson),
 		)
 
 	}

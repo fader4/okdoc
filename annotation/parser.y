@@ -3,6 +3,8 @@ package annotation
 
 import (
     _ "fmt"
+    "strings"
+    "log"
 )
 
 %}
@@ -15,6 +17,8 @@ import (
     annotFields []*AnnotationField
 
     val Value
+    arr Array
+    map_ Map
 }
 
 %token <token>
@@ -24,10 +28,12 @@ nullLiteral stringLiteral boolLiteral integerLiteral floatLiteral
 // special tokents for pre processing
 annotation beginAnnotation endAnnotation
 
-%type <val> Literal Ident
+%type <val> Literal Ident ArrayField
 %type <annot> Content Annotation
 %type <annotField> Field
 %type <annotFields> Fields
+%type <arr> StructField StructFields ArrayFields Array
+%type <map_> Struct
 
 
 %start doc
@@ -37,25 +43,19 @@ doc : Content;
 
 Content: /*empty*/ {
     $$ = annotationlex.(*annotationLex).annot
-}
-|
-Content '@' Annotation {
-    annotationlex.(*annotationLex).annot.Name = $3.Name
-    annotationlex.(*annotationLex).annot.Fields = $3.Fields
+} | Content '@' Annotation {
+    annotationlex.(*annotationLex).annot.name = $3.name
+    annotationlex.(*annotationLex).annot.fields = $3.fields
     $$ = annotationlex.(*annotationLex).annot
-}
-;
+};
 
-Annotation:
-    ident {
-        $$ = &Annotation{Name: $1.Ident()}
-    } |
-    ident '(' ')' {
-        $$ = &Annotation{Name: $1.Ident()}
-    } |
-    ident '(' Fields ')' {
-        $$ = &Annotation{Name: $1.Ident(), Fields: $3}
-    };
+Annotation: ident {
+    $$ = &Annotation{name: $1.Ident()}
+} | ident '(' ')' {
+    $$ = &Annotation{name: $1.Ident()}
+} | ident '(' Fields ')' {
+    $$ = &Annotation{name: $1.Ident(), fields: $3}
+};
 
 Fields: Fields ',' Field {
     $$ = append($1, $3)
@@ -82,20 +82,20 @@ Field:
     ident '=' Literal {
         $$ = &AnnotationField{
             Key: $1.Ident(),
-            Value: $2,
+            Value: $3,
         }
     } |
     ident '=' Array {
-        // $$ = &AnnotationField{
-        //     Key: PromiseIdent($1),
-        //     Value: $1,
-        // }
+        $$ = &AnnotationField{
+            Key: $1.Ident(),
+            Value: $3,
+        }
     } |
     ident '=' Struct {
-        // $$ = &AnnotationField{
-        //     Key: PromiseIdent($1),
-        //     Value: $1,
-        // }
+        $$ = &AnnotationField{
+            Key: $1.Ident(),
+            Value: $3,
+        }
     }
 ;
 
@@ -117,30 +117,64 @@ Literal: stringLiteral {
     $$ = $1.Null()
 };
 
-Array:
-    '[' ArrayFields ']' |
-    '[' ']';
+Array: '[' ArrayFields ']' {
+    $$ = $2
+} | '[' ']' {
+    $$ = Array{}
+};
 
-ArrayFields:
-    ArrayField |
-    ArrayFields ',' ArrayField;
+ArrayFields: ArrayField {
+    $$ = Array{$1}
+} | ArrayFields ',' ArrayField {
+    $1.Add($1)
+    $$ = $1
+};
 
-ArrayField:
-    Literal {} |
-    Array {} |
-    Struct {};
+ArrayField: Literal {
+    $$ = $1
+} | Array {
+    $$ = $1
+} | Struct {
+    $$ = $1
+};
 
-Struct:
-    '{' '}' |
-    '{' StructFields '}';
+Struct: '{' '}' {
+    $$ = Map{}
+} | '{' StructFields '}' {
+    $$ = Map{}
+    for _, item := range $2 {
+        key := item.(Array)[0]
+        switch in := key.(type) {
+            case StringLiteral:
+                $$.Keys = append($$.Keys, string(in))
+            case Ident_:
+                if len(in) > 0 {
+                    $$.Keys = append($$.Keys, string(strings.Join(in, ".")))
+                } else {
+                    $$.Keys = append($$.Keys, "")
+                }
+            case nil:
+                $$.Keys = append($$.Keys, "")
+            default:
+                log.Printf("Annotation#Fields: not supported key type %T\n", key)
+        }
+        $$.Values.Add(item.(Array)[1])
+    }
+};
 
-StructFields:
-    StructField |
-    StructFields ',' StructField;
+StructFields: StructField {
+    $$ = Array{$1}
+} | StructFields ',' StructField {
+    $1.Add($3)
+    $$ = $1
+};
 
-StructField:
-    ident '=' Literal |
-    ident '=' Array |
-    ident '=' Ident |
-    ident '=' Struct
-;
+StructField: ident '=' Literal {
+    $$ = Array{$1.Ident(), $3}
+} | ident '=' Array {
+    $$ = Array{$1.Ident(), $3}
+} | ident '=' Ident {
+    $$ = Array{$1.Ident(), $3}
+} | ident '=' Struct {
+    $$ = Array{$1.Ident(), $3}
+};
