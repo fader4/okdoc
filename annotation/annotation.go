@@ -24,7 +24,6 @@ type Annotation struct {
 
 func (a *Annotation) MarshalJSON() ([]byte, error) {
 	res := map[string]interface{}{
-		"@doc":      "TODO",
 		"name":      a.Name(),
 		"fields":    a.Fields(),
 		"num_chars": a.Len(),

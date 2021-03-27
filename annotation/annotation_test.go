@@ -2,6 +2,7 @@ package annotation
 
 import (
 	"encoding/json"
+	"log"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -10,96 +11,46 @@ import (
 func TestParse(t *testing.T) {
 	annotationDebug = 1
 
-	dat := `
-any symbol
-@Baz
-	@Foo(foo = "wqd", z = ["q"], qwd, qwd )
-	@Bar
-@Foo(foo = "wqd", z = ["q"], qwd, qwd )
-	@Foobar(
-	id       = 2868724,
-	synopsis = "Enable time-travel",
-	engineer = "Mr. Peabody",
-	date     = "4/1/3007",
-	tags = 	["a", "b"]
-)
+	cases := []struct {
+		in   string
+		want string
+	}{
+		{
+			in: `
+loca("foo", "bar")
 
-@CamelCase(bar =
-	"b\"a)r",
-	baz = "qwdq"
-)
-qwd
-
-	  	@CamelCase(
-		bar = "b\"a)r(",
-		baz = "qwdq"
-	)
-
-qwdqwdqw
-@CamelCase(bar = "b\"a)r", baz = "qwdq", obj = {a = "b", c = d.wd})
-
-# @Method(
-#     arguments = [
-#        [ctx, "ctx param"],
-#        [ctx.foo, "ctx.foo param"]
-#     ]
+# @General(
+# 	ident = a.b,
+# 	a.b = c.d,
+# 	int = 123,
+# 	foat = 123.123,
+# 	bool = True,
+# 	null = Null,
+# 	str = "b\"a)r",
+# 	arr = [1,"2",[1,"2",3],{a = "b", c = "d"}],
+# 	obj = {
+# 		int = 123,
+# 		foat = 123.123,
+# 		bool = True,
+# 		null = Null,
+# 		arr = [1,"2",[1,"2",3],{a.b = "c", d = "e", f = g.z}]
+# 	}
 # )
-`
-	annotations, err := Parse([]byte(dat))
-	assert.NoError(t, err)
-	t.Log("Num annotations:", len(annotations))
-
-	for _, annot := range annotations {
-		fieldJson, err := json.Marshal(annot)
-		assert.NoError(t, err)
-		t.Logf("%s\n",
-			string(fieldJson),
-		)
-
+def main():
+	@Return("OK")
+	return True
+`,
+			want: `[{"fields":[[null,"@ident"],[null,"@a.b"],["@int",123],["@foat",123.123],["@bool",true],["@null",null],["@str","b\\\"a)r"],["@arr",[1,"2",[1,"2",3],{"@a":"b","@c":"d"}]],["@obj",{"@arr":[1,"2",[1,"2",3],{"@a.b":"c","@d":"e","@f":"@g.z"}],"@bool":true,"@foat":123.123,"@int":123,"@null":null}]],"name":"General","num_chars":317,"pos":{"end_line":19,"start_left_chars":1,"start_left_spaces":1,"start_line":3},"source_file_md5":"6ec9bcef78c725142a2a2d4fa9c0942d"},{"fields":[[null,"OK"]],"name":"Return","num_chars":13,"pos":{"end_line":21,"start_left_chars":1,"start_left_spaces":1,"start_line":21},"source_file_md5":"6ec9bcef78c725142a2a2d4fa9c0942d"}]`,
+		},
+	}
+	for _, case_ := range cases {
+		t.Run("", func(t *testing.T) {
+			res, err := Parse([]byte(case_.in))
+			assert.NoError(t, err)
+			got, err := json.Marshal(res)
+			log.Println(string(got))
+			assert.NoError(t, err, "ьarshal to json")
+			assert.EqualValues(t, string(case_.want), string(got))
+		})
 	}
 }
-
-// func TestParse(t *testing.T) {
-// 	annotationDebug = 1
-// 	dat := `
-// @foo
-//   @foobar()
-// @foobar(a,b)
-// @foobar(a.b,b)
-// @foobar(a='text
-// \'
-// text',b)
-// @foobar(a=1,b)
-// @foobar(a=1.2,b)
-// @foobar(a=1.2,b=c.d)
-// @foobar(a=True,b)
-// @foobar(
-// 	a=True,
-// 	b)
-// @foobar(True)
-// @foobar("True")
-// @foobar(1)
-// @foobar(1.2)
-// @foobar(
-//     id       = 2868724,
-//     synopsis = "Enable time-travel",
-//     engineer = "Mr. Peabody",
-//     date     = "4/1/3007",
-// 	tags = 	["a", "b"],
-// 	obj = {
-// 		foo = "bar",
-// 		arr = ["a", "b"],
-// 		baz = {
-// 			foo = "bar",
-// 			baz = baz,
-// 			arr = ["a", "b"],
-// 			arr = [{}, {b = "b"}],
-// 			arr = [[1,2], [2,3,4]]
-// 		}
-// 	}
-// )
-
-// `
-// 	_, err := Parse([]byte(dat))
-// 	assert.NoError(t, err)
-// }
