@@ -37,24 +37,22 @@ qwd
 
 qwdqwdqw
 @CamelCase(bar = "b\"a)r", baz = "qwdq", obj = {a = "b", c = d.wd})
+
+# @Method(
+#     arguments = [
+#        [ctx, "ctx param"],
+#        [ctx.foo, "ctx.foo param"]
+#     ]
+# )
 `
 	annotations, err := Parse([]byte(dat))
 	assert.NoError(t, err)
 	t.Log("Num annotations:", len(annotations))
 
 	for _, annot := range annotations {
-		annotDat, _ := annot.Token().Bytes([]byte(dat))
-		err := parseAnnotation(annot, annotDat)
+		fieldJson, err := json.Marshal(annot)
 		assert.NoError(t, err)
-		fieldJson, err := json.Marshal(annot.Fields())
-		assert.NoError(t, err)
-		t.Logf(">>%d L%d-L%d(%d): %q %d %q\n",
-			annot.Start.Pos.Spaces(),
-			annot.Start.Pos.Line(),
-			annot.End.Pos.Line(),
-			annot.Len(), // Size of content of token
-			annot.Name(),
-			len(annot.fields),
+		t.Logf("%s\n",
 			string(fieldJson),
 		)
 

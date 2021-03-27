@@ -69,31 +69,41 @@ Field:
             Value: $1,
         }
     } |
+    Struct {
+        $$ = &AnnotationField{
+            Value: $1,
+        }
+    } |
+    Array {
+        $$ = &AnnotationField{
+            Value: $1,
+        }
+    } |
     Ident {
         $$ = &AnnotationField{
             Value: $1,
         }
     } |
-    ident '=' Ident {
+    Ident '=' Ident {
         $$ = &AnnotationField{
             Value: $1,
         }
     } |
-    ident '=' Literal {
+    Ident '=' Literal {
         $$ = &AnnotationField{
-            Key: $1.Ident(),
+            Key: $1,
             Value: $3,
         }
     } |
-    ident '=' Array {
+    Ident '=' Array {
         $$ = &AnnotationField{
-            Key: $1.Ident(),
+            Key: $1,
             Value: $3,
         }
     } |
-    ident '=' Struct {
+    Ident '=' Struct {
         $$ = &AnnotationField{
-            Key: $1.Ident(),
+            Key: $1,
             Value: $3,
         }
     }
@@ -126,7 +136,7 @@ Array: '[' ArrayFields ']' {
 ArrayFields: ArrayField {
     $$ = Array{$1}
 } | ArrayFields ',' ArrayField {
-    $1.Add($1)
+    $1.Add($3)
     $$ = $1
 };
 
@@ -135,6 +145,8 @@ ArrayField: Literal {
 } | Array {
     $$ = $1
 } | Struct {
+    $$ = $1
+} | Ident {
     $$ = $1
 };
 
@@ -149,7 +161,7 @@ Struct: '{' '}' {
                 $$.Keys = append($$.Keys, string(in))
             case Ident_:
                 if len(in) > 0 {
-                    $$.Keys = append($$.Keys, string(strings.Join(in, ".")))
+                    $$.Keys = append($$.Keys, "@"+strings.Join(in, "."))
                 } else {
                     $$.Keys = append($$.Keys, "")
                 }
@@ -169,12 +181,12 @@ StructFields: StructField {
     $$ = $1
 };
 
-StructField: ident '=' Literal {
-    $$ = Array{$1.Ident(), $3}
-} | ident '=' Array {
-    $$ = Array{$1.Ident(), $3}
-} | ident '=' Ident {
-    $$ = Array{$1.Ident(), $3}
-} | ident '=' Struct {
-    $$ = Array{$1.Ident(), $3}
+StructField: Ident '=' Literal {
+    $$ = Array{$1, $3}
+} | Ident '=' Array {
+    $$ = Array{$1, $3}
+} | Ident '=' Ident {
+    $$ = Array{$1, $3}
+} | Ident '=' Struct {
+    $$ = Array{$1, $3}
 };

@@ -43,8 +43,8 @@ func Test_TypesMarshal(t *testing.T) {
 		in       Value
 		expected string
 	}{
-		{Ident_{"a"}, `{"$ident":"a"}`},
-		{Ident_{"a", "b"}, `{"$ident":"a.b"}`},
+		{Ident_{"a"}, `"@a"`},
+		{Ident_{"a", "b"}, `"@a.b"`},
 		{Null_{}, `null`},
 		{StringLiteral("a"), `"a"`},
 		{BoolLiteral(true), `true`},
@@ -78,6 +78,10 @@ func Test_TypesMarshal(t *testing.T) {
 				m1,
 			},
 		}, `{"m2":{"arr":["a",true,123,123.123,null,["a",true,123,123.123,null]],"bool":true,"float":123.123,"int":123,"null":null,"str":"a"}}`},
+		{Array{
+			Array{Ident_{"a", "b"}, StringLiteral("qwd")},
+			Array{Ident_{"a", "b"}, StringLiteral("qwd")},
+		}, `[["@a.b","qwd"],["@a.b","qwd"]]`},
 	}
 
 	for _, case_ := range cases {

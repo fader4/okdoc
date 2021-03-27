@@ -6,18 +6,18 @@ import (
 	"github.com/fader4/okdoc/syntax"
 )
 
-//line lexer.rl:131
+//line lexer.rl:134
 
 //line lexer.go:16
 const annotation_start int = 6
 const annotation_first_final int = 6
 const annotation_error int = 0
 
-const annotation_en_singleQuoteString int = 20
-const annotation_en_doubleQuoteString int = 22
+const annotation_en_singleQuoteString int = 23
+const annotation_en_doubleQuoteString int = 25
 const annotation_en_main int = 6
 
-//line lexer.rl:134
+//line lexer.rl:137
 
 func newTokenizer(data []byte) (*syntax.Lexer, error) {
 	lex := syntax.NewLexer(data)
@@ -31,7 +31,7 @@ func newTokenizer(data []byte) (*syntax.Lexer, error) {
 		(lex.Act) = 0
 	}
 
-//line lexer.rl:139
+//line lexer.rl:142
 
 //line lexer.go:43
 	{
@@ -80,12 +80,18 @@ func newTokenizer(data []byte) (*syntax.Lexer, error) {
 			goto st20
 		case 21:
 			goto st21
-		case 4:
-			goto st4
 		case 22:
 			goto st22
 		case 23:
 			goto st23
+		case 24:
+			goto st24
+		case 4:
+			goto st4
+		case 25:
+			goto st25
+		case 26:
+			goto st26
 		case 5:
 			goto st5
 		case 0:
@@ -135,12 +141,18 @@ func newTokenizer(data []byte) (*syntax.Lexer, error) {
 			goto st_case_20
 		case 21:
 			goto st_case_21
-		case 4:
-			goto st_case_4
 		case 22:
 			goto st_case_22
 		case 23:
 			goto st_case_23
+		case 24:
+			goto st_case_24
+		case 4:
+			goto st_case_4
+		case 25:
+			goto st_case_25
+		case 26:
+			goto st_case_26
 		case 5:
 			goto st_case_5
 		case 0:
@@ -148,19 +160,19 @@ func newTokenizer(data []byte) (*syntax.Lexer, error) {
 		}
 		goto st_out
 	tr0:
-//line lexer.rl:125
+//line lexer.rl:128
 		(lex.P) = (lex.Te) - 1
 
 		goto st6
 	tr2:
-//line lexer.rl:89
+//line lexer.rl:92
 		(lex.P) = (lex.Te) - 1
 		{
 			lex.ReleaseToken(floatLiteral, "literal", "float")
 		}
 		goto st6
 	tr10:
-//line lexer.rl:125
+//line lexer.rl:128
 		(lex.Te) = (lex.P) + 1
 
 		goto st6
@@ -169,7 +181,7 @@ func newTokenizer(data []byte) (*syntax.Lexer, error) {
 
 		lex.ReleaseSymbol("SP")
 
-//line lexer.rl:69
+//line lexer.rl:70
 		(lex.Te) = (lex.P) + 1
 
 		goto st6
@@ -178,12 +190,12 @@ func newTokenizer(data []byte) (*syntax.Lexer, error) {
 
 		lex.ReleaseSymbol("CR")
 
-//line lexer.rl:70
+//line lexer.rl:71
 		(lex.Te) = (lex.P) + 1
 
 		goto st6
 	tr13:
-//line lexer.rl:98
+//line lexer.rl:101
 		(lex.Te) = (lex.P) + 1
 		{
 			lex.BeginPairedChar('"')
@@ -192,13 +204,13 @@ func newTokenizer(data []byte) (*syntax.Lexer, error) {
 				{
 					(lex.Stack)[(lex.Top)] = 6
 					(lex.Top)++
-					goto st22
+					goto st25
 				}
 			}
 		}
 		goto st6
 	tr14:
-//line lexer.rl:93
+//line lexer.rl:96
 		(lex.Te) = (lex.P) + 1
 		{
 			lex.BeginPairedChar('\'')
@@ -207,13 +219,13 @@ func newTokenizer(data []byte) (*syntax.Lexer, error) {
 				{
 					(lex.Stack)[(lex.Top)] = 6
 					(lex.Top)++
-					goto st20
+					goto st23
 				}
 			}
 		}
 		goto st6
 	tr15:
-//line lexer.rl:103
+//line lexer.rl:106
 		(lex.Te) = (lex.P) + 1
 		{
 			lex.ReleaseToken('(', "bracket", "open_bracket")
@@ -229,7 +241,7 @@ func newTokenizer(data []byte) (*syntax.Lexer, error) {
 		}
 		goto st6
 	tr16:
-//line lexer.rl:118
+//line lexer.rl:121
 		(lex.Te) = (lex.P) + 1
 		{
 			if lex.IsEndPairedChar(int(lex.Data[lex.Ts])) {
@@ -243,21 +255,21 @@ func newTokenizer(data []byte) (*syntax.Lexer, error) {
 		}
 		goto st6
 	tr17:
-//line lexer.rl:75
+//line lexer.rl:76
 		(lex.Te) = (lex.P) + 1
 		{
 			lex.ReleaseSymbol("op_and_punct")
 		}
 		goto st6
 	tr21:
-//line lexer.rl:72
+//line lexer.rl:73
 		(lex.Te) = (lex.P) + 1
 		{
 			lex.ReleaseSymbol("at")
 		}
 		goto st6
-	tr25:
-//line lexer.rl:113
+	tr26:
+//line lexer.rl:116
 		(lex.Te) = (lex.P) + 1
 		{
 			lex.ReleaseToken('[', "bracket", "open_bracket")
@@ -272,8 +284,8 @@ func newTokenizer(data []byte) (*syntax.Lexer, error) {
 			}
 		}
 		goto st6
-	tr26:
-//line lexer.rl:108
+	tr27:
+//line lexer.rl:111
 		(lex.Te) = (lex.P) + 1
 		{
 			lex.ReleaseToken('{', "bracket", "open_bracket")
@@ -288,46 +300,52 @@ func newTokenizer(data []byte) (*syntax.Lexer, error) {
 			}
 		}
 		goto st6
-	tr27:
-//line lexer.rl:125
+	tr28:
+//line lexer.rl:128
 		(lex.Te) = (lex.P)
 		(lex.P)--
 
 		goto st6
-	tr29:
-//line lexer.rl:89
+	tr30:
+//line lexer.rl:92
 		(lex.Te) = (lex.P)
 		(lex.P)--
 		{
 			lex.ReleaseToken(floatLiteral, "literal", "float")
 		}
 		goto st6
-	tr31:
-//line lexer.rl:75
+	tr32:
+//line lexer.rl:76
 		(lex.Te) = (lex.P)
 		(lex.P)--
 		{
 			lex.ReleaseSymbol("op_and_punct")
 		}
 		goto st6
-	tr32:
-//line lexer.rl:86
+	tr33:
+//line lexer.rl:89
 		(lex.Te) = (lex.P)
 		(lex.P)--
 		{
 			lex.ReleaseToken(integerLiteral, "literal", "int")
 		}
 		goto st6
-	tr33:
+	tr34:
 //line NONE:1
 		switch lex.Act {
 		case 9:
 			{
 				(lex.P) = (lex.Te) - 1
 
-				lex.ReleaseToken(ident, "ident")
+				lex.ReleaseToken(nullLiteral, "literal")
 			}
 		case 10:
+			{
+				(lex.P) = (lex.Te) - 1
+
+				lex.ReleaseToken(ident, "ident")
+			}
+		case 11:
 			{
 				(lex.P) = (lex.Te) - 1
 
@@ -336,8 +354,8 @@ func newTokenizer(data []byte) (*syntax.Lexer, error) {
 		}
 
 		goto st6
-	tr34:
-//line lexer.rl:80
+	tr35:
+//line lexer.rl:83
 		(lex.Te) = (lex.P)
 		(lex.P)--
 		{
@@ -355,7 +373,7 @@ func newTokenizer(data []byte) (*syntax.Lexer, error) {
 //line NONE:1
 		(lex.Ts) = (lex.P)
 
-//line lexer.go:324
+//line lexer.go:341
 		switch data[(lex.P)] {
 		case 0:
 			goto tr9
@@ -387,16 +405,18 @@ func newTokenizer(data []byte) (*syntax.Lexer, error) {
 			goto tr21
 		case 70:
 			goto st14
-		case 84:
+		case 78:
 			goto st18
+		case 84:
+			goto st21
 		case 91:
-			goto tr25
+			goto tr26
 		case 93:
 			goto tr16
 		case 95:
 			goto tr22
 		case 123:
-			goto tr26
+			goto tr27
 		case 125:
 			goto tr16
 		}
@@ -423,11 +443,11 @@ func newTokenizer(data []byte) (*syntax.Lexer, error) {
 			goto _test_eof7
 		}
 	st_case_7:
-//line lexer.go:392
+//line lexer.go:411
 		if data[(lex.P)] == 46 {
 			goto st1
 		}
-		goto tr27
+		goto tr28
 	st1:
 		if (lex.P)++; (lex.P) == (lex.Pe) {
 			goto _test_eof1
@@ -447,7 +467,7 @@ func newTokenizer(data []byte) (*syntax.Lexer, error) {
 			goto _test_eof8
 		}
 	st_case_8:
-//line lexer.go:416
+//line lexer.go:435
 		switch data[(lex.P)] {
 		case 69:
 			goto st2
@@ -457,7 +477,7 @@ func newTokenizer(data []byte) (*syntax.Lexer, error) {
 		if 48 <= data[(lex.P)] && data[(lex.P)] <= 57 {
 			goto tr1
 		}
-		goto tr29
+		goto tr30
 	st2:
 		if (lex.P)++; (lex.P) == (lex.Pe) {
 			goto _test_eof2
@@ -490,7 +510,7 @@ func newTokenizer(data []byte) (*syntax.Lexer, error) {
 		if 48 <= data[(lex.P)] && data[(lex.P)] <= 57 {
 			goto st9
 		}
-		goto tr29
+		goto tr30
 	st10:
 		if (lex.P)++; (lex.P) == (lex.Pe) {
 			goto _test_eof10
@@ -499,7 +519,7 @@ func newTokenizer(data []byte) (*syntax.Lexer, error) {
 		if 48 <= data[(lex.P)] && data[(lex.P)] <= 57 {
 			goto tr1
 		}
-		goto tr31
+		goto tr32
 	st11:
 		if (lex.P)++; (lex.P) == (lex.Pe) {
 			goto _test_eof11
@@ -508,7 +528,7 @@ func newTokenizer(data []byte) (*syntax.Lexer, error) {
 		if 48 <= data[(lex.P)] && data[(lex.P)] <= 57 {
 			goto st11
 		}
-		goto tr32
+		goto tr33
 	st12:
 		if (lex.P)++; (lex.P) == (lex.Pe) {
 			goto _test_eof12
@@ -520,27 +540,34 @@ func newTokenizer(data []byte) (*syntax.Lexer, error) {
 		if 48 <= data[(lex.P)] && data[(lex.P)] <= 57 {
 			goto st12
 		}
-		goto tr32
+		goto tr33
 	tr22:
-//line NONE:1
-		(lex.Te) = (lex.P) + 1
-
-//line lexer.rl:80
-		(lex.Act) = 9
-		goto st13
-	tr38:
 //line NONE:1
 		(lex.Te) = (lex.P) + 1
 
 //line lexer.rl:83
 		(lex.Act) = 10
 		goto st13
+	tr39:
+//line NONE:1
+		(lex.Te) = (lex.P) + 1
+
+//line lexer.rl:86
+		(lex.Act) = 11
+		goto st13
+	tr42:
+//line NONE:1
+		(lex.Te) = (lex.P) + 1
+
+//line lexer.rl:80
+		(lex.Act) = 9
+		goto st13
 	st13:
 		if (lex.P)++; (lex.P) == (lex.Pe) {
 			goto _test_eof13
 		}
 	st_case_13:
-//line lexer.go:509
+//line lexer.go:535
 		if data[(lex.P)] == 95 {
 			goto tr22
 		}
@@ -556,7 +583,7 @@ func newTokenizer(data []byte) (*syntax.Lexer, error) {
 		default:
 			goto tr22
 		}
-		goto tr33
+		goto tr34
 	st14:
 		if (lex.P)++; (lex.P) == (lex.Pe) {
 			goto _test_eof14
@@ -580,7 +607,7 @@ func newTokenizer(data []byte) (*syntax.Lexer, error) {
 		default:
 			goto tr22
 		}
-		goto tr34
+		goto tr35
 	st15:
 		if (lex.P)++; (lex.P) == (lex.Pe) {
 			goto _test_eof15
@@ -604,7 +631,7 @@ func newTokenizer(data []byte) (*syntax.Lexer, error) {
 		default:
 			goto tr22
 		}
-		goto tr34
+		goto tr35
 	st16:
 		if (lex.P)++; (lex.P) == (lex.Pe) {
 			goto _test_eof16
@@ -628,7 +655,7 @@ func newTokenizer(data []byte) (*syntax.Lexer, error) {
 		default:
 			goto tr22
 		}
-		goto tr34
+		goto tr35
 	st17:
 		if (lex.P)++; (lex.P) == (lex.Pe) {
 			goto _test_eof17
@@ -638,7 +665,7 @@ func newTokenizer(data []byte) (*syntax.Lexer, error) {
 		case 95:
 			goto tr22
 		case 101:
-			goto tr38
+			goto tr39
 		}
 		switch {
 		case data[(lex.P)] < 65:
@@ -652,7 +679,7 @@ func newTokenizer(data []byte) (*syntax.Lexer, error) {
 		default:
 			goto tr22
 		}
-		goto tr34
+		goto tr35
 	st18:
 		if (lex.P)++; (lex.P) == (lex.Pe) {
 			goto _test_eof18
@@ -661,7 +688,7 @@ func newTokenizer(data []byte) (*syntax.Lexer, error) {
 		switch data[(lex.P)] {
 		case 95:
 			goto tr22
-		case 114:
+		case 117:
 			goto st19
 		}
 		switch {
@@ -676,12 +703,84 @@ func newTokenizer(data []byte) (*syntax.Lexer, error) {
 		default:
 			goto tr22
 		}
-		goto tr34
+		goto tr35
 	st19:
 		if (lex.P)++; (lex.P) == (lex.Pe) {
 			goto _test_eof19
 		}
 	st_case_19:
+		switch data[(lex.P)] {
+		case 95:
+			goto tr22
+		case 108:
+			goto st20
+		}
+		switch {
+		case data[(lex.P)] < 65:
+			if 48 <= data[(lex.P)] && data[(lex.P)] <= 57 {
+				goto tr22
+			}
+		case data[(lex.P)] > 90:
+			if 97 <= data[(lex.P)] && data[(lex.P)] <= 122 {
+				goto tr22
+			}
+		default:
+			goto tr22
+		}
+		goto tr35
+	st20:
+		if (lex.P)++; (lex.P) == (lex.Pe) {
+			goto _test_eof20
+		}
+	st_case_20:
+		switch data[(lex.P)] {
+		case 95:
+			goto tr22
+		case 108:
+			goto tr42
+		}
+		switch {
+		case data[(lex.P)] < 65:
+			if 48 <= data[(lex.P)] && data[(lex.P)] <= 57 {
+				goto tr22
+			}
+		case data[(lex.P)] > 90:
+			if 97 <= data[(lex.P)] && data[(lex.P)] <= 122 {
+				goto tr22
+			}
+		default:
+			goto tr22
+		}
+		goto tr35
+	st21:
+		if (lex.P)++; (lex.P) == (lex.Pe) {
+			goto _test_eof21
+		}
+	st_case_21:
+		switch data[(lex.P)] {
+		case 95:
+			goto tr22
+		case 114:
+			goto st22
+		}
+		switch {
+		case data[(lex.P)] < 65:
+			if 48 <= data[(lex.P)] && data[(lex.P)] <= 57 {
+				goto tr22
+			}
+		case data[(lex.P)] > 90:
+			if 97 <= data[(lex.P)] && data[(lex.P)] <= 122 {
+				goto tr22
+			}
+		default:
+			goto tr22
+		}
+		goto tr35
+	st22:
+		if (lex.P)++; (lex.P) == (lex.Pe) {
+			goto _test_eof22
+		}
+	st_case_22:
 		switch data[(lex.P)] {
 		case 95:
 			goto tr22
@@ -700,7 +799,7 @@ func newTokenizer(data []byte) (*syntax.Lexer, error) {
 		default:
 			goto tr22
 		}
-		goto tr34
+		goto tr35
 	tr5:
 //line NONE:1
 		switch lex.Act {
@@ -718,9 +817,9 @@ func newTokenizer(data []byte) (*syntax.Lexer, error) {
 			}
 		}
 
-		goto st20
-	tr40:
-//line lexer.rl:43
+		goto st23
+	tr44:
+//line lexer.rl:44
 		(lex.Te) = (lex.P) + 1
 		{
 			if lex.IsEndPairedChar('\'') {
@@ -731,16 +830,16 @@ func newTokenizer(data []byte) (*syntax.Lexer, error) {
 				}
 			}
 		}
-		goto st20
-	tr42:
-//line lexer.rl:49
+		goto st23
+	tr46:
+//line lexer.rl:50
 		(lex.Te) = (lex.P)
 		(lex.P)--
 		{
 			lex.ReleaseToken(stringLiteral, "literal", "string")
 		}
-		goto st20
-	st20:
+		goto st23
+	st23:
 //line NONE:1
 		(lex.Ts) = 0
 
@@ -748,16 +847,16 @@ func newTokenizer(data []byte) (*syntax.Lexer, error) {
 		(lex.Act) = 0
 
 		if (lex.P)++; (lex.P) == (lex.Pe) {
-			goto _test_eof20
+			goto _test_eof23
 		}
-	st_case_20:
+	st_case_23:
 //line NONE:1
 		(lex.Ts) = (lex.P)
 
-//line lexer.go:714
+//line lexer.go:812
 		switch data[(lex.P)] {
 		case 39:
-			goto tr40
+			goto tr44
 		case 92:
 			goto st4
 		}
@@ -766,18 +865,18 @@ func newTokenizer(data []byte) (*syntax.Lexer, error) {
 //line NONE:1
 		(lex.Te) = (lex.P) + 1
 
-//line lexer.rl:49
+//line lexer.rl:50
 		(lex.Act) = 2
-		goto st21
-	st21:
+		goto st24
+	st24:
 		if (lex.P)++; (lex.P) == (lex.Pe) {
-			goto _test_eof21
+			goto _test_eof24
 		}
-	st_case_21:
-//line lexer.go:734
+	st_case_24:
+//line lexer.go:832
 		switch data[(lex.P)] {
 		case 39:
-			goto tr42
+			goto tr46
 		case 92:
 			goto st4
 		}
@@ -805,9 +904,9 @@ func newTokenizer(data []byte) (*syntax.Lexer, error) {
 			}
 		}
 
-		goto st22
-	tr43:
-//line lexer.rl:55
+		goto st25
+	tr47:
+//line lexer.rl:56
 		(lex.Te) = (lex.P) + 1
 		{
 			if lex.IsEndPairedChar('"') {
@@ -818,16 +917,16 @@ func newTokenizer(data []byte) (*syntax.Lexer, error) {
 				}
 			}
 		}
-		goto st22
-	tr45:
-//line lexer.rl:61
+		goto st25
+	tr49:
+//line lexer.rl:62
 		(lex.Te) = (lex.P)
 		(lex.P)--
 		{
 			lex.ReleaseToken(stringLiteral, "literal", "string")
 		}
-		goto st22
-	st22:
+		goto st25
+	st25:
 //line NONE:1
 		(lex.Ts) = 0
 
@@ -835,16 +934,16 @@ func newTokenizer(data []byte) (*syntax.Lexer, error) {
 		(lex.Act) = 0
 
 		if (lex.P)++; (lex.P) == (lex.Pe) {
-			goto _test_eof22
+			goto _test_eof25
 		}
-	st_case_22:
+	st_case_25:
 //line NONE:1
 		(lex.Ts) = (lex.P)
 
-//line lexer.go:792
+//line lexer.go:890
 		switch data[(lex.P)] {
 		case 34:
-			goto tr43
+			goto tr47
 		case 92:
 			goto st5
 		}
@@ -853,18 +952,18 @@ func newTokenizer(data []byte) (*syntax.Lexer, error) {
 //line NONE:1
 		(lex.Te) = (lex.P) + 1
 
-//line lexer.rl:61
+//line lexer.rl:62
 		(lex.Act) = 4
-		goto st23
-	st23:
+		goto st26
+	st26:
 		if (lex.P)++; (lex.P) == (lex.Pe) {
-			goto _test_eof23
+			goto _test_eof26
 		}
-	st_case_23:
-//line lexer.go:812
+	st_case_26:
+//line lexer.go:910
 		switch data[(lex.P)] {
 		case 34:
-			goto tr45
+			goto tr49
 		case 92:
 			goto st5
 		}
@@ -937,14 +1036,23 @@ func newTokenizer(data []byte) (*syntax.Lexer, error) {
 	_test_eof21:
 		(lex.Cs) = 21
 		goto _test_eof
-	_test_eof4:
-		(lex.Cs) = 4
-		goto _test_eof
 	_test_eof22:
 		(lex.Cs) = 22
 		goto _test_eof
 	_test_eof23:
 		(lex.Cs) = 23
+		goto _test_eof
+	_test_eof24:
+		(lex.Cs) = 24
+		goto _test_eof
+	_test_eof4:
+		(lex.Cs) = 4
+		goto _test_eof
+	_test_eof25:
+		(lex.Cs) = 25
+		goto _test_eof
+	_test_eof26:
+		(lex.Cs) = 26
 		goto _test_eof
 	_test_eof5:
 		(lex.Cs) = 5
@@ -956,43 +1064,49 @@ func newTokenizer(data []byte) (*syntax.Lexer, error) {
 		if (lex.P) == (lex.EOF) {
 			switch lex.Cs {
 			case 7:
-				goto tr27
+				goto tr28
 			case 1:
 				goto tr0
 			case 8:
-				goto tr29
+				goto tr30
 			case 2:
 				goto tr2
 			case 3:
 				goto tr2
 			case 9:
-				goto tr29
+				goto tr30
 			case 10:
-				goto tr31
+				goto tr32
 			case 11:
-				goto tr32
-			case 12:
-				goto tr32
-			case 13:
 				goto tr33
+			case 12:
+				goto tr33
+			case 13:
+				goto tr34
 			case 14:
-				goto tr34
+				goto tr35
 			case 15:
-				goto tr34
+				goto tr35
 			case 16:
-				goto tr34
+				goto tr35
 			case 17:
-				goto tr34
+				goto tr35
 			case 18:
-				goto tr34
+				goto tr35
 			case 19:
-				goto tr34
+				goto tr35
+			case 20:
+				goto tr35
 			case 21:
-				goto tr42
+				goto tr35
+			case 22:
+				goto tr35
+			case 24:
+				goto tr46
 			case 4:
 				goto tr5
-			case 23:
-				goto tr45
+			case 26:
+				goto tr49
 			case 5:
 				goto tr7
 			}
@@ -1003,7 +1117,7 @@ func newTokenizer(data []byte) (*syntax.Lexer, error) {
 		}
 	}
 
-//line lexer.rl:140
+//line lexer.rl:143
 
 	if err := lex.Valid(); err != nil {
 		return lex, err

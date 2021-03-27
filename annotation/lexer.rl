@@ -36,8 +36,9 @@ import (
 
     Int      = [0-9]+;
     Float    = (([1-9] [0-9]* [.] [0-9]*) | (0? [.] [0-9]+)) ([Ee] [+\-]? [0-9]+)?;
+    Null     = "Null";
     Bool     = "True"|"False";
-    Ident    = ([a-zA-Z_] [a-zA-Z0-9_]*) - Bool - AT;
+    Ident    = ([a-zA-Z_] [a-zA-Z0-9_]*) - Bool - AT - Null;
 
     singleQuoteString := |*
         ['] => {
@@ -76,7 +77,9 @@ import (
             lex.ReleaseSymbol("op_and_punct")
         };
 
-
+        Null => {
+            lex.ReleaseToken(nullLiteral, "literal")
+        };
         Ident    => {
             lex.ReleaseToken(ident, "ident")
         };

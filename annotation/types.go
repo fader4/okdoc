@@ -60,9 +60,7 @@ func (i Ident_) Append(in Ident_) Ident_ {
 }
 
 func (m Ident_) MarshalJSON() ([]byte, error) {
-	return json.Marshal(map[string]string{
-		"$ident": strings.Join(m, "."),
-	})
+	return json.Marshal("@" + strings.Join(m, "."))
 }
 
 func String(in []byte) StringLiteral {
@@ -120,13 +118,13 @@ func (a *Array) Add(in ...Value) {
 	*a = append(*a, in...)
 }
 
-func (a Array) MarshalJSON() ([]byte, error) {
-	res := []interface{}{}
-	for _, item := range a {
-		res = append(res, item)
-	}
-	return json.Marshal(res)
-}
+// func (a Array) MarshalJSON() ([]byte, error) {
+// 	res := []interface{}{}
+// 	for _, item := range a {
+// 		res = append(res, item)
+// 	}
+// 	return json.Marshal(res)
+// }
 
 type Map struct {
 	Keys   []string

@@ -50,19 +50,23 @@ state 6
 	Annotation:  ident '('.')' 
 	Annotation:  ident '('.Fields ')' 
 
-	ident  shift 12
+	ident  shift 21
 	')'  shift 7
-	nullLiteral  shift 17
-	stringLiteral  shift 13
-	boolLiteral  shift 14
-	integerLiteral  shift 15
-	floatLiteral  shift 16
+	'{'  shift 19
+	'['  shift 20
+	nullLiteral  shift 18
+	stringLiteral  shift 14
+	boolLiteral  shift 15
+	integerLiteral  shift 16
+	floatLiteral  shift 17
 	.  error
 
 	Literal  goto 10
-	Ident  goto 11
+	Ident  goto 13
 	Field  goto 9
 	Fields  goto 8
+	Array  goto 12
+	Struct  goto 11
 
 state 7
 	Annotation:  ident '(' ')'.    (5)
@@ -74,8 +78,8 @@ state 8
 	Annotation:  ident '(' Fields.')' 
 	Fields:  Fields.',' Field 
 
-	')'  shift 18
-	','  shift 19
+	')'  shift 22
+	','  shift 23
 	.  error
 
 
@@ -92,224 +96,160 @@ state 10
 
 
 state 11
-	Field:  Ident.    (10)
-	Ident:  Ident.'.' ident 
+	Field:  Struct.    (10)
 
-	'.'  shift 20
 	.  reduce 10 (src line 71)
 
 
 state 12
-	Field:  ident.'=' Ident 
-	Field:  ident.'=' Literal 
-	Field:  ident.'=' Array 
-	Field:  ident.'=' Struct 
-	Ident:  ident.    (15)
+	Field:  Array.    (11)
 
-	'='  shift 21
-	.  reduce 15 (src line 102)
+	.  reduce 11 (src line 76)
 
 
 state 13
-	Literal:  stringLiteral.    (17)
+	Field:  Ident.    (12)
+	Field:  Ident.'=' Ident 
+	Field:  Ident.'=' Literal 
+	Field:  Ident.'=' Array 
+	Field:  Ident.'=' Struct 
+	Ident:  Ident.'.' ident 
 
-	.  reduce 17 (src line 108)
+	'='  shift 24
+	'.'  shift 25
+	.  reduce 12 (src line 81)
 
 
 state 14
-	Literal:  boolLiteral.    (18)
+	Literal:  stringLiteral.    (19)
 
-	.  reduce 18 (src line 110)
+	.  reduce 19 (src line 118)
 
 
 state 15
-	Literal:  integerLiteral.    (19)
+	Literal:  boolLiteral.    (20)
 
-	.  reduce 19 (src line 112)
+	.  reduce 20 (src line 120)
 
 
 state 16
-	Literal:  floatLiteral.    (20)
+	Literal:  integerLiteral.    (21)
 
-	.  reduce 20 (src line 114)
+	.  reduce 21 (src line 122)
 
 
 state 17
-	Literal:  nullLiteral.    (21)
+	Literal:  floatLiteral.    (22)
 
-	.  reduce 21 (src line 116)
+	.  reduce 22 (src line 124)
 
 
 state 18
+	Literal:  nullLiteral.    (23)
+
+	.  reduce 23 (src line 126)
+
+
+state 19
+	Struct:  '{'.'}' 
+	Struct:  '{'.StructFields '}' 
+
+	ident  shift 21
+	'}'  shift 26
+	.  error
+
+	Ident  goto 29
+	StructField  goto 28
+	StructFields  goto 27
+
+state 20
+	Array:  '['.ArrayFields ']' 
+	Array:  '['.']' 
+
+	ident  shift 21
+	'{'  shift 19
+	'['  shift 20
+	']'  shift 31
+	nullLiteral  shift 18
+	stringLiteral  shift 14
+	boolLiteral  shift 15
+	integerLiteral  shift 16
+	floatLiteral  shift 17
+	.  error
+
+	Literal  goto 33
+	Ident  goto 36
+	ArrayField  goto 32
+	ArrayFields  goto 30
+	Array  goto 34
+	Struct  goto 35
+
+state 21
+	Ident:  ident.    (17)
+
+	.  reduce 17 (src line 112)
+
+
+state 22
 	Annotation:  ident '(' Fields ')'.    (6)
 
 	.  reduce 6 (src line 56)
 
 
-state 19
+state 23
 	Fields:  Fields ','.Field 
 
-	ident  shift 12
-	nullLiteral  shift 17
-	stringLiteral  shift 13
-	boolLiteral  shift 14
-	integerLiteral  shift 15
-	floatLiteral  shift 16
+	ident  shift 21
+	'{'  shift 19
+	'['  shift 20
+	nullLiteral  shift 18
+	stringLiteral  shift 14
+	boolLiteral  shift 15
+	integerLiteral  shift 16
+	floatLiteral  shift 17
 	.  error
 
 	Literal  goto 10
-	Ident  goto 11
-	Field  goto 22
-
-state 20
-	Ident:  Ident '.'.ident 
-
-	ident  shift 23
-	.  error
-
-
-state 21
-	Field:  ident '='.Ident 
-	Field:  ident '='.Literal 
-	Field:  ident '='.Array 
-	Field:  ident '='.Struct 
-
-	ident  shift 28
-	'{'  shift 30
-	'['  shift 29
-	nullLiteral  shift 17
-	stringLiteral  shift 13
-	boolLiteral  shift 14
-	integerLiteral  shift 15
-	floatLiteral  shift 16
-	.  error
-
-	Literal  goto 25
-	Ident  goto 24
-	Array  goto 26
-	Struct  goto 27
-
-state 22
-	Fields:  Fields ',' Field.    (7)
-
-	.  reduce 7 (src line 60)
-
-
-state 23
-	Ident:  Ident '.' ident.    (16)
-
-	.  reduce 16 (src line 104)
-
+	Ident  goto 13
+	Field  goto 37
+	Array  goto 12
+	Struct  goto 11
 
 state 24
-	Field:  ident '=' Ident.    (11)
-	Ident:  Ident.'.' ident 
+	Field:  Ident '='.Ident 
+	Field:  Ident '='.Literal 
+	Field:  Ident '='.Array 
+	Field:  Ident '='.Struct 
 
-	'.'  shift 20
-	.  reduce 11 (src line 76)
+	ident  shift 21
+	'{'  shift 19
+	'['  shift 20
+	nullLiteral  shift 18
+	stringLiteral  shift 14
+	boolLiteral  shift 15
+	integerLiteral  shift 16
+	floatLiteral  shift 17
+	.  error
 
+	Literal  goto 39
+	Ident  goto 38
+	Array  goto 40
+	Struct  goto 41
 
 state 25
-	Field:  ident '=' Literal.    (12)
+	Ident:  Ident '.'.ident 
 
-	.  reduce 12 (src line 81)
+	ident  shift 42
+	.  error
 
 
 state 26
-	Field:  ident '=' Array.    (13)
+	Struct:  '{' '}'.    (32)
 
-	.  reduce 13 (src line 87)
+	.  reduce 32 (src line 153)
 
 
 state 27
-	Field:  ident '=' Struct.    (14)
-
-	.  reduce 14 (src line 93)
-
-
-state 28
-	Ident:  ident.    (15)
-
-	.  reduce 15 (src line 102)
-
-
-state 29
-	Array:  '['.ArrayFields ']' 
-	Array:  '['.']' 
-
-	'{'  shift 30
-	'['  shift 29
-	']'  shift 32
-	nullLiteral  shift 17
-	stringLiteral  shift 13
-	boolLiteral  shift 14
-	integerLiteral  shift 15
-	floatLiteral  shift 16
-	.  error
-
-	Literal  goto 34
-	ArrayField  goto 33
-	ArrayFields  goto 31
-	Array  goto 35
-	Struct  goto 36
-
-state 30
-	Struct:  '{'.'}' 
-	Struct:  '{'.StructFields '}' 
-
-	ident  shift 40
-	'}'  shift 37
-	.  error
-
-	StructField  goto 39
-	StructFields  goto 38
-
-state 31
-	Array:  '[' ArrayFields.']' 
-	ArrayFields:  ArrayFields.',' ArrayField 
-
-	','  shift 42
-	']'  shift 41
-	.  error
-
-
-state 32
-	Array:  '[' ']'.    (23)
-
-	.  reduce 23 (src line 122)
-
-
-state 33
-	ArrayFields:  ArrayField.    (24)
-
-	.  reduce 24 (src line 126)
-
-
-state 34
-	ArrayField:  Literal.    (26)
-
-	.  reduce 26 (src line 133)
-
-
-state 35
-	ArrayField:  Array.    (27)
-
-	.  reduce 27 (src line 135)
-
-
-state 36
-	ArrayField:  Struct.    (28)
-
-	.  reduce 28 (src line 137)
-
-
-state 37
-	Struct:  '{' '}'.    (29)
-
-	.  reduce 29 (src line 141)
-
-
-state 38
 	Struct:  '{' StructFields.'}' 
 	StructFields:  StructFields.',' StructField 
 
@@ -318,127 +258,217 @@ state 38
 	.  error
 
 
-state 39
-	StructFields:  StructField.    (31)
+state 28
+	StructFields:  StructField.    (34)
 
-	.  reduce 31 (src line 165)
+	.  reduce 34 (src line 177)
+
+
+state 29
+	Ident:  Ident.'.' ident 
+	StructField:  Ident.'=' Literal 
+	StructField:  Ident.'=' Array 
+	StructField:  Ident.'=' Ident 
+	StructField:  Ident.'=' Struct 
+
+	'='  shift 45
+	'.'  shift 25
+	.  error
+
+
+state 30
+	Array:  '[' ArrayFields.']' 
+	ArrayFields:  ArrayFields.',' ArrayField 
+
+	','  shift 47
+	']'  shift 46
+	.  error
+
+
+state 31
+	Array:  '[' ']'.    (25)
+
+	.  reduce 25 (src line 132)
+
+
+state 32
+	ArrayFields:  ArrayField.    (26)
+
+	.  reduce 26 (src line 136)
+
+
+state 33
+	ArrayField:  Literal.    (28)
+
+	.  reduce 28 (src line 143)
+
+
+state 34
+	ArrayField:  Array.    (29)
+
+	.  reduce 29 (src line 145)
+
+
+state 35
+	ArrayField:  Struct.    (30)
+
+	.  reduce 30 (src line 147)
+
+
+state 36
+	Ident:  Ident.'.' ident 
+	ArrayField:  Ident.    (31)
+
+	'.'  shift 25
+	.  reduce 31 (src line 149)
+
+
+state 37
+	Fields:  Fields ',' Field.    (7)
+
+	.  reduce 7 (src line 60)
+
+
+state 38
+	Field:  Ident '=' Ident.    (13)
+	Ident:  Ident.'.' ident 
+
+	'.'  shift 25
+	.  reduce 13 (src line 86)
+
+
+state 39
+	Field:  Ident '=' Literal.    (14)
+
+	.  reduce 14 (src line 91)
 
 
 state 40
-	StructField:  ident.'=' Literal 
-	StructField:  ident.'=' Array 
-	StructField:  ident.'=' Ident 
-	StructField:  ident.'=' Struct 
+	Field:  Ident '=' Array.    (15)
 
-	'='  shift 45
-	.  error
+	.  reduce 15 (src line 97)
 
 
 state 41
-	Array:  '[' ArrayFields ']'.    (22)
+	Field:  Ident '=' Struct.    (16)
 
-	.  reduce 22 (src line 120)
+	.  reduce 16 (src line 103)
 
 
 state 42
-	ArrayFields:  ArrayFields ','.ArrayField 
+	Ident:  Ident '.' ident.    (18)
 
-	'{'  shift 30
-	'['  shift 29
-	nullLiteral  shift 17
-	stringLiteral  shift 13
-	boolLiteral  shift 14
-	integerLiteral  shift 15
-	floatLiteral  shift 16
-	.  error
+	.  reduce 18 (src line 114)
 
-	Literal  goto 34
-	ArrayField  goto 46
-	Array  goto 35
-	Struct  goto 36
 
 state 43
-	Struct:  '{' StructFields '}'.    (30)
+	Struct:  '{' StructFields '}'.    (33)
 
-	.  reduce 30 (src line 143)
+	.  reduce 33 (src line 155)
 
 
 state 44
 	StructFields:  StructFields ','.StructField 
 
-	ident  shift 40
+	ident  shift 21
 	.  error
 
-	StructField  goto 47
+	Ident  goto 29
+	StructField  goto 48
 
 state 45
-	StructField:  ident '='.Literal 
-	StructField:  ident '='.Array 
-	StructField:  ident '='.Ident 
-	StructField:  ident '='.Struct 
+	StructField:  Ident '='.Literal 
+	StructField:  Ident '='.Array 
+	StructField:  Ident '='.Ident 
+	StructField:  Ident '='.Struct 
 
-	ident  shift 28
-	'{'  shift 30
-	'['  shift 29
-	nullLiteral  shift 17
-	stringLiteral  shift 13
-	boolLiteral  shift 14
-	integerLiteral  shift 15
-	floatLiteral  shift 16
+	ident  shift 21
+	'{'  shift 19
+	'['  shift 20
+	nullLiteral  shift 18
+	stringLiteral  shift 14
+	boolLiteral  shift 15
+	integerLiteral  shift 16
+	floatLiteral  shift 17
 	.  error
 
-	Literal  goto 48
-	Ident  goto 50
-	Array  goto 49
-	Struct  goto 51
+	Literal  goto 49
+	Ident  goto 51
+	Array  goto 50
+	Struct  goto 52
 
 state 46
-	ArrayFields:  ArrayFields ',' ArrayField.    (25)
+	Array:  '[' ArrayFields ']'.    (24)
 
-	.  reduce 25 (src line 128)
+	.  reduce 24 (src line 130)
 
 
 state 47
-	StructFields:  StructFields ',' StructField.    (32)
+	ArrayFields:  ArrayFields ','.ArrayField 
 
-	.  reduce 32 (src line 167)
+	ident  shift 21
+	'{'  shift 19
+	'['  shift 20
+	nullLiteral  shift 18
+	stringLiteral  shift 14
+	boolLiteral  shift 15
+	integerLiteral  shift 16
+	floatLiteral  shift 17
+	.  error
 
+	Literal  goto 33
+	Ident  goto 36
+	ArrayField  goto 53
+	Array  goto 34
+	Struct  goto 35
 
 state 48
-	StructField:  ident '=' Literal.    (33)
+	StructFields:  StructFields ',' StructField.    (35)
 
-	.  reduce 33 (src line 172)
+	.  reduce 35 (src line 179)
 
 
 state 49
-	StructField:  ident '=' Array.    (34)
+	StructField:  Ident '=' Literal.    (36)
 
-	.  reduce 34 (src line 174)
+	.  reduce 36 (src line 184)
 
 
 state 50
-	Ident:  Ident.'.' ident 
-	StructField:  ident '=' Ident.    (35)
+	StructField:  Ident '=' Array.    (37)
 
-	'.'  shift 20
-	.  reduce 35 (src line 176)
+	.  reduce 37 (src line 186)
 
 
 state 51
-	StructField:  ident '=' Struct.    (36)
+	Ident:  Ident.'.' ident 
+	StructField:  Ident '=' Ident.    (38)
 
-	.  reduce 36 (src line 178)
+	'.'  shift 25
+	.  reduce 38 (src line 188)
+
+
+state 52
+	StructField:  Ident '=' Struct.    (39)
+
+	.  reduce 39 (src line 190)
+
+
+state 53
+	ArrayFields:  ArrayFields ',' ArrayField.    (27)
+
+	.  reduce 27 (src line 138)
 
 
 22 terminals, 14 nonterminals
-37 grammar rules, 52/16000 states
+40 grammar rules, 54/16000 states
 0 shift/reduce, 0 reduce/reduce conflicts reported
 63 working sets used
-memory: parser 37/240000
+memory: parser 46/240000
 16 extra closures
-62 shift entries, 1 exceptions
-26 goto entries
+70 shift entries, 1 exceptions
+34 goto entries
 4 entries saved by goto default
 Optimizer space used: output 78/240000
 78 table entries, 0 zero
-maximum spread: 22, maximum offset: 45
+maximum spread: 22, maximum offset: 47
