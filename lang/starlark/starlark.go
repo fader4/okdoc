@@ -3,122 +3,127 @@ package starlark
 import (
 	"fmt"
 
-	"github.com/pkg/errors"
+	"github.com/fader4/okdoc/syntax"
 )
 
-func Parse(dat []byte) (*ReportFile, error) {
-	lex, err := starlarkLex(dat)
+func Parse(dat []byte) ([]*CompositeToken, error) {
+	lex, err := newPreprocessing([]byte(dat))
 	if err != nil {
-		return nil, errors.Wrap(err, "tokenization error")
-	}
-	lexForParser := &lexerTokenIter{lex: lex, onlyTokens: []string{
-		"bracket",
-		"string",
-		"comment",
-		"keyword",
-		"op_and_punct",
-		"ident",
-	}}
-	out := starlarkParse(lexForParser)
-	if out != 0 {
-		return nil, fmt.Errorf("parser error: %v", lexForParser.errors)
+		return nil, err
 	}
 
-	// hydrate comments to each function (if exists)
-	for _, fn := range lexForParser.res.Functions {
-		for _, comment := range lexForParser.res.Comments {
-			if comment.Pos.Line() == fn.Pos.Line()-1 {
-				fn.Comment = comment
+	lexForParser := &starlarkLex{
+		LexIter: syntax.NewLexIter(lex, "def", "comment", "return", "load", "module"),
+		debug:   true,
+	}
+
+	var tokens = []*CompositeToken{}
+	var startToken *syntax.Token
+	container := &starlarkSymType{}
+	for {
+		symbol := lexForParser.Lex(container)
+		if symbol == 0 {
+			break
+		}
+
+		switch symbol {
+		case returnKeyword:
+			newToken := &CompositeToken{
+				Start: container.token.Token,
+				End:   container.token.Token,
+				lex:   lex,
+				Name:  "return",
 			}
+			tokens = append(tokens, newToken)
+		case commentInline:
+			newToken := &CompositeToken{
+				Start: container.token.Token,
+				End:   container.token.Token,
+				lex:   lex,
+				Name:  "inline comment",
+			}
+			tokens = append(tokens, newToken)
+		case beginMultilineComment, beginDef, beginLoad, beginModule:
+			startToken = container.token.Token
+		case endModule:
+			newToken := &CompositeToken{
+				Start: startToken,
+				End:   container.token.Token,
+				lex:   lex,
+				Name:  "module",
+			}
+			tokens = append(tokens, newToken)
+		case endMultilineComment:
+			newToken := &CompositeToken{
+				Start: startToken,
+				End:   container.token.Token,
+				lex:   lex,
+				Name:  "multiline comment",
+			}
+			tokens = append(tokens, newToken)
+		case endLoad:
+			newToken := &CompositeToken{
+				Start: startToken,
+				End:   container.token.Token,
+				lex:   lex,
+				Name:  "load",
+			}
+			tokens = append(tokens, newToken)
+		case endDef:
+			newToken := &CompositeToken{
+				Start: startToken,
+				End:   container.token.Token,
+				lex:   lex,
+				Name:  "def",
+			}
+			tokens = append(tokens, newToken)
 		}
 	}
 
-	return lexForParser.res, nil
+	return tokens, nil
 }
 
-var _ reporter = (*lexerTokenIter)(nil)
+// func Parse(dat []byte) error {
+// 	lex, err := newTokenizer(dat)
+// 	if err != nil {
+// 		return errors.Wrap(err, "tokenization error")
+// 	}
+// 	interestedTokens := []string{
+// 		"bracket",
+// 		"op_and_punct",
+// 		"ident",
+// 		"literal",
+// 		"comment",
+// 	}
+// 	lexer := &starlarkLex{
+// 		LexIter: syntax.NewLexIter(lex, interestedTokens...),
+// 		debug:   true,
+// 	}
+// 	out := starlarkParse(lexer)
+// 	if out != 0 {
+// 		return fmt.Errorf("parser error: %v", lexer.Errors)
+// 	}
+// 	return nil
+// }
 
-type lexerTokenIter struct {
-	// associated tokenizer
-	lex *lexer
-	// iterator of tokens
-	iter int
-	// filter tokens interesting to the parser by labels
-	onlyTokens []string
-	errors     []string
-
-	res *ReportFile
+type starlarkLex struct {
+	*syntax.LexIter
+	debug bool
 }
 
-func (l *lexerTokenIter) SetReport(r *ReportFile) {
-	l.res = r
-}
-
-type reporter interface {
-	SetReport(*ReportFile)
-}
-
-func (l *lexerTokenIter) Lex(out *starlarkSymType) (symbol int) {
-
-skipToken:
-	if !l.hasNext() {
-		// EOF
+func (l *starlarkLex) Lex(out *starlarkSymType) (symbol int) {
+	token := l.Next()
+	if token == nil {
 		return 0
 	}
+	out.token = &Token{token, l.LexIter.Lex()}
 
-	token := l.next()
-
-	// if sets filter and not matched - skip token for current parser
-	if len(l.onlyTokens) != 0 && !token.matchAtLeastOneLabels(l.onlyTokens...) {
-		goto skipToken
-	}
-
-	out.token = &tokenWithLexer{token: token, lex: l.lex}
-
-	if starlarkDebug == 1 {
-		firstChar := token.pos[1] == token.pos[2]
-
-		lineInfo := fmt.Sprintf("\t>%d:\t", token.pos[1])
-		if firstChar {
-			lineInfo = fmt.Sprintf("L%dT%d:", token.pos[0], token.pos[2])
+	if l.debug {
+		tokenBytesm, err := token.HumanString(l.LexIter.Lex().Data)
+		if err != nil {
+			panic("failed render token")
 		}
-		charInfo := fmt.Sprintf("%q", string(token.Read(l.lex)))
-		fmt.Println(
-			"[PARSER]",
-			lineInfo,
-			charInfo,
-		)
+		fmt.Println(string(tokenBytesm))
 	}
-	return token.symbol
-}
-
-func (l *lexerTokenIter) next() *token {
-	if !l.hasNext() {
-		return nil
-	}
-	token := l.lex.tokens[l.iter]
-	l.iter++
-	return token
-}
-
-func (l *lexerTokenIter) hasNext() bool {
-	if l.iter == len(l.lex.tokens) {
-		return false
-	}
-	return true
-}
-
-func (l *lexerTokenIter) current() *token {
-	return l.lex.tokens[l.iter]
-}
-
-func (l *lexerTokenIter) Error(msg string) {
-	token := l.current()
-	msg = fmt.Sprintf(
-		"parser error #%d: err=%q before %q",
-		l.iter,
-		msg,
-		string(token.Read(l.lex)),
-	)
-	l.errors = append(l.errors, msg)
+	return token.Symbol
 }

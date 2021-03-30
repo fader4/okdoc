@@ -9,3 +9,9 @@ The main language use in applications in written in the fader4 platform is named
 The following links were used to write the current project
 * python AST https://docs.python.org/3/library/ast.html
 * starlark like language, example implements ragel+yacc https://github.com/lithdew/flatlang
+
+# TODO
+
+- [ ] refactoring parser for lang `starlark` (via syntax package)
+- [ ] add some lines up \ down to each annotation (settings via args)
+

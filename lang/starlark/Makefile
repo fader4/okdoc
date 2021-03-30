@@ -1,4 +1,5 @@
 gen:
-	ragel -Z -G2 -o starlark_lexer.go starlark_lexer.rl
-	goyacc -p starlark -o starlark_parser.go starlark_parser.y
-	gofmt -w starlark_parser.go starlark_lexer.go
+	ragel -Z -G2 -o lexer.go lexer.rl
+	ragel -Z -G2 -o extractor.go extractor.rl
+	goyacc -p starlark -o parser.go parser.y
+	gofmt -w parser.go lexer.go extractor.go
