@@ -27,17 +27,16 @@ const stringLiteral = 57348
 const boolLiteral = 57349
 const integerLiteral = 57350
 const floatLiteral = 57351
-const commentInline = 57352
-const commentMultiline = 57353
-const beginDef = 57354
+const returnKeyword = 57352
+const commentInline = 57353
+const def = 57354
 const endDef = 57355
-const returnKeyword = 57356
-const beginLoad = 57357
-const endLoad = 57358
-const beginModule = 57359
-const endModule = 57360
-const beginMultilineComment = 57361
-const endMultilineComment = 57362
+const load = 57356
+const endLoad = 57357
+const module = 57358
+const endModule = 57359
+const commentMultiline = 57360
+const endCommentMultiline = 57361
 
 var starlarkToknames = [...]string{
 	"$end",
@@ -58,17 +57,16 @@ var starlarkToknames = [...]string{
 	"boolLiteral",
 	"integerLiteral",
 	"floatLiteral",
-	"commentInline",
-	"commentMultiline",
-	"beginDef",
-	"endDef",
 	"returnKeyword",
-	"beginLoad",
+	"commentInline",
+	"def",
+	"endDef",
+	"load",
 	"endLoad",
-	"beginModule",
+	"module",
 	"endModule",
-	"beginMultilineComment",
-	"endMultilineComment",
+	"commentMultiline",
+	"endCommentMultiline",
 }
 
 var starlarkStatenames = [...]string{}
@@ -86,18 +84,18 @@ var starlarkExca = [...]int{
 
 const starlarkPrivate = 57344
 
-const starlarkLast = 5
+const starlarkLast = 8
 
 var starlarkAct = [...]int{
-	4, 5, 2, 1, 3,
+	4, 2, 1, 3, 0, 0, 0, 5,
 }
 
 var starlarkPact = [...]int{
-	-1000, -1000, -19, -1000, -1000, -1000,
+	-1000, -1000, -20, -1000, -1000, -1000,
 }
 
 var starlarkPgo = [...]int{
-	0, 4, 3, 2,
+	0, 3, 2, 1,
 }
 
 var starlarkR1 = [...]int{
@@ -109,7 +107,7 @@ var starlarkR2 = [...]int{
 }
 
 var starlarkChk = [...]int{
-	-1000, -2, -3, -1, 19, 20,
+	-1000, -2, -3, -1, 20, 27,
 }
 
 var starlarkDef = [...]int{
@@ -134,7 +132,7 @@ var starlarkTok1 = [...]int{
 
 var starlarkTok2 = [...]int{
 	2, 3, 4, 14, 15, 16, 17, 18, 19, 20,
-	21, 22, 23, 24, 25, 26, 27, 28, 29,
+	21, 22, 23, 24, 25, 26, 27, 28,
 }
 
 var starlarkTok3 = [...]int{
@@ -480,24 +478,24 @@ starlarkdefault:
 
 	case 2:
 		starlarkDollar = starlarkS[starlarkpt-0 : starlarkpt+1]
-//line parser.y:39
+//line parser.y:44
 		{
 		}
 	case 3:
 		starlarkDollar = starlarkS[starlarkpt-2 : starlarkpt+1]
-//line parser.y:40
+//line parser.y:45
 		{
 			fmt.Println("Comment", starlarkDollar[2].token)
 		}
 	case 4:
 		starlarkDollar = starlarkS[starlarkpt-1 : starlarkpt+1]
-//line parser.y:44
+//line parser.y:49
 		{
 			starlarkVAL.token = starlarkDollar[1].token
 		}
 	case 5:
 		starlarkDollar = starlarkS[starlarkpt-1 : starlarkpt+1]
-//line parser.y:46
+//line parser.y:51
 		{
 			starlarkVAL.token = starlarkDollar[1].token
 		}

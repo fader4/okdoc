@@ -20,9 +20,14 @@ import (
 %token <token>
 ident '(' ')' '=' ',' '{' '}' '[' ']' '.'
 nullLiteral stringLiteral boolLiteral integerLiteral floatLiteral
-commentInline commentMultiline
 
-beginDef endDef returnKeyword beginLoad endLoad beginModule endModule beginMultilineComment endMultilineComment
+returnKeyword
+
+commentInline
+def endDef
+load endLoad
+module endModule
+commentMultiline endCommentMultiline
 
 
 %type <token> Comment

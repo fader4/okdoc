@@ -23,7 +23,9 @@ foo = module(
 Free comment
 """
 
-def main(ctx=(1,2,3)):
+def main(
+	ctx=(1,2,3)
+	):
 	"""
 	Inline comment into method
 	"""

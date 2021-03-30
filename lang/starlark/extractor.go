@@ -17,7 +17,7 @@ const starlark_extractor_en_doubleQuoteString int = 39
 const starlark_extractor_en_defMethodBody int = 41
 const starlark_extractor_en_loadBody int = 43
 const starlark_extractor_en_moduleBody int = 44
-const starlark_extractor_en_multilineCommentBody int = 45
+const starlark_extractor_en_commentMultilineBody int = 45
 const starlark_extractor_en_main int = 29
 
 //line extractor.rl:203
@@ -255,8 +255,8 @@ func newPreprocessing(data []byte) (*syntax.Lexer, error) {
 //line extractor.rl:185
 		(lex.Te) = (lex.P) + 1
 		{
-			lex.ReleaseToken(beginMultilineComment, "comment")
-			lex.BeginPairedChar(endMultilineComment)
+			lex.ReleaseToken(commentMultiline, "comment")
+			lex.BeginPairedChar(endCommentMultiline)
 			{
 				lex.StackGrowth()
 				{
@@ -287,7 +287,7 @@ func newPreprocessing(data []byte) (*syntax.Lexer, error) {
 //line extractor.rl:180
 		(lex.Te) = (lex.P) + 1
 		{
-			lex.ReleaseToken(beginModule, "module")
+			lex.ReleaseToken(module, "module")
 			lex.BeginPairedChar(endModule)
 			{
 				lex.StackGrowth()
@@ -303,7 +303,7 @@ func newPreprocessing(data []byte) (*syntax.Lexer, error) {
 //line extractor.rl:170
 		(lex.Te) = (lex.P) + 1
 		{
-			lex.ReleaseToken(beginDef, "def")
+			lex.ReleaseToken(def, "def")
 			lex.BeginPairedChar(endDef)
 			{
 				lex.StackGrowth()
@@ -319,7 +319,7 @@ func newPreprocessing(data []byte) (*syntax.Lexer, error) {
 //line extractor.rl:175
 		(lex.Te) = (lex.P) + 1
 		{
-			lex.ReleaseToken(beginLoad, "load")
+			lex.ReleaseToken(load, "load")
 			lex.BeginPairedChar(endLoad)
 			{
 				lex.StackGrowth()
@@ -1653,8 +1653,8 @@ func newPreprocessing(data []byte) (*syntax.Lexer, error) {
 //line extractor.rl:152
 		(lex.Te) = (lex.P) + 1
 		{
-			if lex.IsEndPairedChar(endMultilineComment) {
-				lex.ReleaseToken(endMultilineComment, "comment")
+			if lex.IsEndPairedChar(endCommentMultiline) {
+				lex.ReleaseToken(endCommentMultiline, "comment")
 				{
 					(lex.Top)--
 					(lex.Cs) = (lex.Stack)[(lex.Top)]

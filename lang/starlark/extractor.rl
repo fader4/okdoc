@@ -147,11 +147,11 @@ import (
         any;
     *|;
 
-    multilineCommentBody := |*
+    commentMultilineBody := |*
         NewLine;
         "'''"|'"""' => {
-            if lex.IsEndPairedChar(endMultilineComment) {
-                lex.ReleaseToken(endMultilineComment, "comment")
+            if lex.IsEndPairedChar(endCommentMultiline) {
+                lex.ReleaseToken(endCommentMultiline, "comment")
                 fret;
             }
         };
@@ -168,24 +168,24 @@ import (
             lex.ReleaseToken(commentInline, "comment")
         };
         defKeyword WhiteSpace* Ident "(" => {
-            lex.ReleaseToken(beginDef, "def")
+            lex.ReleaseToken(def, "def")
             lex.BeginPairedChar(endDef)
             fcall defMethodBody;
         };
         loadKeyword WhiteSpace* "(" => {
-            lex.ReleaseToken(beginLoad, "load")
+            lex.ReleaseToken(load, "load")
             lex.BeginPairedChar(endLoad)
             fcall loadBody;
         };
         Ident WhiteSpace* '=' WhiteSpace* moduleKeyword WhiteSpace* "(" => {
-            lex.ReleaseToken(beginModule, "module")
+            lex.ReleaseToken(module, "module")
             lex.BeginPairedChar(endModule)
             fcall moduleBody;
         };
         "'''"|'"""' => {
-            lex.ReleaseToken(beginMultilineComment, "comment")
-            lex.BeginPairedChar(endMultilineComment)
-            fcall multilineCommentBody;
+            lex.ReleaseToken(commentMultiline, "comment")
+            lex.BeginPairedChar(endCommentMultiline)
+            fcall commentMultilineBody;
         };
         returnKeyword => {
             lex.ReleaseToken(returnKeyword, "return")

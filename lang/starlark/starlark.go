@@ -43,7 +43,7 @@ func Parse(dat []byte) ([]*CompositeToken, error) {
 				Name:  "inline comment",
 			}
 			tokens = append(tokens, newToken)
-		case beginMultilineComment, beginDef, beginLoad, beginModule:
+		case commentMultiline, def, load, module:
 			startToken = container.token.Token
 		case endModule:
 			newToken := &CompositeToken{
@@ -53,7 +53,7 @@ func Parse(dat []byte) ([]*CompositeToken, error) {
 				Name:  "module",
 			}
 			tokens = append(tokens, newToken)
-		case endMultilineComment:
+		case endCommentMultiline:
 			newToken := &CompositeToken{
 				Start: startToken,
 				End:   container.token.Token,
