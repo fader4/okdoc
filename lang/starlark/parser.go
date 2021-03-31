@@ -10,16 +10,29 @@ import __yyfmt__ "fmt"
 import (
 	"fmt"
 	"github.com/fader4/okdoc/syntax"
+	"log"
+	"strings"
 )
 
-//line parser.y:12
+//line parser.y:14
 type starlarkSymType struct {
 	yys   int
 	token *syntax.TokenWithData
 
-	// val Value
-	// arr Array
-	// map_ Map
+	Comment    *Comment
+	Return     *Return
+	Module     *Module
+	Load       *Load
+	Def        *Def
+	DefField   *DefField
+	DefFields  []*DefField
+	DictField  *DictField
+	DictFields []*DictField
+	CallFunc   *CallFunc
+
+	val  syntax.Value
+	arr  syntax.Array
+	map_ syntax.Map
 }
 
 const ident = 57346
@@ -28,16 +41,17 @@ const stringLiteral = 57348
 const boolLiteral = 57349
 const integerLiteral = 57350
 const floatLiteral = 57351
-const returnKeyword = 57352
-const commentInline = 57353
-const def = 57354
-const endDef = 57355
-const load = 57356
-const endLoad = 57357
-const module = 57358
-const endModule = 57359
-const commentMultiline = 57360
-const endCommentMultiline = 57361
+const dict = 57352
+const returnKeyword = 57353
+const commentInline = 57354
+const def = 57355
+const endDef = 57356
+const load = 57357
+const endLoad = 57358
+const module = 57359
+const endModule = 57360
+const commentMultiline = 57361
+const endCommentMultiline = 57362
 
 var starlarkToknames = [...]string{
 	"$end",
@@ -53,11 +67,16 @@ var starlarkToknames = [...]string{
 	"'['",
 	"']'",
 	"'.'",
+	"'\"'",
+	"'\\''",
+	"'*'",
+	"':'",
 	"nullLiteral",
 	"stringLiteral",
 	"boolLiteral",
 	"integerLiteral",
 	"floatLiteral",
+	"dict",
 	"returnKeyword",
 	"commentInline",
 	"def",
@@ -85,43 +104,124 @@ var starlarkExca = [...]int{
 
 const starlarkPrivate = 57344
 
-const starlarkLast = 8
+const starlarkLast = 250
 
 var starlarkAct = [...]int{
-	4, 2, 1, 3, 0, 0, 0, 5,
+	67, 59, 65, 56, 29, 107, 21, 64, 61, 62,
+	69, 105, 63, 43, 132, 66, 18, 46, 12, 39,
+	35, 36, 37, 38, 45, 33, 69, 85, 57, 74,
+	31, 120, 30, 20, 47, 32, 51, 52, 10, 8,
+	13, 44, 11, 58, 70, 84, 9, 83, 19, 43,
+	25, 80, 33, 76, 75, 54, 82, 31, 79, 30,
+	77, 119, 32, 78, 57, 68, 41, 51, 118, 51,
+	40, 135, 42, 86, 43, 94, 15, 106, 93, 39,
+	35, 36, 37, 38, 69, 114, 53, 58, 95, 98,
+	90, 51, 109, 94, 99, 96, 111, 101, 108, 97,
+	68, 41, 100, 89, 50, 40, 43, 42, 88, 88,
+	51, 26, 138, 91, 22, 129, 94, 124, 130, 123,
+	109, 133, 127, 14, 125, 94, 108, 126, 134, 131,
+	128, 81, 68, 41, 136, 16, 137, 40, 115, 42,
+	71, 121, 116, 122, 117, 2, 39, 35, 36, 37,
+	38, 69, 68, 41, 60, 1, 112, 40, 113, 42,
+	87, 73, 88, 72, 103, 102, 39, 35, 36, 37,
+	38, 69, 68, 41, 92, 55, 48, 40, 49, 42,
+	23, 17, 24, 7, 104, 110, 39, 35, 36, 37,
+	38, 69, 43, 41, 28, 6, 5, 40, 4, 42,
+	3, 0, 0, 0, 0, 0, 39, 35, 36, 37,
+	38, 69, 43, 41, 27, 0, 0, 40, 0, 42,
+	0, 0, 0, 0, 34, 0, 39, 35, 36, 37,
+	38, 43, 41, 0, 0, 0, 40, 0, 42, 0,
+	0, 0, 0, 34, 0, 39, 35, 36, 37, 38,
 }
 
 var starlarkPact = [...]int{
-	-1000, -1000, -20, -1000, -1000, -1000,
+	-1000, -1000, 14, -1000, -1000, -1000, -1000, -1000, -1000, -1000,
+	-1000, 118, 69, 131, 29, -24, 109, 174, -1000, -1000,
+	43, 106, 208, -1000, 29, 5, -2, 17, 170, -1000,
+	-1000, -1000, -1000, 97, 70, -1000, -1000, -1000, -1000, -1000,
+	45, 148, 128, -1000, -1000, -1000, 155, -1000, 12, 227,
+	188, 127, 23, 102, -1000, 37, -1000, 10, 56, 154,
+	-1000, -1000, -1000, -1000, -1000, 23, -1000, -1000, 98, 85,
+	101, -1000, 102, -1000, -1000, -1000, 23, -1000, -1000, -1000,
+	-1000, -1000, 23, -1000, 9, 1, 96, -1000, 168, 61,
+	102, -1000, 150, -1000, 78, -1000, -1000, -1000, 23, -1000,
+	-1000, -1000, 136, 62, 55, -1000, 15, -1000, -1000, 78,
+	135, -1000, -1000, 102, 168, 102, -1000, 168, -1000, -1000,
+	3, -1000, 102, -1000, 23, -1000, -1000, -1000, -1000, -1000,
+	54, -1000, 168, -1000, -1000, -13, 100, -1000, -1000,
 }
 
 var starlarkPgo = [...]int{
-	0, 3, 2, 1,
+	0, 200, 198, 196, 195, 4, 194, 5, 0, 185,
+	184, 15, 183, 181, 12, 1, 175, 3, 174, 165,
+	164, 9, 16, 2, 8, 11, 7, 155, 145, 138,
 }
 
 var starlarkR1 = [...]int{
-	0, 2, 3, 3, 1, 1,
+	0, 27, 28, 28, 28, 28, 28, 28, 12, 12,
+	6, 6, 5, 5, 5, 5, 5, 5, 5, 5,
+	5, 5, 5, 1, 1, 2, 3, 13, 13, 22,
+	22, 4, 4, 18, 18, 11, 11, 11, 19, 19,
+	25, 25, 20, 10, 23, 23, 21, 21, 21, 21,
+	21, 14, 14, 14, 14, 15, 15, 24, 24, 24,
+	24, 24, 24, 26, 26, 16, 16, 17, 17, 17,
+	17, 29, 17, 8, 9, 9, 7, 7, 7, 7,
+	7, 7,
 }
 
 var starlarkR2 = [...]int{
-	0, 1, 0, 2, 1, 1,
+	0, 1, 0, 2, 2, 2, 2, 2, 5, 6,
+	1, 3, 1, 1, 1, 1, 2, 3, 3, 3,
+	3, 3, 3, 1, 1, 1, 4, 1, 3, 1,
+	3, 8, 6, 3, 1, 4, 4, 4, 3, 1,
+	1, 1, 5, 3, 1, 3, 1, 1, 1, 1,
+	1, 3, 3, 2, 2, 1, 3, 1, 1, 1,
+	1, 1, 1, 2, 3, 1, 3, 3, 3, 3,
+	3, 0, 7, 4, 3, 1, 3, 3, 3, 3,
+	3, 3,
 }
 
 var starlarkChk = [...]int{
-	-1000, -2, -3, -1, 20, 27,
+	-1000, -27, -28, -1, -2, -3, -4, -12, 25, 32,
+	24, 28, 4, 26, 5, 7, 4, -13, -22, 19,
+	4, 30, 5, 6, 8, 7, 5, 6, -6, -5,
+	-21, -26, -14, -23, 16, 19, 20, 21, 22, 18,
+	9, 5, 11, 4, -22, 19, 19, 17, 6, 8,
+	7, 13, -23, 16, 10, -16, -17, 19, -23, -15,
+	6, -24, -21, -14, -26, -23, -11, -8, 4, 23,
+	-15, 12, 8, 6, 17, -5, -23, -21, -14, -26,
+	-8, 4, -23, 10, 8, 17, 17, 6, 8, 5,
+	5, 12, -18, -7, -23, -17, -21, -14, -23, -26,
+	-11, -24, -19, -20, -10, -25, 16, -7, -24, -23,
+	-9, -7, 6, 8, 7, -29, 6, 8, 6, 6,
+	16, 6, 8, -7, -23, -21, -14, -26, -11, -8,
+	-23, -25, 11, -8, -7, 17, -15, -8, 12,
 }
 
 var starlarkDef = [...]int{
-	2, -2, 1, 3, 4, 5,
+	2, -2, 1, 3, 4, 5, 6, 7, 23, 24,
+	25, 0, 0, 0, 0, 0, 0, 0, 27, 29,
+	0, 0, 0, 26, 0, 0, 0, 0, 0, 10,
+	12, 13, 14, 15, 0, 46, 47, 48, 49, 50,
+	0, 0, 0, 44, 28, 30, 0, 8, 0, 0,
+	0, 0, 16, 0, 63, 0, 65, 0, 0, 0,
+	53, 55, 57, 58, 59, 60, 61, 62, 44, 0,
+	0, 54, 0, 32, 9, 11, 18, 19, 20, 21,
+	22, 45, 17, 64, 0, 0, 0, 51, 0, 0,
+	0, 52, 0, 34, 0, 66, 67, 68, 69, 70,
+	71, 56, 0, 0, 0, 39, 0, 40, 41, 60,
+	0, 75, 31, 0, 0, 0, 35, 0, 36, 37,
+	0, 73, 0, 33, 76, 77, 78, 79, 80, 81,
+	0, 38, 0, 43, 74, 0, 0, 72, 42,
 }
 
 var starlarkTok1 = [...]int{
 	1, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-	5, 6, 3, 3, 8, 3, 13, 3, 3, 3,
-	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+	3, 3, 3, 3, 14, 3, 3, 3, 3, 15,
+	5, 6, 16, 3, 8, 3, 13, 3, 3, 3,
+	3, 3, 3, 3, 3, 3, 3, 3, 17, 3,
 	3, 7, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
 	3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
@@ -132,8 +232,8 @@ var starlarkTok1 = [...]int{
 }
 
 var starlarkTok2 = [...]int{
-	2, 3, 4, 14, 15, 16, 17, 18, 19, 20,
-	21, 22, 23, 24, 25, 26, 27, 28,
+	2, 3, 4, 18, 19, 20, 21, 22, 23, 24,
+	25, 26, 27, 28, 29, 30, 31, 32, 33,
 }
 
 var starlarkTok3 = [...]int{
@@ -479,26 +579,549 @@ starlarkdefault:
 
 	case 2:
 		starlarkDollar = starlarkS[starlarkpt-0 : starlarkpt+1]
-//line parser.y:44
+//line parser.y:71
 		{
 		}
 	case 3:
 		starlarkDollar = starlarkS[starlarkpt-2 : starlarkpt+1]
-//line parser.y:45
+//line parser.y:72
 		{
-			fmt.Println("Comment", starlarkDollar[2].token)
+			fmt.Printf("Comment %T: %q\n", starlarkDollar[2].Comment, string(starlarkDollar[2].Comment.MustBytes()))
 		}
 	case 4:
-		starlarkDollar = starlarkS[starlarkpt-1 : starlarkpt+1]
-//line parser.y:49
+		starlarkDollar = starlarkS[starlarkpt-2 : starlarkpt+1]
+//line parser.y:74
 		{
-			starlarkVAL.token = starlarkDollar[1].token
+			fmt.Printf("Return %T: %q\n", starlarkDollar[2].Return, string(starlarkDollar[2].Return.MustBytes()))
 		}
 	case 5:
-		starlarkDollar = starlarkS[starlarkpt-1 : starlarkpt+1]
-//line parser.y:51
+		starlarkDollar = starlarkS[starlarkpt-2 : starlarkpt+1]
+//line parser.y:76
 		{
-			starlarkVAL.token = starlarkDollar[1].token
+			fmt.Printf("Load %T: %d\n", starlarkDollar[2].Load, len(starlarkDollar[2].Load.Fields))
+		}
+	case 6:
+		starlarkDollar = starlarkS[starlarkpt-2 : starlarkpt+1]
+//line parser.y:78
+		{
+			fmt.Printf("Module %T: %d\n", starlarkDollar[2].Module, len(starlarkDollar[2].Module.Fields))
+		}
+	case 7:
+		starlarkDollar = starlarkS[starlarkpt-2 : starlarkpt+1]
+//line parser.y:80
+		{
+			fmt.Printf("Def %T: %d\n", starlarkDollar[2].Def, len(starlarkDollar[2].Def.Fields))
+		}
+	case 8:
+		starlarkDollar = starlarkS[starlarkpt-5 : starlarkpt+1]
+//line parser.y:88
+		{
+			starlarkVAL.Def = &Def{TokenWithData: starlarkDollar[1].token, Name: starlarkDollar[2].token.Ident()}
+		}
+	case 9:
+		starlarkDollar = starlarkS[starlarkpt-6 : starlarkpt+1]
+//line parser.y:90
+		{
+			starlarkVAL.Def = &Def{TokenWithData: starlarkDollar[1].token, Name: starlarkDollar[2].token.Ident(), Fields: starlarkDollar[4].DefFields}
+		}
+	case 10:
+		starlarkDollar = starlarkS[starlarkpt-1 : starlarkpt+1]
+//line parser.y:94
+		{
+			starlarkVAL.DefFields = []*DefField{starlarkDollar[1].DefField}
+		}
+	case 11:
+		starlarkDollar = starlarkS[starlarkpt-3 : starlarkpt+1]
+//line parser.y:96
+		{
+			starlarkVAL.DefFields = append(starlarkDollar[1].DefFields, starlarkDollar[3].DefField)
+		}
+	case 12:
+		starlarkDollar = starlarkS[starlarkpt-1 : starlarkpt+1]
+//line parser.y:101
+		{
+			starlarkVAL.DefField = &DefField{
+				Value: starlarkDollar[1].val,
+			}
+		}
+	case 13:
+		starlarkDollar = starlarkS[starlarkpt-1 : starlarkpt+1]
+//line parser.y:106
+		{
+			starlarkVAL.DefField = &DefField{
+				Value: starlarkDollar[1].map_,
+			}
+		}
+	case 14:
+		starlarkDollar = starlarkS[starlarkpt-1 : starlarkpt+1]
+//line parser.y:111
+		{
+			starlarkVAL.DefField = &DefField{
+				Value: starlarkDollar[1].arr,
+			}
+		}
+	case 15:
+		starlarkDollar = starlarkS[starlarkpt-1 : starlarkpt+1]
+//line parser.y:116
+		{
+			starlarkVAL.DefField = &DefField{
+				Value: starlarkDollar[1].val,
+			}
+		}
+	case 16:
+		starlarkDollar = starlarkS[starlarkpt-2 : starlarkpt+1]
+//line parser.y:121
+		{
+			starlarkVAL.DefField = &DefField{
+				Value:   starlarkDollar[1].token,
+				Varargs: true,
+			}
+		}
+	case 17:
+		starlarkDollar = starlarkS[starlarkpt-3 : starlarkpt+1]
+//line parser.y:127
+		{
+			starlarkVAL.DefField = &DefField{
+				Value:  starlarkDollar[1].token,
+				Kwargs: true,
+			}
+		}
+	case 18:
+		starlarkDollar = starlarkS[starlarkpt-3 : starlarkpt+1]
+//line parser.y:133
+		{
+			starlarkVAL.DefField = &DefField{
+				Key:   starlarkDollar[1].val,
+				Value: starlarkDollar[3].val,
+			}
+		}
+	case 19:
+		starlarkDollar = starlarkS[starlarkpt-3 : starlarkpt+1]
+//line parser.y:139
+		{
+			starlarkVAL.DefField = &DefField{
+				Key:   starlarkDollar[1].val,
+				Value: starlarkDollar[3].val,
+			}
+		}
+	case 20:
+		starlarkDollar = starlarkS[starlarkpt-3 : starlarkpt+1]
+//line parser.y:145
+		{
+			starlarkVAL.DefField = &DefField{
+				Key:   starlarkDollar[1].val,
+				Value: starlarkDollar[3].arr,
+			}
+		}
+	case 21:
+		starlarkDollar = starlarkS[starlarkpt-3 : starlarkpt+1]
+//line parser.y:151
+		{
+			starlarkVAL.DefField = &DefField{
+				Key:   starlarkDollar[1].val,
+				Value: starlarkDollar[3].map_,
+			}
+		}
+	case 22:
+		starlarkDollar = starlarkS[starlarkpt-3 : starlarkpt+1]
+//line parser.y:157
+		{
+			starlarkVAL.DefField = &DefField{
+				Key:   starlarkDollar[1].val,
+				Value: starlarkDollar[3].DictFields,
+			}
+		}
+	case 23:
+		starlarkDollar = starlarkS[starlarkpt-1 : starlarkpt+1]
+//line parser.y:169
+		{
+			starlarkVAL.Comment = &Comment{starlarkDollar[1].token, false}
+		}
+	case 24:
+		starlarkDollar = starlarkS[starlarkpt-1 : starlarkpt+1]
+//line parser.y:171
+		{
+			starlarkVAL.Comment = &Comment{starlarkDollar[1].token, true}
+		}
+	case 25:
+		starlarkDollar = starlarkS[starlarkpt-1 : starlarkpt+1]
+//line parser.y:179
+		{
+			starlarkVAL.Return = &Return{starlarkDollar[1].token}
+		}
+	case 26:
+		starlarkDollar = starlarkS[starlarkpt-4 : starlarkpt+1]
+//line parser.y:187
+		{
+			starlarkVAL.Load = &Load{Fields: starlarkDollar[3].arr}
+		}
+	case 27:
+		starlarkDollar = starlarkS[starlarkpt-1 : starlarkpt+1]
+//line parser.y:191
+		{
+			starlarkVAL.arr = syntax.Array{starlarkDollar[1].val}
+		}
+	case 28:
+		starlarkDollar = starlarkS[starlarkpt-3 : starlarkpt+1]
+//line parser.y:193
+		{
+			starlarkVAL.arr = append(starlarkDollar[1].arr, starlarkDollar[3].val)
+		}
+	case 29:
+		starlarkDollar = starlarkS[starlarkpt-1 : starlarkpt+1]
+//line parser.y:198
+		{
+			starlarkVAL.val = syntax.Array{syntax.Null_{}, starlarkDollar[1].token.String()}
+		}
+	case 30:
+		starlarkDollar = starlarkS[starlarkpt-3 : starlarkpt+1]
+//line parser.y:201
+		{
+			starlarkVAL.val = syntax.Array{starlarkDollar[1].token.Ident(), starlarkDollar[3].token.String()}
+		}
+	case 31:
+		starlarkDollar = starlarkS[starlarkpt-8 : starlarkpt+1]
+//line parser.y:209
+		{
+			starlarkVAL.Module = &Module{
+				Ident:  starlarkDollar[1].token.Ident(),
+				Name:   starlarkDollar[5].token.String(),
+				Fields: starlarkDollar[7].arr,
+			}
+		}
+	case 32:
+		starlarkDollar = starlarkS[starlarkpt-6 : starlarkpt+1]
+//line parser.y:215
+		{
+			starlarkVAL.Module = &Module{
+				Ident: starlarkDollar[1].token.Ident(),
+				Name:  starlarkDollar[5].token.String(),
+			}
+		}
+	case 33:
+		starlarkDollar = starlarkS[starlarkpt-3 : starlarkpt+1]
+//line parser.y:222
+		{
+			starlarkVAL.arr = append(starlarkVAL.arr, starlarkDollar[3].DictField)
+		}
+	case 34:
+		starlarkDollar = starlarkS[starlarkpt-1 : starlarkpt+1]
+//line parser.y:224
+		{
+			starlarkVAL.arr = syntax.Array{starlarkDollar[1].DictField}
+		}
+	case 35:
+		starlarkDollar = starlarkS[starlarkpt-4 : starlarkpt+1]
+//line parser.y:228
+		{
+			starlarkVAL.CallFunc = &CallFunc{
+				Name:   starlarkDollar[1].token.Ident(),
+				Fields: starlarkDollar[3].arr,
+			}
+		}
+	case 36:
+		starlarkDollar = starlarkS[starlarkpt-4 : starlarkpt+1]
+//line parser.y:233
+		{
+			starlarkVAL.CallFunc = &CallFunc{
+				Name:             starlarkDollar[1].token.Ident(),
+				ArbitraryArrArgs: starlarkDollar[3].arr,
+			}
+		}
+	case 37:
+		starlarkDollar = starlarkS[starlarkpt-4 : starlarkpt+1]
+//line parser.y:238
+		{
+			starlarkVAL.CallFunc = &CallFunc{
+				Name:               starlarkDollar[1].token.Ident(),
+				ArbitraryNamedArgs: starlarkDollar[3].DictFields,
+			}
+		}
+	case 38:
+		starlarkDollar = starlarkS[starlarkpt-3 : starlarkpt+1]
+//line parser.y:246
+		{
+			starlarkVAL.arr = append(starlarkDollar[1].arr, starlarkDollar[3].val)
+		}
+	case 39:
+		starlarkDollar = starlarkS[starlarkpt-1 : starlarkpt+1]
+//line parser.y:248
+		{
+			starlarkVAL.arr = syntax.Array{starlarkDollar[1].val}
+		}
+	case 40:
+		starlarkDollar = starlarkS[starlarkpt-1 : starlarkpt+1]
+//line parser.y:252
+		{
+			starlarkVAL.val = starlarkDollar[1].DictField
+		}
+	case 41:
+		starlarkDollar = starlarkS[starlarkpt-1 : starlarkpt+1]
+//line parser.y:254
+		{
+			starlarkVAL.val = starlarkDollar[1].val
+		}
+	case 42:
+		starlarkDollar = starlarkS[starlarkpt-5 : starlarkpt+1]
+//line parser.y:258
+		{
+			starlarkVAL.arr = starlarkDollar[4].arr
+		}
+	case 43:
+		starlarkDollar = starlarkS[starlarkpt-3 : starlarkpt+1]
+//line parser.y:261
+		{
+			starlarkVAL.DictFields = starlarkDollar[3].DictFields
+		}
+	case 44:
+		starlarkDollar = starlarkS[starlarkpt-1 : starlarkpt+1]
+//line parser.y:269
+		{
+			starlarkVAL.val = starlarkDollar[1].token.Ident()
+		}
+	case 45:
+		starlarkDollar = starlarkS[starlarkpt-3 : starlarkpt+1]
+//line parser.y:271
+		{
+			starlarkVAL.val = starlarkDollar[1].val.(syntax.Ident_).Append(starlarkDollar[3].token.Ident())
+		}
+	case 46:
+		starlarkDollar = starlarkS[starlarkpt-1 : starlarkpt+1]
+//line parser.y:275
+		{
+			starlarkVAL.val = starlarkDollar[1].token.String()
+		}
+	case 47:
+		starlarkDollar = starlarkS[starlarkpt-1 : starlarkpt+1]
+//line parser.y:277
+		{
+			starlarkVAL.val = starlarkDollar[1].token.Bool()
+		}
+	case 48:
+		starlarkDollar = starlarkS[starlarkpt-1 : starlarkpt+1]
+//line parser.y:279
+		{
+			starlarkVAL.val = starlarkDollar[1].token.Int()
+		}
+	case 49:
+		starlarkDollar = starlarkS[starlarkpt-1 : starlarkpt+1]
+//line parser.y:281
+		{
+			starlarkVAL.val = starlarkDollar[1].token.Float()
+		}
+	case 50:
+		starlarkDollar = starlarkS[starlarkpt-1 : starlarkpt+1]
+//line parser.y:283
+		{
+			starlarkVAL.val = starlarkDollar[1].token.Null()
+		}
+	case 51:
+		starlarkDollar = starlarkS[starlarkpt-3 : starlarkpt+1]
+//line parser.y:288
+		{
+			// TODO: it is tuple
+			starlarkVAL.arr = starlarkDollar[2].arr
+		}
+	case 52:
+		starlarkDollar = starlarkS[starlarkpt-3 : starlarkpt+1]
+//line parser.y:291
+		{
+			// TODO: it is list
+			starlarkVAL.arr = starlarkDollar[2].arr
+		}
+	case 53:
+		starlarkDollar = starlarkS[starlarkpt-2 : starlarkpt+1]
+//line parser.y:294
+		{
+			starlarkVAL.arr = syntax.Array{}
+		}
+	case 54:
+		starlarkDollar = starlarkS[starlarkpt-2 : starlarkpt+1]
+//line parser.y:296
+		{
+			starlarkVAL.arr = syntax.Array{}
+		}
+	case 55:
+		starlarkDollar = starlarkS[starlarkpt-1 : starlarkpt+1]
+//line parser.y:300
+		{
+			starlarkVAL.arr = syntax.Array{starlarkDollar[1].val}
+		}
+	case 56:
+		starlarkDollar = starlarkS[starlarkpt-3 : starlarkpt+1]
+//line parser.y:302
+		{
+			starlarkDollar[1].arr.Add(starlarkDollar[3].val)
+			starlarkVAL.arr = starlarkDollar[1].arr
+		}
+	case 57:
+		starlarkDollar = starlarkS[starlarkpt-1 : starlarkpt+1]
+//line parser.y:307
+		{
+			starlarkVAL.val = starlarkDollar[1].val
+		}
+	case 58:
+		starlarkDollar = starlarkS[starlarkpt-1 : starlarkpt+1]
+//line parser.y:309
+		{
+			starlarkVAL.val = starlarkDollar[1].arr
+		}
+	case 59:
+		starlarkDollar = starlarkS[starlarkpt-1 : starlarkpt+1]
+//line parser.y:311
+		{
+			starlarkVAL.val = starlarkDollar[1].map_
+		}
+	case 60:
+		starlarkDollar = starlarkS[starlarkpt-1 : starlarkpt+1]
+//line parser.y:313
+		{
+			starlarkVAL.val = starlarkDollar[1].val
+		}
+	case 61:
+		starlarkDollar = starlarkS[starlarkpt-1 : starlarkpt+1]
+//line parser.y:315
+		{
+			starlarkVAL.val = starlarkDollar[1].CallFunc
+		}
+	case 62:
+		starlarkDollar = starlarkS[starlarkpt-1 : starlarkpt+1]
+//line parser.y:317
+		{
+			starlarkVAL.val = starlarkDollar[1].DictFields
+		}
+	case 63:
+		starlarkDollar = starlarkS[starlarkpt-2 : starlarkpt+1]
+//line parser.y:321
+		{
+			starlarkVAL.map_ = syntax.Map{}
+		}
+	case 64:
+		starlarkDollar = starlarkS[starlarkpt-3 : starlarkpt+1]
+//line parser.y:323
+		{
+			starlarkVAL.map_ = syntax.Map{}
+			for _, item := range starlarkDollar[2].arr {
+				key := item.(syntax.Array)[0]
+				switch in := key.(type) {
+				case syntax.StringLiteral:
+					starlarkVAL.map_.Keys = append(starlarkVAL.map_.Keys, string(in))
+				case syntax.Ident_:
+					if len(in) > 0 {
+						starlarkVAL.map_.Keys = append(starlarkVAL.map_.Keys, "@"+strings.Join(in, "."))
+					} else {
+						starlarkVAL.map_.Keys = append(starlarkVAL.map_.Keys, "")
+					}
+				case nil:
+					starlarkVAL.map_.Keys = append(starlarkVAL.map_.Keys, "")
+				default:
+					log.Printf("starlark#Fields: not supported key type %T\n", key)
+				}
+				starlarkVAL.map_.Values.Add(item.(syntax.Array)[1])
+			}
+		}
+	case 65:
+		starlarkDollar = starlarkS[starlarkpt-1 : starlarkpt+1]
+//line parser.y:345
+		{
+			starlarkVAL.arr = syntax.Array{starlarkDollar[1].arr}
+		}
+	case 66:
+		starlarkDollar = starlarkS[starlarkpt-3 : starlarkpt+1]
+//line parser.y:347
+		{
+			starlarkDollar[1].arr.Add(starlarkDollar[3].arr)
+			starlarkVAL.arr = starlarkDollar[1].arr
+		}
+	case 67:
+		starlarkDollar = starlarkS[starlarkpt-3 : starlarkpt+1]
+//line parser.y:352
+		{
+			starlarkVAL.arr = syntax.Array{starlarkDollar[1].token.String(), starlarkDollar[3].val}
+		}
+	case 68:
+		starlarkDollar = starlarkS[starlarkpt-3 : starlarkpt+1]
+//line parser.y:354
+		{
+			starlarkVAL.arr = syntax.Array{starlarkDollar[1].val, starlarkDollar[3].arr}
+		}
+	case 69:
+		starlarkDollar = starlarkS[starlarkpt-3 : starlarkpt+1]
+//line parser.y:356
+		{
+			starlarkVAL.arr = syntax.Array{starlarkDollar[1].val, starlarkDollar[3].val}
+		}
+	case 70:
+		starlarkDollar = starlarkS[starlarkpt-3 : starlarkpt+1]
+//line parser.y:358
+		{
+			starlarkVAL.arr = syntax.Array{starlarkDollar[1].val, starlarkDollar[3].map_}
+		}
+	case 71:
+		starlarkDollar = starlarkS[starlarkpt-3 : starlarkpt+1]
+//line parser.y:360
+		{
+			starlarkVAL.arr = syntax.Array{starlarkDollar[1].val, starlarkDollar[3].CallFunc}
+		}
+	case 72:
+		starlarkDollar = starlarkS[starlarkpt-7 : starlarkpt+1]
+//line parser.y:362
+		{
+			starlarkVAL.arr = syntax.Array{starlarkDollar[1].val, starlarkDollar[3].CallFunc}
+		}
+	case 73:
+		starlarkDollar = starlarkS[starlarkpt-4 : starlarkpt+1]
+//line parser.y:366
+		{
+			starlarkVAL.DictFields = starlarkDollar[3].DictFields
+		}
+	case 74:
+		starlarkDollar = starlarkS[starlarkpt-3 : starlarkpt+1]
+//line parser.y:370
+		{
+			starlarkVAL.DictFields = append(starlarkDollar[1].DictFields, starlarkDollar[3].DictField)
+		}
+	case 75:
+		starlarkDollar = starlarkS[starlarkpt-1 : starlarkpt+1]
+//line parser.y:372
+		{
+			starlarkVAL.DictFields = []*DictField{starlarkDollar[1].DictField}
+		}
+	case 76:
+		starlarkDollar = starlarkS[starlarkpt-3 : starlarkpt+1]
+//line parser.y:377
+		{
+			starlarkVAL.DictField = &DictField{Key: starlarkDollar[1].val, Value: starlarkDollar[3].val}
+		}
+	case 77:
+		starlarkDollar = starlarkS[starlarkpt-3 : starlarkpt+1]
+//line parser.y:380
+		{
+			starlarkVAL.DictField = &DictField{Key: starlarkDollar[1].val, Value: starlarkDollar[3].val}
+		}
+	case 78:
+		starlarkDollar = starlarkS[starlarkpt-3 : starlarkpt+1]
+//line parser.y:383
+		{
+			starlarkVAL.DictField = &DictField{Key: starlarkDollar[1].val, Value: starlarkDollar[3].arr}
+		}
+	case 79:
+		starlarkDollar = starlarkS[starlarkpt-3 : starlarkpt+1]
+//line parser.y:386
+		{
+			starlarkVAL.DictField = &DictField{Key: starlarkDollar[1].val, Value: starlarkDollar[3].map_}
+		}
+	case 80:
+		starlarkDollar = starlarkS[starlarkpt-3 : starlarkpt+1]
+//line parser.y:389
+		{
+			starlarkVAL.DictField = &DictField{Key: starlarkDollar[1].val, ValueCallFn: starlarkDollar[3].CallFunc}
+		}
+	case 81:
+		starlarkDollar = starlarkS[starlarkpt-3 : starlarkpt+1]
+//line parser.y:392
+		{
+			starlarkVAL.DictField = &DictField{Key: starlarkDollar[1].val, ValueDict: starlarkDollar[3].DictFields}
 		}
 	}
 	goto starlarkstack /* stack new state and value */

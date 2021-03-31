@@ -4,107 +4,117 @@ import (
 	"fmt"
 
 	"github.com/fader4/okdoc/syntax"
+	"github.com/pkg/errors"
 )
 
-func Parse(dat []byte) ([]*syntax.CompositeToken, error) {
+type Token struct {
+	*syntax.CompositeToken
+}
+
+func Parse(dat []byte) ([]*Token, error) {
 	lex, err := newPreprocessing([]byte(dat))
 	if err != nil {
 		return nil, err
 	}
 
-	lexForParser := &starlarkLex{
-		LexIter: syntax.NewLexIter(lex, "def", "comment", "return", "load", "module"),
-		debug:   true,
-	}
+	iter := syntax.NewLexIter(lex, "def", "comment", "return", "load", "module")
 
-	var tokens = []*syntax.CompositeToken{}
+	var tokens = []*Token{}
 	var startToken *syntax.Token
-	container := &starlarkSymType{}
+
 	for {
-		symbol := lexForParser.Lex(container)
-		if symbol == 0 {
+		token := iter.Next()
+		if token == nil {
 			break
 		}
 
-		switch symbol {
+		switch token.Symbol {
+		case commentMultiline, def, load, module:
+			startToken = token
+
 		case returnKeyword:
 			newToken := &syntax.CompositeToken{
-				Start:  container.token.Token,
-				End:    container.token.Token,
+				Start:  token,
+				End:    token,
 				Lex:    lex,
 				Symbol: returnKeyword,
 			}
-			tokens = append(tokens, newToken)
+			tokens = append(tokens, &Token{newToken})
 		case commentInline:
 			newToken := &syntax.CompositeToken{
-				Start:  container.token.Token,
-				End:    container.token.Token,
+				Start:  token,
+				End:    token,
 				Lex:    lex,
 				Symbol: commentInline,
 			}
-			tokens = append(tokens, newToken)
-		case commentMultiline, def, load, module:
-			startToken = container.token.Token
+			tokens = append(tokens, &Token{newToken})
 		case endModule:
 			newToken := &syntax.CompositeToken{
 				Start:  startToken,
-				End:    container.token.Token,
+				End:    token,
 				Lex:    lex,
 				Symbol: module,
 			}
-			tokens = append(tokens, newToken)
+			tokens = append(tokens, &Token{newToken})
 		case endCommentMultiline:
 			newToken := &syntax.CompositeToken{
 				Start:  startToken,
-				End:    container.token.Token,
+				End:    token,
 				Lex:    lex,
 				Symbol: commentMultiline,
 			}
-			tokens = append(tokens, newToken)
+			tokens = append(tokens, &Token{newToken})
 		case endLoad:
 			newToken := &syntax.CompositeToken{
 				Start:  startToken,
-				End:    container.token.Token,
+				End:    token,
 				Lex:    lex,
 				Symbol: load,
 			}
-			tokens = append(tokens, newToken)
+			tokens = append(tokens, &Token{newToken})
 		case endDef:
 			newToken := &syntax.CompositeToken{
 				Start:  startToken,
-				End:    container.token.Token,
+				End:    token,
 				Lex:    lex,
 				Symbol: def,
 			}
-			tokens = append(tokens, newToken)
+			tokens = append(tokens, &Token{newToken})
 		}
 	}
 
 	return tokens, nil
 }
 
-// func Parse(dat []byte) error {
-// 	lex, err := newTokenizer(dat)
-// 	if err != nil {
-// 		return errors.Wrap(err, "tokenization error")
-// 	}
-// 	interestedTokens := []string{
-// 		"bracket",
-// 		"op_and_punct",
-// 		"ident",
-// 		"literal",
-// 		"comment",
-// 	}
-// 	lexer := &starlarkLex{
-// 		LexIter: syntax.NewLexIter(lex, interestedTokens...),
-// 		debug:   true,
-// 	}
-// 	out := starlarkParse(lexer)
-// 	if out != 0 {
-// 		return fmt.Errorf("parser error: %v", lexer.Errors)
-// 	}
-// 	return nil
-// }
+func (t *Token) Parse() error {
+	lex, err := newTokenizer(t.MustBytes())
+	if err != nil {
+		return errors.Wrap(err, "tokenization error")
+	}
+	interestedTokens := []string{
+		"bracket",
+		"literal",
+		"ident",
+		"op_and_punct",
+		"dict",
+
+		"comment",
+		"def",
+		"load",
+		"module",
+		"return",
+	}
+	lexer := &starlarkLex{
+		LexIter: syntax.NewLexIter(lex, interestedTokens...),
+		debug:   true,
+		// refToken: t,
+	}
+	out := starlarkParse(lexer)
+	if out != 0 {
+		return fmt.Errorf("parser error: %v", lexer.Errors)
+	}
+	return nil
+}
 
 type starlarkLex struct {
 	*syntax.LexIter

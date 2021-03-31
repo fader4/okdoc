@@ -9,10 +9,7 @@ import (
 
 func TestParse(t *testing.T) {
 	v1 := `
-load(
-	"foo",
-	bar = "baz"
-)
+load("a", b = "c", "qw")
 
 # inline comment
 
@@ -20,13 +17,19 @@ foo = module(
 	"bar"
 )
 
+foo = module(
+	"bar",
+	a = "b",
+	arr = 1,
+	ar = f(**dict(c=7, obj=dict(c=7, a=2, b=3), a=2, b=3, fn=f(**dict(c=7, a=2, b=3)))),
+	dic = dict(c=7, a=2, b=3)
+)
+
 """
 Free comment
 """
 
-def main(
-	ctx=(1,2,3)
-	):
+def main(ctx=(1,2,3) , **kwargs):
 	"""
 	Inline comment into method
 	"""
@@ -44,5 +47,7 @@ def main(
 		str, err := token.HumanString()
 		assert.NoError(t, err)
 		fmt.Println(str)
+		err = token.Parse()
+		assert.NoError(t, err)
 	}
 }

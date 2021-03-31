@@ -29,15 +29,22 @@ import (
     WhiteSpace = [ \t] @incLineWhiteSpaces;
     NewLine    = [\n\r] @incLine;
 
+    defKeyword = "def";
+    moduleKeyword = "module";
+    loadKeyword = "load";
+    returnKeyword = "return";
+    dictKeyword = "dict";
+    keywords = defKeyword | moduleKeyword | loadKeyword | returnKeyword | dictKeyword;
+
     CommentInline = "#" [^\r\n]*;
-    CommentMultiline1 = "'''" (NewLine|any)* :>> "'''";
-    CommentMultiline2 = '"""' (NewLine|any)* :>> '"""';
+    tripleQuoted = "'''" | '"""';
+    CommentMultiline = tripleQuoted (NewLine|any)* :>> tripleQuoted;
 
     Int      = [0-9]+;
     Float    = (([1-9] [0-9]* [.] [0-9]*) | (0? [.] [0-9]+)) ([Ee] [+\-]? [0-9]+)?;
     Null     = "Null";
     Bool     = "True"|"False";
-    Ident    = ([a-zA-Z_] [a-zA-Z0-9_]*) - Bool - Null;
+    Ident    = ([a-zA-Z_] [a-zA-Z0-9_]*) - Bool - Null - keywords;
 
     singleQuoteString := |*
         ['] => {
@@ -72,11 +79,25 @@ import (
         CommentInline => {
             lex.ReleaseToken(commentInline, "comment")
         };
-        # CommentMultiline1|CommentMultiline2 => {
-        #    lex.ReleaseToken(commentMultiline, "comment")
-        #};
-
-        [=,.:] => {
+        defKeyword => {
+            lex.ReleaseToken(def, "def")
+        };
+        dictKeyword => {
+            lex.ReleaseToken(dict, "dict")
+        };
+        moduleKeyword => {
+            lex.ReleaseToken(module, "module")
+        };
+        loadKeyword => {
+            lex.ReleaseToken(load, "load")
+        };
+        returnKeyword => {
+            lex.ReleaseToken(returnKeyword, "return")
+        };
+        CommentMultiline => {
+            lex.ReleaseToken(commentMultiline, "comment")
+        };
+        [=,.:*] => {
             lex.ReleaseSymbol("op_and_punct")
         };
 

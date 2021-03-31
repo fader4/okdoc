@@ -132,27 +132,23 @@ func Parse(dat []byte) ([]*Annotation, error) {
 	if err != nil {
 		return nil, err
 	}
-	lexForParser := &annotationLex{
-		LexIter: syntax.NewLexIter(lex, "annotation"),
-		// debug:   true,
-	}
+	iter := syntax.NewLexIter(lex, "annotation")
 
 	var annotations = []*Annotation{}
 	var startToken *syntax.Token
-	container := &annotationSymType{}
 	for {
-		symbol := lexForParser.Lex(container)
-		if symbol == 0 {
+		token := iter.Next()
+		if token == nil {
 			break
 		}
 
-		switch symbol {
+		switch token.Symbol {
 		case beginAnnotation:
-			startToken = container.token.Token
+			startToken = token
 		case endAnnotation:
 			annot := &Annotation{
 				Start: startToken,
-				End:   container.token.Token,
+				End:   token,
 				lex:   lex,
 			}
 			if err := annot.Parse(); err != nil {
