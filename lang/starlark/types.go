@@ -46,6 +46,11 @@ type CallFunc struct {
 	ArbitraryNamedArgs []*DictField
 }
 
+func (f CallFunc) FuncName() string {
+	// без @
+	return f.Name.String()[1:]
+}
+
 type DictField struct {
 	Key         syntax.Value
 	Value       syntax.Value

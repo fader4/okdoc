@@ -9,6 +9,14 @@ import (
 
 type Token struct {
 	*syntax.CompositeToken
+
+	Atoms []*syntax.Token
+
+	Comment *Comment
+	Return  *Return
+	Load    *Load
+	Module  *Module
+	Def     *Def
 }
 
 func Parse(dat []byte) ([]*Token, error) {
@@ -39,7 +47,7 @@ func Parse(dat []byte) ([]*Token, error) {
 				Lex:    lex,
 				Symbol: returnKeyword,
 			}
-			tokens = append(tokens, &Token{newToken})
+			tokens = append(tokens, &Token{CompositeToken: newToken})
 		case commentInline:
 			newToken := &syntax.CompositeToken{
 				Start:  token,
@@ -47,7 +55,7 @@ func Parse(dat []byte) ([]*Token, error) {
 				Lex:    lex,
 				Symbol: commentInline,
 			}
-			tokens = append(tokens, &Token{newToken})
+			tokens = append(tokens, &Token{CompositeToken: newToken})
 		case endModule:
 			newToken := &syntax.CompositeToken{
 				Start:  startToken,
@@ -55,7 +63,7 @@ func Parse(dat []byte) ([]*Token, error) {
 				Lex:    lex,
 				Symbol: module,
 			}
-			tokens = append(tokens, &Token{newToken})
+			tokens = append(tokens, &Token{CompositeToken: newToken})
 		case endCommentMultiline:
 			newToken := &syntax.CompositeToken{
 				Start:  startToken,
@@ -63,7 +71,7 @@ func Parse(dat []byte) ([]*Token, error) {
 				Lex:    lex,
 				Symbol: commentMultiline,
 			}
-			tokens = append(tokens, &Token{newToken})
+			tokens = append(tokens, &Token{CompositeToken: newToken})
 		case endLoad:
 			newToken := &syntax.CompositeToken{
 				Start:  startToken,
@@ -71,7 +79,7 @@ func Parse(dat []byte) ([]*Token, error) {
 				Lex:    lex,
 				Symbol: load,
 			}
-			tokens = append(tokens, &Token{newToken})
+			tokens = append(tokens, &Token{CompositeToken: newToken})
 		case endDef:
 			newToken := &syntax.CompositeToken{
 				Start:  startToken,
@@ -79,7 +87,7 @@ func Parse(dat []byte) ([]*Token, error) {
 				Lex:    lex,
 				Symbol: def,
 			}
-			tokens = append(tokens, &Token{newToken})
+			tokens = append(tokens, &Token{CompositeToken: newToken})
 		}
 	}
 
@@ -107,7 +115,7 @@ func (t *Token) Parse() error {
 	lexer := &starlarkLex{
 		LexIter: syntax.NewLexIter(lex, interestedTokens...),
 		debug:   true,
-		// refToken: t,
+		Token:   t,
 	}
 	out := starlarkParse(lexer)
 	if out != 0 {
@@ -119,6 +127,7 @@ func (t *Token) Parse() error {
 type starlarkLex struct {
 	*syntax.LexIter
 	debug bool
+	*Token
 }
 
 func (l *starlarkLex) Lex(out *starlarkSymType) (symbol int) {
@@ -126,6 +135,7 @@ func (l *starlarkLex) Lex(out *starlarkSymType) (symbol int) {
 	if token == nil {
 		return 0
 	}
+	l.Atoms = append(l.Atoms, token)
 	out.token = &syntax.TokenWithData{token, l.LexIter.Lex()}
 
 	if l.debug {

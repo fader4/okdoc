@@ -98,6 +98,10 @@ func (m Ident_) MarshalJSON() ([]byte, error) {
 	return json.Marshal("@" + strings.Join(m, "."))
 }
 
+func (m Ident_) String() string {
+	return "@" + strings.Join(m, ".")
+}
+
 func String(in []byte) StringLiteral {
 	return StringLiteral(string(in))
 }

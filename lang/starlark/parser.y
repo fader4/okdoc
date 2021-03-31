@@ -2,7 +2,6 @@
 package starlark
 
 import (
-    "fmt"
     "log"
     "github.com/fader4/okdoc/syntax"
     "strings"
@@ -70,15 +69,20 @@ doc : Content;
 
 Content: /*empty*/ {
 } | Content Comment {
-    fmt.Printf("Comment %T: %q\n", $2, string($2.MustBytes()))
+    starlarklex.(*starlarkLex).Comment = $2
+    // fmt.Printf("Comment %T: %q\n", $2, string($2.MustBytes()))
 } | Content Return {
-    fmt.Printf("Return %T: %q\n", $2, string($2.MustBytes()))
+    starlarklex.(*starlarkLex).Return = $2
+    // fmt.Printf("Return %T: %q\n", $2, string($2.MustBytes()))
 } | Content Load {
-    fmt.Printf("Load %T: %d\n", $2, len($2.Fields))
+    starlarklex.(*starlarkLex).Load = $2
+    // fmt.Printf("Load %T: %d\n", $2, len($2.Fields))
 } | Content Module {
-    fmt.Printf("Module %T: %d\n", $2, len($2.Fields))
+    starlarklex.(*starlarkLex).Module = $2
+    // fmt.Printf("Module %T: %d\n", $2, len($2.Fields))
 } | Content Def {
-    fmt.Printf("Def %T: %d\n", $2, len($2.Fields))
+    starlarklex.(*starlarkLex).Def = $2
+    // fmt.Printf("Def %T: %d\n", $2, len($2.Fields))
 };
 
 //////////////////
@@ -95,6 +99,8 @@ DefFields: DefField {
     $$ = []*DefField{$1}
 } | DefFields ',' DefField {
     $$ = append($1, $3)
+} | DefFields ',' {
+    $$ = $1
 };
 
 DefField:
@@ -192,6 +198,8 @@ LoadFields: LoadField {
     $$ = syntax.Array{$1}
 } | LoadFields ',' LoadField {
     $$ = append($1, $3)
+} | LoadFields ',' {
+    $$ = $1
 };
 
 LoadField:
@@ -223,6 +231,8 @@ ModuleFields: ModuleFields ',' DictField {
     $$ = append($$, $3)
 } | DictField {
     $$ = syntax.Array{$1}
+} | ModuleFields ',' {
+    $$ = $1
 };
 
 CallFunc: ident '(' CallFuncArgs ')'  {
@@ -247,6 +257,8 @@ CallFuncArgs:
         $$ = append($1, $3)
     } | CallFuncArg {
         $$ = syntax.Array{$1}
+    } | CallFuncArgs  ',' {
+        $$ = $1
     };
 
 CallFuncArg: DictField {
@@ -302,6 +314,8 @@ ArrayFields: ArrayField {
 } | ArrayFields ',' ArrayField {
     $1.Add($3)
     $$ = $1
+} | ArrayFields ',' {
+    $$ = $1
 };
 
 ArrayField: Literal {
@@ -347,6 +361,8 @@ StructFields: StructField {
 } | StructFields ',' StructField {
     $1.Add($3)
     $$ = $1
+} | StructFields ',' {
+    $$ = $1
 };
 
 StructField: stringLiteral ':' Literal {
@@ -371,6 +387,8 @@ DictFields: DictFields ',' DictField {
     $$ = append($1, $3)
 } | DictField {
     $$ = []*DictField{$1}
+} | DictFields ',' {
+    $$ = $1
 };
 
 DictField:
