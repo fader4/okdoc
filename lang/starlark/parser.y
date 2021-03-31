@@ -165,6 +165,12 @@ DefField:
             Key: $1,
             Value: $3,
         }
+    } |
+    Ident '=' CallFunc {
+        $$ = &DefField{
+            Key: $1,
+            Value: $3,
+        }
     }
 ;
 

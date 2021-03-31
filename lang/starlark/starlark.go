@@ -114,8 +114,8 @@ func (t *Token) Parse() error {
 	}
 	lexer := &starlarkLex{
 		LexIter: syntax.NewLexIter(lex, interestedTokens...),
-		debug:   true,
-		Token:   t,
+		// debug:   true,
+		Token: t,
 	}
 	out := starlarkParse(lexer)
 	if out != 0 {

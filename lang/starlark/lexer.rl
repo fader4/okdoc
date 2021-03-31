@@ -76,6 +76,10 @@ import (
         WhiteSpace;
         NewLine;
 
+        "''"|'""' => {
+            lex.ReleaseToken(stringLiteral, "literal", "string")
+        };
+
         CommentInline => {
             lex.ReleaseToken(commentInline, "comment")
         };

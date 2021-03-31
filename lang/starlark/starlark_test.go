@@ -8,38 +8,6 @@ import (
 )
 
 func TestParse(t *testing.T) {
-	_ = `
-load("a", b = "c", "qw")
-
-# inline comment
-
-foo = module(
-	"bar"
-)
-
-foo = module(
-	"bar",
-	a = "b",
-	arr = 1,
-	ar = f(**dict(c=7, obj=dict(c=7, a=2, b=3), a=2, b=3, fn=f(**dict(c=7, a=2, b=3)))),
-	dic = dict(c=7, a=2, b=3)
-)
-
-"""
-Free comment
-"""
-
-def main(ctx=(1,2,3) , **kwargs):
-	"""
-	Inline comment into method
-	"""
-
-	if False:
-		# inline comment
-		return False
-
-	return True
-`
 	res, err := Parse([]byte(f1))
 	assert.NoError(t, err)
 	fmt.Println("---- list tokens ----")
@@ -204,4 +172,37 @@ shared_storage = module(
 	task_scripts_by_mitre_code = _shared_storage_task_scripts_by_mitre_code,
 	kv_by_name = _shared_storage_kv_by_name,
 )
+`
+
+const f2 = `
+load("a", b = "c", "qw")
+
+# inline comment
+
+foo = module(
+	"bar"
+)
+
+foo = module(
+	"bar",
+	a = "b",
+	arr = 1,
+	ar = f(**dict(c=7, obj=dict(c=7, a=2, b=3), a=2, b=3, fn=f(**dict(c=7, a=2, b=3)))),
+	dic = dict(c=7, a=2, b=3)
+)
+
+"""
+Free comment
+"""
+
+def main(ctx=(1,2,3) , **kwargs):
+	"""
+	Inline comment into method
+	"""
+
+	if False:
+		# inline comment
+		return False
+
+	return True
 `
