@@ -1,4 +1,4 @@
-package annotation
+package syntax
 
 import (
 	"encoding/json"
@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_TypesMarshal(t *testing.T) {
+func Test_TypesMarshalJSON(t *testing.T) {
 	m1 := Map{
 		Keys: []string{
 			"str",

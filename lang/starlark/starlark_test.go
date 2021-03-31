@@ -1,6 +1,7 @@
 package starlark
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -38,10 +39,10 @@ def main(
 `
 	res, err := Parse([]byte(v1))
 	assert.NoError(t, err)
-	fmtPrintln("---- list tokens ----")
+	fmt.Println("---- list tokens ----")
 	for _, token := range res {
 		str, err := token.HumanString()
 		assert.NoError(t, err)
-		fmtPrintln(str)
+		fmt.Println(str)
 	}
 }

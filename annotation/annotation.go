@@ -15,7 +15,7 @@ import (
 type Annotation struct {
 	Start, End *syntax.Token
 
-	name   Ident_
+	name   syntax.Ident_
 	fields AnnotationFields
 
 	// ref to source data
@@ -77,20 +77,20 @@ func (a Annotation) Name() string {
 	return a.name[0]
 }
 
-func (a Annotation) Fields() Array {
-	res := Array{}
+func (a Annotation) Fields() syntax.Array {
+	res := syntax.Array{}
 	for _, field := range a.fields {
 		switch in := field.Key.(type) {
-		case StringLiteral:
-			res.Add(Array{in, field.Value})
-		case Ident_:
+		case syntax.StringLiteral:
+			res.Add(syntax.Array{in, field.Value})
+		case syntax.Ident_:
 			if len(in) > 0 {
-				res.Add(Array{in, field.Value})
+				res.Add(syntax.Array{in, field.Value})
 			} else {
-				res.Add(Array{Null_{}, field.Value})
+				res.Add(syntax.Array{syntax.Null_{}, field.Value})
 			}
 		case nil:
-			res.Add(Array{Null_{}, field.Value})
+			res.Add(syntax.Array{syntax.Null_{}, field.Value})
 		default:
 			log.Printf("Annotation#Fields: not supported key type %T\n", field.Key)
 		}
@@ -101,8 +101,8 @@ func (a Annotation) Fields() Array {
 type AnnotationFields []*AnnotationField
 
 type AnnotationField struct {
-	Key   Value
-	Value Value
+	Key   syntax.Value
+	Value syntax.Value
 }
 
 func (a *Annotation) Token() *syntax.Token {
@@ -176,7 +176,7 @@ func (l *annotationLex) Lex(out *annotationSymType) (symbol int) {
 	if token == nil {
 		return 0
 	}
-	out.token = &Token{token, l.LexIter.Lex()}
+	out.token = &syntax.TokenWithData{token, l.LexIter.Lex()}
 
 	if l.debug {
 		tokenBytesm, err := token.HumanString(l.LexIter.Lex().Data)

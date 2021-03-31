@@ -3,13 +3,14 @@ package starlark
 
 import (
     "fmt"
+    "github.com/fader4/okdoc/syntax"
 )
 
 %}
 
 
 %union {
-    token *Token
+    token *syntax.TokenWithData
 
 
     // val Value
@@ -22,7 +23,6 @@ ident '(' ')' '=' ',' '{' '}' '[' ']' '.'
 nullLiteral stringLiteral boolLiteral integerLiteral floatLiteral
 
 returnKeyword
-
 commentInline
 def endDef
 load endLoad

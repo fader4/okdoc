@@ -6,7 +6,7 @@ import (
 	"github.com/fader4/okdoc/syntax"
 )
 
-func Parse(dat []byte) ([]*CompositeToken, error) {
+func Parse(dat []byte) ([]*syntax.CompositeToken, error) {
 	lex, err := newPreprocessing([]byte(dat))
 	if err != nil {
 		return nil, err
@@ -17,7 +17,7 @@ func Parse(dat []byte) ([]*CompositeToken, error) {
 		debug:   true,
 	}
 
-	var tokens = []*CompositeToken{}
+	var tokens = []*syntax.CompositeToken{}
 	var startToken *syntax.Token
 	container := &starlarkSymType{}
 	for {
@@ -28,53 +28,53 @@ func Parse(dat []byte) ([]*CompositeToken, error) {
 
 		switch symbol {
 		case returnKeyword:
-			newToken := &CompositeToken{
-				Start: container.token.Token,
-				End:   container.token.Token,
-				lex:   lex,
-				Name:  "return",
+			newToken := &syntax.CompositeToken{
+				Start:  container.token.Token,
+				End:    container.token.Token,
+				Lex:    lex,
+				Symbol: returnKeyword,
 			}
 			tokens = append(tokens, newToken)
 		case commentInline:
-			newToken := &CompositeToken{
-				Start: container.token.Token,
-				End:   container.token.Token,
-				lex:   lex,
-				Name:  "inline comment",
+			newToken := &syntax.CompositeToken{
+				Start:  container.token.Token,
+				End:    container.token.Token,
+				Lex:    lex,
+				Symbol: commentInline,
 			}
 			tokens = append(tokens, newToken)
 		case commentMultiline, def, load, module:
 			startToken = container.token.Token
 		case endModule:
-			newToken := &CompositeToken{
-				Start: startToken,
-				End:   container.token.Token,
-				lex:   lex,
-				Name:  "module",
+			newToken := &syntax.CompositeToken{
+				Start:  startToken,
+				End:    container.token.Token,
+				Lex:    lex,
+				Symbol: module,
 			}
 			tokens = append(tokens, newToken)
 		case endCommentMultiline:
-			newToken := &CompositeToken{
-				Start: startToken,
-				End:   container.token.Token,
-				lex:   lex,
-				Name:  "multiline comment",
+			newToken := &syntax.CompositeToken{
+				Start:  startToken,
+				End:    container.token.Token,
+				Lex:    lex,
+				Symbol: commentMultiline,
 			}
 			tokens = append(tokens, newToken)
 		case endLoad:
-			newToken := &CompositeToken{
-				Start: startToken,
-				End:   container.token.Token,
-				lex:   lex,
-				Name:  "load",
+			newToken := &syntax.CompositeToken{
+				Start:  startToken,
+				End:    container.token.Token,
+				Lex:    lex,
+				Symbol: load,
 			}
 			tokens = append(tokens, newToken)
 		case endDef:
-			newToken := &CompositeToken{
-				Start: startToken,
-				End:   container.token.Token,
-				lex:   lex,
-				Name:  "def",
+			newToken := &syntax.CompositeToken{
+				Start:  startToken,
+				End:    container.token.Token,
+				Lex:    lex,
+				Symbol: def,
 			}
 			tokens = append(tokens, newToken)
 		}
@@ -116,7 +116,7 @@ func (l *starlarkLex) Lex(out *starlarkSymType) (symbol int) {
 	if token == nil {
 		return 0
 	}
-	out.token = &Token{token, l.LexIter.Lex()}
+	out.token = &syntax.TokenWithData{token, l.LexIter.Lex()}
 
 	if l.debug {
 		tokenBytesm, err := token.HumanString(l.LexIter.Lex().Data)

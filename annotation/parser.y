@@ -5,20 +5,21 @@ import (
     _ "fmt"
     "strings"
     "log"
+    "github.com/fader4/okdoc/syntax"
 )
 
 %}
 
 
 %union {
-    token *Token
+    token *syntax.TokenWithData
     annot *Annotation
     annotField *AnnotationField
     annotFields []*AnnotationField
 
-    val Value
-    arr Array
-    map_ Map
+    val syntax.Value
+    arr syntax.Array
+    map_ syntax.Map
 }
 
 %token <token>
@@ -112,7 +113,7 @@ Field:
 Ident: ident {
     $$ = $1.Ident()
 } | Ident '.' ident {
-    $$ = $1.(Ident_).Append($3.Ident())
+    $$ = $1.(syntax.Ident_).Append($3.Ident())
 };
 
 Literal: stringLiteral {
@@ -130,11 +131,11 @@ Literal: stringLiteral {
 Array: '[' ArrayFields ']' {
     $$ = $2
 } | '[' ']' {
-    $$ = Array{}
+    $$ = syntax.Array{}
 };
 
 ArrayFields: ArrayField {
-    $$ = Array{$1}
+    $$ = syntax.Array{$1}
 } | ArrayFields ',' ArrayField {
     $1.Add($3)
     $$ = $1
@@ -151,15 +152,15 @@ ArrayField: Literal {
 };
 
 Struct: '{' '}' {
-    $$ = Map{}
+    $$ = syntax.Map{}
 } | '{' StructFields '}' {
-    $$ = Map{}
+    $$ = syntax.Map{}
     for _, item := range $2 {
-        key := item.(Array)[0]
+        key := item.(syntax.Array)[0]
         switch in := key.(type) {
-            case StringLiteral:
+            case syntax.StringLiteral:
                 $$.Keys = append($$.Keys, string(in))
-            case Ident_:
+            case syntax.Ident_:
                 if len(in) > 0 {
                     $$.Keys = append($$.Keys, "@"+strings.Join(in, "."))
                 } else {
@@ -170,23 +171,23 @@ Struct: '{' '}' {
             default:
                 log.Printf("Annotation#Fields: not supported key type %T\n", key)
         }
-        $$.Values.Add(item.(Array)[1])
+        $$.Values.Add(item.(syntax.Array)[1])
     }
 };
 
 StructFields: StructField {
-    $$ = Array{$1}
+    $$ = syntax.Array{$1}
 } | StructFields ',' StructField {
     $1.Add($3)
     $$ = $1
 };
 
 StructField: Ident '=' Literal {
-    $$ = Array{$1, $3}
+    $$ = syntax.Array{$1, $3}
 } | Ident '=' Array {
-    $$ = Array{$1, $3}
+    $$ = syntax.Array{$1, $3}
 } | Ident '=' Ident {
-    $$ = Array{$1, $3}
+    $$ = syntax.Array{$1, $3}
 } | Ident '=' Struct {
-    $$ = Array{$1, $3}
+    $$ = syntax.Array{$1, $3}
 };

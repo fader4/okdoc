@@ -1,20 +1,55 @@
-package annotation
+package syntax
 
 import (
 	"encoding/json"
 	"log"
 	"strconv"
 	"strings"
-
-	"github.com/fader4/okdoc/syntax"
 )
 
-type Token struct {
-	*syntax.Token
-	*syntax.Lexer
+type CompositeToken struct {
+	Symbol     int
+	Start, End *Token
+
+	// ref to source data
+	Lex *Lexer
 }
 
-func (t *Token) MustBytes() []byte {
+func (a *CompositeToken) Token() *Token {
+	return &Token{
+		Symbol: a.Symbol,
+		Start:  a.Start.Start,
+		End:    a.End.End,
+		Pos:    a.Start.Pos,
+	}
+}
+
+func (t *CompositeToken) TokenWithData() *TokenWithData {
+	return &TokenWithData{
+		Token: t.Token(),
+		Lexer: t.Lex,
+	}
+}
+
+func (t *CompositeToken) MustBytes() []byte {
+	dat, err := t.Token().Bytes(t.Lex.Data)
+	if err != nil {
+		log.Println("starlark.CompositeToken#MustBytes failed get data:", err)
+		return []byte{}
+	}
+	return dat
+}
+
+func (t *CompositeToken) HumanString() (string, error) {
+	return t.Token().HumanString(t.Lex.Data)
+}
+
+type TokenWithData struct {
+	*Token
+	*Lexer
+}
+
+func (t *TokenWithData) MustBytes() []byte {
 	dat, err := t.Token.Bytes(t.Lexer.Data)
 	if err != nil {
 		log.Println("annotation.Token#MustBytes failed get data:", err)
@@ -23,27 +58,27 @@ func (t *Token) MustBytes() []byte {
 	return dat
 }
 
-func (t *Token) Ident() Ident_ {
+func (t *TokenWithData) Ident() Ident_ {
 	return Ident(t.MustBytes())
 }
 
-func (t *Token) String() StringLiteral {
+func (t *TokenWithData) String() StringLiteral {
 	return String(t.MustBytes())
 }
 
-func (t *Token) Int() IntLiteral {
+func (t *TokenWithData) Int() IntLiteral {
 	return Int(t.MustBytes())
 }
 
-func (t *Token) Null() Null_ {
+func (t *TokenWithData) Null() Null_ {
 	return Null_{}
 }
 
-func (t *Token) Float() FloatLiteral {
+func (t *TokenWithData) Float() FloatLiteral {
 	return Float(t.MustBytes())
 }
 
-func (t *Token) Bool() BoolLiteral {
+func (t *TokenWithData) Bool() BoolLiteral {
 	return Bool(t.MustBytes())
 }
 

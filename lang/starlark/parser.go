@@ -9,12 +9,13 @@ import __yyfmt__ "fmt"
 
 import (
 	"fmt"
+	"github.com/fader4/okdoc/syntax"
 )
 
-//line parser.y:11
+//line parser.y:12
 type starlarkSymType struct {
 	yys   int
-	token *Token
+	token *syntax.TokenWithData
 
 	// val Value
 	// arr Array
