@@ -8,7 +8,7 @@ import (
 )
 
 func TestParse(t *testing.T) {
-	res, err := Parse([]byte(f1))
+	res, err := Parse([]byte(f2))
 	assert.NoError(t, err)
 	fmt.Println("---- list tokens ----")
 	for _, token := range res {
@@ -18,30 +18,30 @@ func TestParse(t *testing.T) {
 		err = token.Parse()
 		assert.NoError(t, err)
 
-		// prettyToken(token)
+		prettyToken(token)
 	}
 }
 
 func prettyToken(token *Token) {
 	switch token.Token().Symbol {
+	case def:
+		fmt.Println("Def:")
+		def := token.Def
+		fmt.Println("\tName:", def.Name)
+		fmt.Println("\tNum fields:", len(def.Fields))
+		for _, field := range def.Fields {
+			fmt.Printf("\t\t Key: %v, Value: %v\n", field.Key, field.Value)
+		}
 	case module:
 		fmt.Println("Module:")
 		module := token.Module
 		fmt.Println("\tName:", module.Name)
-		fmt.Println("\tExport field:", module.Ident)
+		fmt.Println("\tExport field:", module.Export)
 		fmt.Println("\tNum fields:", len(module.Fields))
 		for _, field := range module.Fields {
-			kv := field.(*DictField)
+			field_ := field.(*Assign)
 
-			if kv.Value != nil {
-				fmt.Println("\t\t Key:", kv.Key, "Value:", kv.Value)
-			}
-			if kv.ValueCallFn != nil {
-				fmt.Println("\t\t Key:", kv.Key, "CallFunc:", kv.ValueCallFn.FuncName())
-			}
-			if kv.ValueDict != nil {
-				fmt.Println("\t\t Key:", kv.Key, "Dict")
-			}
+			fmt.Println("\t\t Key:", field_.Left, "Value:", field_.Right)
 		}
 	}
 }
@@ -186,9 +186,11 @@ foo = module(
 foo = module(
 	"bar",
 	a = "b",
-	arr = 1,
+	a = "b".sort(),
+	arr = 1 + 2,
 	ar = f(**dict(c=7, obj=dict(c=7, a=2, b=3), a=2, b=3, fn=f(**dict(c=7, a=2, b=3)))),
-	dic = dict(c=7, a=2, b=3)
+	dic = dict(c=7, a=2, b=3),
+	dic = {"a": "b", "c": 123, "d": {"a": "b", "c": 123}, "fn": f(**dict(c=7, obj=dict(c=7, a=2, b=3), a=2, b=3, fn=f(**dict(c=7, a=2, b=3))))}
 )
 
 """

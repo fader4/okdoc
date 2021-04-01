@@ -21,9 +21,9 @@ import (
     Def *Def
     DefField *DefField
     DefFields []*DefField
-    DictField *DictField
-    DictFields []*DictField
+    Assign *Assign
     CallFunc *CallFunc
+    Operand *Operand
 
     val syntax.Value
     arr syntax.Array
@@ -34,7 +34,7 @@ import (
 ident '(' ')' '=' ',' '{' '}' '[' ']' '.' '"' '\'' '*' ':'
 nullLiteral stringLiteral boolLiteral integerLiteral floatLiteral
 
-dict
+not
 returnKeyword
 commentInline
 def endDef
@@ -49,12 +49,12 @@ commentMultiline endCommentMultiline
 %type <Module> Module
 %type <DefField> DefField
 %type <DefFields> DefFields
-%type <DictField> DictField
-%type <DictFields> Dict DictFields ArbitraryNamedArgs
 %type <CallFunc> CallFunc
 %type <Def> Def
-%type <arr> LoadFields Array ArrayFields StructFields StructField ModuleFields CallFuncArgs ArbitraryArrArgs
-%type <val> Literal LoadField Ident ArrayField CallFuncArg
+%type <Operand> Operand
+%type <Assign> Assign
+%type <arr> LoadFields Array ArrayFields StructFields StructField ModuleFields CallFuncArgs
+%type <val> Literal LoadField CallFuncArg
 %type <map_> Struct
 
 // %type <val> Literal Ident ArrayField
@@ -67,106 +67,59 @@ commentMultiline endCommentMultiline
 
 doc : Content;
 
-Content: /*empty*/ {
-} | Content Comment {
-    starlarklex.(*starlarkLex).Comment = $2
-    // fmt.Printf("Comment %T: %q\n", $2, string($2.MustBytes()))
-} | Content Return {
-    starlarklex.(*starlarkLex).Return = $2
-    // fmt.Printf("Return %T: %q\n", $2, string($2.MustBytes()))
-} | Content Load {
-    starlarklex.(*starlarkLex).Load = $2
-    // fmt.Printf("Load %T: %d\n", $2, len($2.Fields))
-} | Content Module {
-    starlarklex.(*starlarkLex).Module = $2
-    // fmt.Printf("Module %T: %d\n", $2, len($2.Fields))
-} | Content Def {
-    starlarklex.(*starlarkLex).Def = $2
-    // fmt.Printf("Def %T: %d\n", $2, len($2.Fields))
-};
+Content:
+    /*empty*/ {
+    } | Content Comment {
+        starlarklex.(*starlarkLex).Comment = $2
+    } | Content Return {
+        starlarklex.(*starlarkLex).Return = $2
+    } | Content Load {
+        starlarklex.(*starlarkLex).Load = $2
+    } | Content Module {
+        starlarklex.(*starlarkLex).Module = $2
+    } | Content Def {
+        starlarklex.(*starlarkLex).Def = $2
+    };
 
 //////////////////
 // Def
 //////////////////
 
-Def: def ident '(' ')' ':' {
-    $$ = &Def{TokenWithData: $1, Name: $2.Ident()}
-} | def ident '(' DefFields ')' ':' {
-    $$ = &Def{TokenWithData: $1, Name: $2.Ident(), Fields: $4}
-};
+Def:
+    def ident '(' ')' ':' {
+        $$ = &Def{TokenWithData: $1, Name: $2.Ident()}
+    } | def ident '(' DefFields ')' ':' {
+        $$ = &Def{TokenWithData: $1, Name: $2.Ident(), Fields: $4}
+    };
 
-DefFields: DefField {
-    $$ = []*DefField{$1}
-} | DefFields ',' DefField {
-    $$ = append($1, $3)
-} | DefFields ',' {
-    $$ = $1
-};
+DefFields:
+    DefField {
+        $$ = []*DefField{$1}
+    } | DefFields ',' DefField {
+        $$ = append($1, $3)
+    } | DefFields ',' {
+        $$ = $1
+    };
 
 DefField:
-    Literal {
+    Operand {
         $$ = &DefField{
             Value: $1,
         }
     } |
-    Struct {
+    '*' Operand {
         $$ = &DefField{
-            Value: $1,
-        }
-    } |
-    Array {
-        $$ = &DefField{
-            Value: $1,
-        }
-    } |
-    Ident {
-        $$ = &DefField{
-            Value: $1,
-        }
-    } |
-    '*' Ident {
-        $$ = &DefField{
-            Value: $1,
+            Value: $2,
             Varargs: true,
         }
     } |
-    '*' '*' Ident {
+    '*' '*' Operand {
         $$ = &DefField{
-            Value: $1,
+            Value: $3,
             Kwargs: true,
         }
     } |
-    Ident '=' Ident {
-        $$ = &DefField{
-            Key: $1,
-            Value: $3,
-        }
-    } |
-    Ident '=' Literal {
-        $$ = &DefField{
-            Key: $1,
-            Value: $3,
-        }
-    } |
-    Ident '=' Array {
-        $$ = &DefField{
-            Key: $1,
-            Value: $3,
-        }
-    } |
-    Ident '=' Struct {
-        $$ = &DefField{
-            Key: $1,
-            Value: $3,
-        }
-    } |
-    Ident '=' Dict {
-        $$ = &DefField{
-            Key: $1,
-            Value: $3,
-        }
-    } |
-    Ident '=' CallFunc {
+    Operand '=' Operand {
         $$ = &DefField{
             Key: $1,
             Value: $3,
@@ -178,35 +131,39 @@ DefField:
 // Comment
 //////////////////
 
-Comment: commentInline {
-    $$ = &Comment{$1, false}
-} | commentMultiline {
-    $$ = &Comment{$1, true}
-};
+Comment:
+    commentInline {
+        $$ = &Comment{$1, false}
+    } | commentMultiline {
+        $$ = &Comment{$1, true}
+    };
 
 //////////////////
 // Return
 //////////////////
 
-Return: returnKeyword {
-    $$ = &Return{$1}
-};
+Return:
+    returnKeyword {
+        $$ = &Return{$1}
+    };
 
 //////////////////
 // Load
 //////////////////
 
-Load: load '(' LoadFields ')' {
-    $$ = &Load{Fields: $3}
-};
+Load:
+    load '(' LoadFields ')' {
+        $$ = &Load{Fields: $3}
+    };
 
-LoadFields: LoadField {
-    $$ = syntax.Array{$1}
-} | LoadFields ',' LoadField {
-    $$ = append($1, $3)
-} | LoadFields ',' {
-    $$ = $1
-};
+LoadFields:
+    LoadField {
+        $$ = syntax.Array{$1}
+    } | LoadFields ',' LoadField {
+        $$ = append($1, $3)
+    } | LoadFields ',' {
+        $$ = $1
+    };
 
 LoadField:
     stringLiteral {
@@ -220,43 +177,56 @@ LoadField:
 // Module
 //////////////////
 
-Module: ident '=' module '(' stringLiteral ',' ModuleFields ')' {
-    $$ = &Module{
-        Ident: $1.Ident(),
-        Name: $5.String(),
-        Fields: $7,
-    }
-} | ident '=' module '(' stringLiteral ')' {
-    $$ = &Module{
-        Ident: $1.Ident(),
-        Name: $5.String(),
-    }
-};
+Module:
+    ident '=' module '(' stringLiteral ',' ModuleFields ')' {
+        $$ = &Module{
+            Export: $1.Ident(),
+            Name: $5.String(),
+            Fields: $7,
+        }
+    } | ident '=' module '(' stringLiteral ')' {
+        $$ = &Module{
+            Export: $1.Ident(),
+            Name: $5.String(),
+        }
+    };
 
-ModuleFields: ModuleFields ',' DictField {
-    $$ = append($$, $3)
-} | DictField {
-    $$ = syntax.Array{$1}
-} | ModuleFields ',' {
-    $$ = $1
-};
+ModuleFields:
+    ModuleFields ',' Assign {
+        $$ = append($$, $3)
+    } | Assign {
+        $$ = syntax.Array{$1}
+    } | ModuleFields ',' {
+        $$ = $1
+    };
 
-CallFunc: ident '(' CallFuncArgs ')'  {
-    $$ = &CallFunc{
-        Name: $1.Ident(),
-        Fields: $3,
-    }
-} | ident '(' ArbitraryArrArgs ')' {
-    $$ = &CallFunc{
-        Name: $1.Ident(),
-        ArbitraryArrArgs: $3,
-    }
-} | ident '(' ArbitraryNamedArgs ')' {
-    $$ = &CallFunc{
-        Name: $1.Ident(),
-        ArbitraryNamedArgs: $3,
-    }
-};
+CallFunc:
+    ident '(' ')'  {
+        $$ = &CallFunc{
+            Name: $1.Ident(),
+        }
+    } |
+    ident '(' CallFuncArgs ')'  {
+        $$ = &CallFunc{
+            Name: $1.Ident(),
+            Fields: $3,
+        }
+    } | ident '(' '*' '*' CallFunc ')'  {
+        if $5.FuncName() != "dict" {
+            panic("should be only dictionary")
+        }
+        $$ = &CallFunc{
+            Name: $1.Ident(),
+            Fields: $5.Fields,
+            Kwarrgs: true,
+        }
+    } | ident '(' '*'  '[' ArrayFields ']' ')'  {
+        $$ = &CallFunc{
+            Name: $1.Ident(),
+            Fields: $5,
+            Varrarrgs: true,
+        }
+    };
 
 CallFuncArgs:
     CallFuncArgs ',' CallFuncArg {
@@ -267,28 +237,17 @@ CallFuncArgs:
         $$ = $1
     };
 
-CallFuncArg: DictField {
-    $$ = $1
-} | ArrayField {
-    $$ = $1
-};
-
-ArbitraryArrArgs: '*' '*' '[' ArrayFields ']' {
-    $$ = $4
-};
-ArbitraryNamedArgs: '*' '*' Dict {
-    $$ = $3
-};
+CallFuncArg:
+    Assign {
+        $$ = syntax.Array{$1.Left, $1.Right}
+    } | Operand {
+        $$ = syntax.Array{$1, syntax.Null_{}}
+    } ;
 
 //////////////////
 // Basic types
 //////////////////
 
-Ident: ident {
-    $$ = $1.Ident()
-} | Ident '.' ident {
-    $$ = $1.(syntax.Ident_).Append($3.Ident())
-};
 
 Literal: stringLiteral {
     $$ = $1.String()
@@ -311,30 +270,16 @@ Array:
     $$ = $2
 } | '(' ')' {
     $$ = syntax.Array{}
-}   | '[' ']' {
+} | '[' ']' {
     $$ = syntax.Array{}
 };
 
-ArrayFields: ArrayField {
+ArrayFields: Operand {
     $$ = syntax.Array{$1}
-} | ArrayFields ',' ArrayField {
+} | ArrayFields ',' Operand {
     $1.Add($3)
     $$ = $1
 } | ArrayFields ',' {
-    $$ = $1
-};
-
-ArrayField: Literal {
-    $$ = $1
-} | Array {
-    $$ = $1
-} | Struct {
-    $$ = $1
-} | Ident {
-    $$ = $1
-} | CallFunc {
-    $$ = $1
-} | Dict {
     $$ = $1
 };
 
@@ -371,48 +316,57 @@ StructFields: StructField {
     $$ = $1
 };
 
-StructField: stringLiteral ':' Literal {
+StructField: stringLiteral ':' Operand {
     $$ = syntax.Array{$1.String(), $3}
-} | Ident ':' Array {
-    $$ = syntax.Array{$1, $3}
-} | Ident ':' Ident {
-    $$ = syntax.Array{$1, $3}
-} | Ident ':' Struct {
-    $$ = syntax.Array{$1, $3}
-} | Ident ':' CallFunc {
-    $$ = syntax.Array{$1, $3}
-}  Ident ':' Dict {
-    $$ = syntax.Array{$1, $3}
 };
 
-Dict: dict '(' DictFields ')' {
-    $$ = $3
-};
-
-DictFields: DictFields ',' DictField {
-    $$ = append($1, $3)
-} | DictField {
-    $$ = []*DictField{$1}
-} | DictFields ',' {
-    $$ = $1
-};
-
-DictField:
-    Ident '=' Ident {
-        $$ = &DictField{Key: $1, Value: $3}
-    } |
-    Ident '=' Literal {
-        $$ = &DictField{Key: $1, Value: $3}
-    } |
-    Ident '=' Array {
-        $$ = &DictField{Key: $1, Value: $3}
-    } |
-    Ident '=' Struct {
-        $$ = &DictField{Key: $1, Value: $3}
-    } |
-    Ident '=' CallFunc {
-        $$ = &DictField{Key: $1, ValueCallFn: $3}
-    } |
-    Ident '=' Dict {
-        $$ = &DictField{Key: $1, ValueDict: $3}
+Assign: Operand '=' Operand {
+        $$ = &Assign{Left: $1, Op: $2.Symbol, Right: $3}
     };
+
+Operand:
+    ident {
+        $$ = &Operand{
+            Value: $1.Ident(),
+        }
+    } |
+    Literal {
+        $$ = &Operand{
+            Value: $1,
+        }
+    } |
+    Array {
+        $$ = &Operand{
+            Value: $1,
+        }
+    } |
+    Struct {
+        $$ = &Operand{
+            Value: $1,
+        }
+    } |
+    CallFunc {
+        $$ = &Operand{
+            CallFunc: $1,
+        }
+    } |
+    Operand '.' CallFunc {
+        $$ = &Operand{
+            Parent: $1,
+            CallFunc: $3,
+        }
+    } |
+    Operand '.' ident {
+        $$ = &Operand{
+            Parent: $1,
+            Value: $3.Ident(),
+        }
+    }
+    // |
+    // not Operand {
+    //     $$ = &Operand{
+    //         Parent: $1,
+    //         Not: true,
+    //     }
+    // }
+    ;

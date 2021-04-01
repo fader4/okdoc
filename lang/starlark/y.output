@@ -40,7 +40,7 @@ state 2
 state 3
 	Content:  Content Comment.    (3)
 
-	.  reduce 3 (src line 71)
+	.  reduce 3 (src line 72)
 
 
 state 4
@@ -52,37 +52,37 @@ state 4
 state 5
 	Content:  Content Load.    (5)
 
-	.  reduce 5 (src line 77)
+	.  reduce 5 (src line 76)
 
 
 state 6
 	Content:  Content Module.    (6)
 
-	.  reduce 6 (src line 80)
+	.  reduce 6 (src line 78)
 
 
 state 7
 	Content:  Content Def.    (7)
 
-	.  reduce 7 (src line 83)
+	.  reduce 7 (src line 80)
 
 
 state 8
-	Comment:  commentInline.    (25)
+	Comment:  commentInline.    (17)
 
-	.  reduce 25 (src line 181)
+	.  reduce 17 (src line 134)
 
 
 state 9
-	Comment:  commentMultiline.    (26)
+	Comment:  commentMultiline.    (18)
 
-	.  reduce 26 (src line 183)
+	.  reduce 18 (src line 137)
 
 
 state 10
-	Return:  returnKeyword.    (27)
+	Return:  returnKeyword.    (19)
 
-	.  reduce 27 (src line 191)
+	.  reduce 19 (src line 145)
 
 
 state 11
@@ -145,15 +145,15 @@ state 17
 
 
 state 18
-	LoadFields:  LoadField.    (29)
+	LoadFields:  LoadField.    (21)
 
-	.  reduce 29 (src line 203)
+	.  reduce 21 (src line 159)
 
 
 state 19
-	LoadField:  stringLiteral.    (32)
+	LoadField:  stringLiteral.    (24)
 
-	.  reduce 32 (src line 211)
+	.  reduce 24 (src line 168)
 
 
 state 20
@@ -175,46 +175,47 @@ state 22
 	Def:  def ident '('.')' ':' 
 	Def:  def ident '('.DefFields ')' ':' 
 
-	ident  shift 43
-	'('  shift 41
+	ident  shift 32
+	'('  shift 42
 	')'  shift 27
-	'{'  shift 40
-	'['  shift 42
-	'*'  shift 34
-	nullLiteral  shift 39
-	stringLiteral  shift 35
-	boolLiteral  shift 36
-	integerLiteral  shift 37
-	floatLiteral  shift 38
+	'{'  shift 44
+	'['  shift 43
+	'*'  shift 31
+	nullLiteral  shift 41
+	stringLiteral  shift 37
+	boolLiteral  shift 38
+	integerLiteral  shift 39
+	floatLiteral  shift 40
 	.  error
 
 	DefField  goto 29
 	DefFields  goto 28
-	Array  goto 32
-	Literal  goto 30
-	Ident  goto 33
-	Struct  goto 31
+	CallFunc  goto 36
+	Operand  goto 30
+	Array  goto 34
+	Literal  goto 33
+	Struct  goto 35
 
 state 23
-	Load:  load '(' LoadFields ')'.    (28)
+	Load:  load '(' LoadFields ')'.    (20)
 
-	.  reduce 28 (src line 199)
+	.  reduce 20 (src line 154)
 
 
 state 24
 	LoadFields:  LoadFields ','.LoadField 
-	LoadFields:  LoadFields ','.    (31)
+	LoadFields:  LoadFields ','.    (23)
 
 	ident  shift 20
 	stringLiteral  shift 19
-	.  reduce 31 (src line 207)
+	.  reduce 23 (src line 164)
 
-	LoadField  goto 44
+	LoadField  goto 45
 
 state 25
 	LoadField:  ident '='.stringLiteral 
 
-	stringLiteral  shift 45
+	stringLiteral  shift 46
 	.  error
 
 
@@ -222,14 +223,14 @@ state 26
 	Module:  ident '=' module '('.stringLiteral ',' ModuleFields ')' 
 	Module:  ident '=' module '('.stringLiteral ')' 
 
-	stringLiteral  shift 46
+	stringLiteral  shift 47
 	.  error
 
 
 state 27
 	Def:  def ident '(' ')'.':' 
 
-	':'  shift 47
+	':'  shift 48
 	.  error
 
 
@@ -238,1016 +239,808 @@ state 28
 	DefFields:  DefFields.',' DefField 
 	DefFields:  DefFields.',' 
 
-	')'  shift 48
-	','  shift 49
+	')'  shift 49
+	','  shift 50
 	.  error
 
 
 state 29
 	DefFields:  DefField.    (10)
 
-	.  reduce 10 (src line 98)
+	.  reduce 10 (src line 95)
 
 
 state 30
-	DefField:  Literal.    (13)
+	DefField:  Operand.    (13)
+	DefField:  Operand.'=' Operand 
+	Operand:  Operand.'.' CallFunc 
+	Operand:  Operand.'.' ident 
 
-	.  reduce 13 (src line 106)
+	'='  shift 51
+	'.'  shift 52
+	.  reduce 13 (src line 104)
 
 
 state 31
-	DefField:  Struct.    (14)
+	DefField:  '*'.Operand 
+	DefField:  '*'.'*' Operand 
 
-	.  reduce 14 (src line 111)
+	ident  shift 32
+	'('  shift 42
+	'{'  shift 44
+	'['  shift 43
+	'*'  shift 54
+	nullLiteral  shift 41
+	stringLiteral  shift 37
+	boolLiteral  shift 38
+	integerLiteral  shift 39
+	floatLiteral  shift 40
+	.  error
 
+	CallFunc  goto 36
+	Operand  goto 53
+	Array  goto 34
+	Literal  goto 33
+	Struct  goto 35
 
 state 32
-	DefField:  Array.    (15)
+	CallFunc:  ident.'(' ')' 
+	CallFunc:  ident.'(' CallFuncArgs ')' 
+	CallFunc:  ident.'(' '*' '*' CallFunc ')' 
+	CallFunc:  ident.'(' '*' '[' ArrayFields ']' ')' 
+	Operand:  ident.    (59)
 
-	.  reduce 15 (src line 116)
+	'('  shift 55
+	.  reduce 59 (src line 350)
 
 
 state 33
-	DefField:  Ident.    (16)
-	DefField:  Ident.'=' Ident 
-	DefField:  Ident.'=' Literal 
-	DefField:  Ident.'=' Array 
-	DefField:  Ident.'=' Struct 
-	DefField:  Ident.'=' Dict 
-	DefField:  Ident.'=' CallFunc 
-	Ident:  Ident.'.' ident 
+	Operand:  Literal.    (60)
 
-	'='  shift 50
-	'.'  shift 51
-	.  reduce 16 (src line 121)
+	.  reduce 60 (src line 355)
 
 
 state 34
-	DefField:  '*'.Ident 
-	DefField:  '*'.'*' Ident 
+	Operand:  Array.    (61)
 
-	ident  shift 43
-	'*'  shift 53
-	.  error
+	.  reduce 61 (src line 360)
 
-	Ident  goto 52
 
 state 35
-	Literal:  stringLiteral.    (51)
+	Operand:  Struct.    (62)
 
-	.  reduce 51 (src line 293)
+	.  reduce 62 (src line 365)
 
 
 state 36
-	Literal:  boolLiteral.    (52)
+	Operand:  CallFunc.    (63)
 
-	.  reduce 52 (src line 295)
+	.  reduce 63 (src line 370)
 
 
 state 37
-	Literal:  integerLiteral.    (53)
+	Literal:  stringLiteral.    (40)
 
-	.  reduce 53 (src line 297)
+	.  reduce 40 (src line 257)
 
 
 state 38
-	Literal:  floatLiteral.    (54)
+	Literal:  boolLiteral.    (41)
 
-	.  reduce 54 (src line 299)
+	.  reduce 41 (src line 259)
 
 
 state 39
-	Literal:  nullLiteral.    (55)
+	Literal:  integerLiteral.    (42)
 
-	.  reduce 55 (src line 301)
+	.  reduce 42 (src line 261)
 
 
 state 40
-	Struct:  '{'.'}' 
-	Struct:  '{'.StructFields '}' 
+	Literal:  floatLiteral.    (43)
 
-	ident  shift 43
-	'}'  shift 54
-	stringLiteral  shift 57
-	.  error
+	.  reduce 43 (src line 263)
 
-	StructFields  goto 55
-	StructField  goto 56
-	Ident  goto 58
 
 state 41
+	Literal:  nullLiteral.    (44)
+
+	.  reduce 44 (src line 265)
+
+
+state 42
 	Array:  '('.ArrayFields ')' 
 	Array:  '('.')' 
 
-	ident  shift 68
-	'('  shift 41
-	')'  shift 60
-	'{'  shift 40
-	'['  shift 42
-	nullLiteral  shift 39
-	stringLiteral  shift 35
-	boolLiteral  shift 36
-	integerLiteral  shift 37
-	floatLiteral  shift 38
-	dict  shift 69
+	ident  shift 32
+	'('  shift 42
+	')'  shift 57
+	'{'  shift 44
+	'['  shift 43
+	nullLiteral  shift 41
+	stringLiteral  shift 37
+	boolLiteral  shift 38
+	integerLiteral  shift 39
+	floatLiteral  shift 40
 	.  error
 
-	Dict  goto 67
-	CallFunc  goto 66
-	Array  goto 63
-	ArrayFields  goto 59
-	Literal  goto 62
-	Ident  goto 65
-	ArrayField  goto 61
-	Struct  goto 64
+	CallFunc  goto 36
+	Operand  goto 58
+	Array  goto 34
+	ArrayFields  goto 56
+	Literal  goto 33
+	Struct  goto 35
 
-state 42
+state 43
 	Array:  '['.ArrayFields ']' 
 	Array:  '['.']' 
 
-	ident  shift 68
-	'('  shift 41
-	'{'  shift 40
-	'['  shift 42
-	']'  shift 71
-	nullLiteral  shift 39
-	stringLiteral  shift 35
-	boolLiteral  shift 36
-	integerLiteral  shift 37
-	floatLiteral  shift 38
-	dict  shift 69
+	ident  shift 32
+	'('  shift 42
+	'{'  shift 44
+	'['  shift 43
+	']'  shift 60
+	nullLiteral  shift 41
+	stringLiteral  shift 37
+	boolLiteral  shift 38
+	integerLiteral  shift 39
+	floatLiteral  shift 40
 	.  error
 
-	Dict  goto 67
-	CallFunc  goto 66
-	Array  goto 63
-	ArrayFields  goto 70
-	Literal  goto 62
-	Ident  goto 65
-	ArrayField  goto 61
-	Struct  goto 64
-
-state 43
-	Ident:  ident.    (49)
-
-	.  reduce 49 (src line 287)
-
+	CallFunc  goto 36
+	Operand  goto 58
+	Array  goto 34
+	ArrayFields  goto 59
+	Literal  goto 33
+	Struct  goto 35
 
 state 44
-	LoadFields:  LoadFields ',' LoadField.    (30)
+	Struct:  '{'.'}' 
+	Struct:  '{'.StructFields '}' 
 
-	.  reduce 30 (src line 205)
+	'}'  shift 61
+	stringLiteral  shift 64
+	.  error
 
+	StructFields  goto 62
+	StructField  goto 63
 
 state 45
-	LoadField:  ident '=' stringLiteral.    (33)
+	LoadFields:  LoadFields ',' LoadField.    (22)
 
-	.  reduce 33 (src line 214)
+	.  reduce 22 (src line 162)
 
 
 state 46
-	Module:  ident '=' module '(' stringLiteral.',' ModuleFields ')' 
-	Module:  ident '=' module '(' stringLiteral.')' 
+	LoadField:  ident '=' stringLiteral.    (25)
 
-	')'  shift 73
-	','  shift 72
-	.  error
+	.  reduce 25 (src line 171)
 
 
 state 47
-	Def:  def ident '(' ')' ':'.    (8)
+	Module:  ident '=' module '(' stringLiteral.',' ModuleFields ')' 
+	Module:  ident '=' module '(' stringLiteral.')' 
 
-	.  reduce 8 (src line 92)
+	')'  shift 66
+	','  shift 65
+	.  error
 
 
 state 48
-	Def:  def ident '(' DefFields ')'.':' 
+	Def:  def ident '(' ')' ':'.    (8)
 
-	':'  shift 74
-	.  error
+	.  reduce 8 (src line 88)
 
 
 state 49
+	Def:  def ident '(' DefFields ')'.':' 
+
+	':'  shift 67
+	.  error
+
+
+state 50
 	DefFields:  DefFields ','.DefField 
 	DefFields:  DefFields ','.    (12)
 
-	ident  shift 43
-	'('  shift 41
-	'{'  shift 40
-	'['  shift 42
-	'*'  shift 34
-	nullLiteral  shift 39
-	stringLiteral  shift 35
-	boolLiteral  shift 36
-	integerLiteral  shift 37
-	floatLiteral  shift 38
-	.  reduce 12 (src line 102)
+	ident  shift 32
+	'('  shift 42
+	'{'  shift 44
+	'['  shift 43
+	'*'  shift 31
+	nullLiteral  shift 41
+	stringLiteral  shift 37
+	boolLiteral  shift 38
+	integerLiteral  shift 39
+	floatLiteral  shift 40
+	.  reduce 12 (src line 100)
 
-	DefField  goto 75
-	Array  goto 32
-	Literal  goto 30
-	Ident  goto 33
-	Struct  goto 31
-
-state 50
-	DefField:  Ident '='.Ident 
-	DefField:  Ident '='.Literal 
-	DefField:  Ident '='.Array 
-	DefField:  Ident '='.Struct 
-	DefField:  Ident '='.Dict 
-	DefField:  Ident '='.CallFunc 
-
-	ident  shift 68
-	'('  shift 41
-	'{'  shift 40
-	'['  shift 42
-	nullLiteral  shift 39
-	stringLiteral  shift 35
-	boolLiteral  shift 36
-	integerLiteral  shift 37
-	floatLiteral  shift 38
-	dict  shift 69
-	.  error
-
-	Dict  goto 80
-	CallFunc  goto 81
-	Array  goto 78
-	Literal  goto 77
-	Ident  goto 76
-	Struct  goto 79
+	DefField  goto 68
+	CallFunc  goto 36
+	Operand  goto 30
+	Array  goto 34
+	Literal  goto 33
+	Struct  goto 35
 
 state 51
-	Ident:  Ident '.'.ident 
+	DefField:  Operand '='.Operand 
 
-	ident  shift 82
+	ident  shift 32
+	'('  shift 42
+	'{'  shift 44
+	'['  shift 43
+	nullLiteral  shift 41
+	stringLiteral  shift 37
+	boolLiteral  shift 38
+	integerLiteral  shift 39
+	floatLiteral  shift 40
 	.  error
 
+	CallFunc  goto 36
+	Operand  goto 69
+	Array  goto 34
+	Literal  goto 33
+	Struct  goto 35
 
 state 52
-	DefField:  '*' Ident.    (17)
-	Ident:  Ident.'.' ident 
+	Operand:  Operand '.'.CallFunc 
+	Operand:  Operand '.'.ident 
 
-	'.'  shift 51
-	.  reduce 17 (src line 126)
-
-
-state 53
-	DefField:  '*' '*'.Ident 
-
-	ident  shift 43
+	ident  shift 71
 	.  error
 
-	Ident  goto 83
+	CallFunc  goto 70
+
+state 53
+	DefField:  '*' Operand.    (14)
+	Operand:  Operand.'.' CallFunc 
+	Operand:  Operand.'.' ident 
+
+	'.'  shift 52
+	.  reduce 14 (src line 109)
+
 
 state 54
-	Struct:  '{' '}'.    (69)
+	DefField:  '*' '*'.Operand 
 
-	.  reduce 69 (src line 341)
+	ident  shift 32
+	'('  shift 42
+	'{'  shift 44
+	'['  shift 43
+	nullLiteral  shift 41
+	stringLiteral  shift 37
+	boolLiteral  shift 38
+	integerLiteral  shift 39
+	floatLiteral  shift 40
+	.  error
 
+	CallFunc  goto 36
+	Operand  goto 72
+	Array  goto 34
+	Literal  goto 33
+	Struct  goto 35
 
 state 55
+	CallFunc:  ident '('.')' 
+	CallFunc:  ident '('.CallFuncArgs ')' 
+	CallFunc:  ident '('.'*' '*' CallFunc ')' 
+	CallFunc:  ident '('.'*' '[' ArrayFields ']' ')' 
+
+	ident  shift 32
+	'('  shift 42
+	')'  shift 73
+	'{'  shift 44
+	'['  shift 43
+	'*'  shift 75
+	nullLiteral  shift 41
+	stringLiteral  shift 37
+	boolLiteral  shift 38
+	integerLiteral  shift 39
+	floatLiteral  shift 40
+	.  error
+
+	CallFunc  goto 36
+	Operand  goto 78
+	Assign  goto 77
+	Array  goto 34
+	CallFuncArgs  goto 74
+	Literal  goto 33
+	CallFuncArg  goto 76
+	Struct  goto 35
+
+state 56
+	Array:  '(' ArrayFields.')' 
+	ArrayFields:  ArrayFields.',' Operand 
+	ArrayFields:  ArrayFields.',' 
+
+	')'  shift 79
+	','  shift 80
+	.  error
+
+
+state 57
+	Array:  '(' ')'.    (47)
+
+	.  reduce 47 (src line 276)
+
+
+state 58
+	ArrayFields:  Operand.    (49)
+	Operand:  Operand.'.' CallFunc 
+	Operand:  Operand.'.' ident 
+
+	'.'  shift 52
+	.  reduce 49 (src line 282)
+
+
+state 59
+	Array:  '[' ArrayFields.']' 
+	ArrayFields:  ArrayFields.',' Operand 
+	ArrayFields:  ArrayFields.',' 
+
+	','  shift 80
+	']'  shift 81
+	.  error
+
+
+state 60
+	Array:  '[' ']'.    (48)
+
+	.  reduce 48 (src line 278)
+
+
+state 61
+	Struct:  '{' '}'.    (52)
+
+	.  reduce 52 (src line 291)
+
+
+state 62
 	Struct:  '{' StructFields.'}' 
 	StructFields:  StructFields.',' StructField 
 	StructFields:  StructFields.',' 
 
-	','  shift 85
-	'}'  shift 84
+	','  shift 83
+	'}'  shift 82
 	.  error
 
 
-state 56
-	StructFields:  StructField.    (71)
+state 63
+	StructFields:  StructField.    (54)
 
-	.  reduce 71 (src line 365)
+	.  reduce 54 (src line 315)
 
 
-state 57
-	StructField:  stringLiteral.':' Literal 
+state 64
+	StructField:  stringLiteral.':' Operand 
 
-	':'  shift 86
+	':'  shift 84
 	.  error
 
 
-state 58
-	Ident:  Ident.'.' ident 
-	StructField:  Ident.':' Array 
-	StructField:  Ident.':' Ident 
-	StructField:  Ident.':' Struct 
-	StructField:  Ident.':' CallFunc $$78 Ident ':' Dict 
+state 65
+	Module:  ident '=' module '(' stringLiteral ','.ModuleFields ')' 
 
-	'.'  shift 51
-	':'  shift 87
+	ident  shift 32
+	'('  shift 42
+	'{'  shift 44
+	'['  shift 43
+	nullLiteral  shift 41
+	stringLiteral  shift 37
+	boolLiteral  shift 38
+	integerLiteral  shift 39
+	floatLiteral  shift 40
 	.  error
 
+	CallFunc  goto 36
+	Operand  goto 87
+	Assign  goto 86
+	Array  goto 34
+	ModuleFields  goto 85
+	Literal  goto 33
+	Struct  goto 35
 
-state 59
-	Array:  '(' ArrayFields.')' 
-	ArrayFields:  ArrayFields.',' ArrayField 
-	ArrayFields:  ArrayFields.',' 
+state 66
+	Module:  ident '=' module '(' stringLiteral ')'.    (27)
+
+	.  reduce 27 (src line 187)
+
+
+state 67
+	Def:  def ident '(' DefFields ')' ':'.    (9)
+
+	.  reduce 9 (src line 91)
+
+
+state 68
+	DefFields:  DefFields ',' DefField.    (11)
+
+	.  reduce 11 (src line 98)
+
+
+state 69
+	DefField:  Operand '=' Operand.    (16)
+	Operand:  Operand.'.' CallFunc 
+	Operand:  Operand.'.' ident 
+
+	'.'  shift 52
+	.  reduce 16 (src line 121)
+
+
+state 70
+	Operand:  Operand '.' CallFunc.    (64)
+
+	.  reduce 64 (src line 380)
+
+
+state 71
+	CallFunc:  ident.'(' ')' 
+	CallFunc:  ident.'(' CallFuncArgs ')' 
+	CallFunc:  ident.'(' '*' '*' CallFunc ')' 
+	CallFunc:  ident.'(' '*' '[' ArrayFields ']' ')' 
+	Operand:  Operand '.' ident.    (65)
+
+	'('  shift 55
+	.  reduce 65 (src line 386)
+
+
+state 72
+	DefField:  '*' '*' Operand.    (15)
+	Operand:  Operand.'.' CallFunc 
+	Operand:  Operand.'.' ident 
+
+	'.'  shift 52
+	.  reduce 15 (src line 115)
+
+
+state 73
+	CallFunc:  ident '(' ')'.    (31)
+
+	.  reduce 31 (src line 203)
+
+
+state 74
+	CallFunc:  ident '(' CallFuncArgs.')' 
+	CallFuncArgs:  CallFuncArgs.',' CallFuncArg 
+	CallFuncArgs:  CallFuncArgs.',' 
 
 	')'  shift 88
 	','  shift 89
 	.  error
 
 
-state 60
-	Array:  '(' ')'.    (58)
-
-	.  reduce 58 (src line 312)
-
-
-state 61
-	ArrayFields:  ArrayField.    (60)
-
-	.  reduce 60 (src line 318)
-
-
-state 62
-	ArrayField:  Literal.    (63)
-
-	.  reduce 63 (src line 327)
-
-
-state 63
-	ArrayField:  Array.    (64)
-
-	.  reduce 64 (src line 329)
-
-
-state 64
-	ArrayField:  Struct.    (65)
-
-	.  reduce 65 (src line 331)
-
-
-state 65
-	Ident:  Ident.'.' ident 
-	ArrayField:  Ident.    (66)
-
-	'.'  shift 51
-	.  reduce 66 (src line 333)
-
-
-state 66
-	ArrayField:  CallFunc.    (67)
-
-	.  reduce 67 (src line 335)
-
-
-state 67
-	ArrayField:  Dict.    (68)
-
-	.  reduce 68 (src line 337)
-
-
-state 68
-	CallFunc:  ident.'(' CallFuncArgs ')' 
-	CallFunc:  ident.'(' ArbitraryArrArgs ')' 
-	CallFunc:  ident.'(' ArbitraryNamedArgs ')' 
-	Ident:  ident.    (49)
-
-	'('  shift 90
-	.  reduce 49 (src line 287)
-
-
-state 69
-	Dict:  dict.'(' DictFields ')' 
-
-	'('  shift 91
-	.  error
-
-
-state 70
-	Array:  '[' ArrayFields.']' 
-	ArrayFields:  ArrayFields.',' ArrayField 
-	ArrayFields:  ArrayFields.',' 
-
-	','  shift 89
-	']'  shift 92
-	.  error
-
-
-state 71
-	Array:  '[' ']'.    (59)
-
-	.  reduce 59 (src line 314)
-
-
-state 72
-	Module:  ident '=' module '(' stringLiteral ','.ModuleFields ')' 
-
-	ident  shift 43
-	.  error
-
-	DictField  goto 94
-	ModuleFields  goto 93
-	Ident  goto 95
-
-state 73
-	Module:  ident '=' module '(' stringLiteral ')'.    (35)
-
-	.  reduce 35 (src line 229)
-
-
-state 74
-	Def:  def ident '(' DefFields ')' ':'.    (9)
-
-	.  reduce 9 (src line 94)
-
-
 state 75
-	DefFields:  DefFields ',' DefField.    (11)
+	CallFunc:  ident '(' '*'.'*' CallFunc ')' 
+	CallFunc:  ident '(' '*'.'[' ArrayFields ']' ')' 
 
-	.  reduce 11 (src line 100)
+	'['  shift 91
+	'*'  shift 90
+	.  error
 
 
 state 76
-	DefField:  Ident '=' Ident.    (19)
-	Ident:  Ident.'.' ident 
+	CallFuncArgs:  CallFuncArg.    (36)
 
-	'.'  shift 51
-	.  reduce 19 (src line 138)
+	.  reduce 36 (src line 234)
 
 
 state 77
-	DefField:  Ident '=' Literal.    (20)
+	CallFuncArg:  Assign.    (38)
 
-	.  reduce 20 (src line 144)
+	.  reduce 38 (src line 240)
 
 
 state 78
-	DefField:  Ident '=' Array.    (21)
+	CallFuncArg:  Operand.    (39)
+	Assign:  Operand.'=' Operand 
+	Operand:  Operand.'.' CallFunc 
+	Operand:  Operand.'.' ident 
 
-	.  reduce 21 (src line 150)
+	'='  shift 92
+	'.'  shift 52
+	.  reduce 39 (src line 243)
 
 
 state 79
-	DefField:  Ident '=' Struct.    (22)
+	Array:  '(' ArrayFields ')'.    (45)
 
-	.  reduce 22 (src line 156)
+	.  reduce 45 (src line 269)
 
 
 state 80
-	DefField:  Ident '=' Dict.    (23)
+	ArrayFields:  ArrayFields ','.Operand 
+	ArrayFields:  ArrayFields ','.    (51)
 
-	.  reduce 23 (src line 162)
+	ident  shift 32
+	'('  shift 42
+	'{'  shift 44
+	'['  shift 43
+	nullLiteral  shift 41
+	stringLiteral  shift 37
+	boolLiteral  shift 38
+	integerLiteral  shift 39
+	floatLiteral  shift 40
+	.  reduce 51 (src line 287)
 
+	CallFunc  goto 36
+	Operand  goto 93
+	Array  goto 34
+	Literal  goto 33
+	Struct  goto 35
 
 state 81
-	DefField:  Ident '=' CallFunc.    (24)
+	Array:  '[' ArrayFields ']'.    (46)
 
-	.  reduce 24 (src line 168)
+	.  reduce 46 (src line 273)
 
 
 state 82
-	Ident:  Ident '.' ident.    (50)
+	Struct:  '{' StructFields '}'.    (53)
 
-	.  reduce 50 (src line 289)
+	.  reduce 53 (src line 293)
 
 
 state 83
-	DefField:  '*' '*' Ident.    (18)
-	Ident:  Ident.'.' ident 
+	StructFields:  StructFields ','.StructField 
+	StructFields:  StructFields ','.    (56)
 
-	'.'  shift 51
-	.  reduce 18 (src line 132)
+	stringLiteral  shift 64
+	.  reduce 56 (src line 320)
 
+	StructField  goto 94
 
 state 84
-	Struct:  '{' StructFields '}'.    (70)
+	StructField:  stringLiteral ':'.Operand 
 
-	.  reduce 70 (src line 343)
+	ident  shift 32
+	'('  shift 42
+	'{'  shift 44
+	'['  shift 43
+	nullLiteral  shift 41
+	stringLiteral  shift 37
+	boolLiteral  shift 38
+	integerLiteral  shift 39
+	floatLiteral  shift 40
+	.  error
 
+	CallFunc  goto 36
+	Operand  goto 95
+	Array  goto 34
+	Literal  goto 33
+	Struct  goto 35
 
 state 85
-	StructFields:  StructFields ','.StructField 
-	StructFields:  StructFields ','.    (73)
+	Module:  ident '=' module '(' stringLiteral ',' ModuleFields.')' 
+	ModuleFields:  ModuleFields.',' Assign 
+	ModuleFields:  ModuleFields.',' 
 
-	ident  shift 43
-	stringLiteral  shift 57
-	.  reduce 73 (src line 370)
+	')'  shift 96
+	','  shift 97
+	.  error
 
-	StructField  goto 96
-	Ident  goto 58
 
 state 86
-	StructField:  stringLiteral ':'.Literal 
+	ModuleFields:  Assign.    (29)
 
-	nullLiteral  shift 39
-	stringLiteral  shift 35
-	boolLiteral  shift 36
-	integerLiteral  shift 37
-	floatLiteral  shift 38
-	.  error
+	.  reduce 29 (src line 197)
 
-	Literal  goto 97
 
 state 87
-	StructField:  Ident ':'.Array 
-	StructField:  Ident ':'.Ident 
-	StructField:  Ident ':'.Struct 
-	StructField:  Ident ':'.CallFunc $$78 Ident ':' Dict 
+	Assign:  Operand.'=' Operand 
+	Operand:  Operand.'.' CallFunc 
+	Operand:  Operand.'.' ident 
 
-	ident  shift 68
-	'('  shift 41
-	'{'  shift 40
-	'['  shift 42
+	'='  shift 92
+	'.'  shift 52
 	.  error
 
-	CallFunc  goto 101
-	Array  goto 98
-	Ident  goto 99
-	Struct  goto 100
 
 state 88
-	Array:  '(' ArrayFields ')'.    (56)
+	CallFunc:  ident '(' CallFuncArgs ')'.    (32)
 
-	.  reduce 56 (src line 305)
+	.  reduce 32 (src line 208)
 
 
 state 89
-	ArrayFields:  ArrayFields ','.ArrayField 
-	ArrayFields:  ArrayFields ','.    (62)
+	CallFuncArgs:  CallFuncArgs ','.CallFuncArg 
+	CallFuncArgs:  CallFuncArgs ','.    (37)
 
-	ident  shift 68
-	'('  shift 41
-	'{'  shift 40
-	'['  shift 42
-	nullLiteral  shift 39
-	stringLiteral  shift 35
-	boolLiteral  shift 36
-	integerLiteral  shift 37
-	floatLiteral  shift 38
-	dict  shift 69
-	.  reduce 62 (src line 323)
+	ident  shift 32
+	'('  shift 42
+	'{'  shift 44
+	'['  shift 43
+	nullLiteral  shift 41
+	stringLiteral  shift 37
+	boolLiteral  shift 38
+	integerLiteral  shift 39
+	floatLiteral  shift 40
+	.  reduce 37 (src line 236)
 
-	Dict  goto 67
-	CallFunc  goto 66
-	Array  goto 63
-	Literal  goto 62
-	Ident  goto 65
-	ArrayField  goto 102
-	Struct  goto 64
+	CallFunc  goto 36
+	Operand  goto 78
+	Assign  goto 77
+	Array  goto 34
+	Literal  goto 33
+	CallFuncArg  goto 98
+	Struct  goto 35
 
 state 90
-	CallFunc:  ident '('.CallFuncArgs ')' 
-	CallFunc:  ident '('.ArbitraryArrArgs ')' 
-	CallFunc:  ident '('.ArbitraryNamedArgs ')' 
+	CallFunc:  ident '(' '*' '*'.CallFunc ')' 
 
-	ident  shift 68
-	'('  shift 41
-	'{'  shift 40
-	'['  shift 42
-	'*'  shift 107
-	nullLiteral  shift 39
-	stringLiteral  shift 35
-	boolLiteral  shift 36
-	integerLiteral  shift 37
-	floatLiteral  shift 38
-	dict  shift 69
+	ident  shift 100
 	.  error
 
-	DictField  goto 108
-	Dict  goto 67
-	ArbitraryNamedArgs  goto 105
-	CallFunc  goto 66
-	Array  goto 63
-	CallFuncArgs  goto 103
-	ArbitraryArrArgs  goto 104
-	Literal  goto 62
-	Ident  goto 110
-	ArrayField  goto 109
-	CallFuncArg  goto 106
-	Struct  goto 64
+	CallFunc  goto 99
 
 state 91
-	Dict:  dict '('.DictFields ')' 
+	CallFunc:  ident '(' '*' '['.ArrayFields ']' ')' 
 
-	ident  shift 43
+	ident  shift 32
+	'('  shift 42
+	'{'  shift 44
+	'['  shift 43
+	nullLiteral  shift 41
+	stringLiteral  shift 37
+	boolLiteral  shift 38
+	integerLiteral  shift 39
+	floatLiteral  shift 40
 	.  error
 
-	DictField  goto 112
-	DictFields  goto 111
-	Ident  goto 95
+	CallFunc  goto 36
+	Operand  goto 58
+	Array  goto 34
+	ArrayFields  goto 101
+	Literal  goto 33
+	Struct  goto 35
 
 state 92
-	Array:  '[' ArrayFields ']'.    (57)
+	Assign:  Operand '='.Operand 
 
-	.  reduce 57 (src line 309)
+	ident  shift 32
+	'('  shift 42
+	'{'  shift 44
+	'['  shift 43
+	nullLiteral  shift 41
+	stringLiteral  shift 37
+	boolLiteral  shift 38
+	integerLiteral  shift 39
+	floatLiteral  shift 40
+	.  error
 
+	CallFunc  goto 36
+	Operand  goto 102
+	Array  goto 34
+	Literal  goto 33
+	Struct  goto 35
 
 state 93
-	Module:  ident '=' module '(' stringLiteral ',' ModuleFields.')' 
-	ModuleFields:  ModuleFields.',' DictField 
-	ModuleFields:  ModuleFields.',' 
+	ArrayFields:  ArrayFields ',' Operand.    (50)
+	Operand:  Operand.'.' CallFunc 
+	Operand:  Operand.'.' ident 
 
-	')'  shift 113
-	','  shift 114
-	.  error
+	'.'  shift 52
+	.  reduce 50 (src line 284)
 
 
 state 94
-	ModuleFields:  DictField.    (37)
+	StructFields:  StructFields ',' StructField.    (55)
 
-	.  reduce 37 (src line 238)
+	.  reduce 55 (src line 317)
 
 
 state 95
-	Ident:  Ident.'.' ident 
-	DictField:  Ident.'=' Ident 
-	DictField:  Ident.'=' Literal 
-	DictField:  Ident.'=' Array 
-	DictField:  Ident.'=' Struct 
-	DictField:  Ident.'=' CallFunc 
-	DictField:  Ident.'=' Dict 
+	StructField:  stringLiteral ':' Operand.    (57)
+	Operand:  Operand.'.' CallFunc 
+	Operand:  Operand.'.' ident 
 
-	'='  shift 115
-	'.'  shift 51
-	.  error
+	'.'  shift 52
+	.  reduce 57 (src line 324)
 
 
 state 96
-	StructFields:  StructFields ',' StructField.    (72)
+	Module:  ident '=' module '(' stringLiteral ',' ModuleFields ')'.    (26)
 
-	.  reduce 72 (src line 367)
+	.  reduce 26 (src line 180)
 
 
 state 97
-	StructField:  stringLiteral ':' Literal.    (74)
+	ModuleFields:  ModuleFields ','.Assign 
+	ModuleFields:  ModuleFields ','.    (30)
 
-	.  reduce 74 (src line 374)
+	ident  shift 32
+	'('  shift 42
+	'{'  shift 44
+	'['  shift 43
+	nullLiteral  shift 41
+	stringLiteral  shift 37
+	boolLiteral  shift 38
+	integerLiteral  shift 39
+	floatLiteral  shift 40
+	.  reduce 30 (src line 199)
 
+	CallFunc  goto 36
+	Operand  goto 87
+	Assign  goto 103
+	Array  goto 34
+	Literal  goto 33
+	Struct  goto 35
 
 state 98
-	StructField:  Ident ':' Array.    (75)
+	CallFuncArgs:  CallFuncArgs ',' CallFuncArg.    (35)
 
-	.  reduce 75 (src line 376)
+	.  reduce 35 (src line 231)
 
 
 state 99
-	Ident:  Ident.'.' ident 
-	StructField:  Ident ':' Ident.    (76)
+	CallFunc:  ident '(' '*' '*' CallFunc.')' 
 
-	'.'  shift 51
-	.  reduce 76 (src line 378)
+	')'  shift 104
+	.  error
 
 
 state 100
-	StructField:  Ident ':' Struct.    (77)
+	CallFunc:  ident.'(' ')' 
+	CallFunc:  ident.'(' CallFuncArgs ')' 
+	CallFunc:  ident.'(' '*' '*' CallFunc ')' 
+	CallFunc:  ident.'(' '*' '[' ArrayFields ']' ')' 
 
-	.  reduce 77 (src line 380)
+	'('  shift 55
+	.  error
 
 
 state 101
-	StructField:  Ident ':' CallFunc.$$78 Ident ':' Dict 
-	$$78: .    (78)
+	CallFunc:  ident '(' '*' '[' ArrayFields.']' ')' 
+	ArrayFields:  ArrayFields.',' Operand 
+	ArrayFields:  ArrayFields.',' 
 
-	.  reduce 78 (src line 382)
+	','  shift 80
+	']'  shift 105
+	.  error
 
-	$$78  goto 116
 
 state 102
-	ArrayFields:  ArrayFields ',' ArrayField.    (61)
+	Assign:  Operand '=' Operand.    (58)
+	Operand:  Operand.'.' CallFunc 
+	Operand:  Operand.'.' ident 
 
-	.  reduce 61 (src line 320)
+	'.'  shift 52
+	.  reduce 58 (src line 346)
 
 
 state 103
-	CallFunc:  ident '(' CallFuncArgs.')' 
-	CallFuncArgs:  CallFuncArgs.',' CallFuncArg 
-	CallFuncArgs:  CallFuncArgs.',' 
+	ModuleFields:  ModuleFields ',' Assign.    (28)
 
-	')'  shift 117
-	','  shift 118
-	.  error
+	.  reduce 28 (src line 194)
 
 
 state 104
-	CallFunc:  ident '(' ArbitraryArrArgs.')' 
+	CallFunc:  ident '(' '*' '*' CallFunc ')'.    (33)
 
-	')'  shift 119
-	.  error
+	.  reduce 33 (src line 214)
 
 
 state 105
-	CallFunc:  ident '(' ArbitraryNamedArgs.')' 
+	CallFunc:  ident '(' '*' '[' ArrayFields ']'.')' 
 
-	')'  shift 120
+	')'  shift 106
 	.  error
 
 
 state 106
-	CallFuncArgs:  CallFuncArg.    (43)
-
-	.  reduce 43 (src line 264)
-
-
-state 107
-	ArbitraryArrArgs:  '*'.'*' '[' ArrayFields ']' 
-	ArbitraryNamedArgs:  '*'.'*' Dict 
-
-	'*'  shift 121
-	.  error
-
-
-state 108
-	CallFuncArg:  DictField.    (45)
-
-	.  reduce 45 (src line 270)
-
-
-state 109
-	CallFuncArg:  ArrayField.    (46)
-
-	.  reduce 46 (src line 272)
-
-
-state 110
-	Ident:  Ident.'.' ident 
-	ArrayField:  Ident.    (66)
-	DictField:  Ident.'=' Ident 
-	DictField:  Ident.'=' Literal 
-	DictField:  Ident.'=' Array 
-	DictField:  Ident.'=' Struct 
-	DictField:  Ident.'=' CallFunc 
-	DictField:  Ident.'=' Dict 
-
-	'='  shift 115
-	'.'  shift 51
-	.  reduce 66 (src line 333)
-
-
-state 111
-	Dict:  dict '(' DictFields.')' 
-	DictFields:  DictFields.',' DictField 
-	DictFields:  DictFields.',' 
-
-	')'  shift 122
-	','  shift 123
-	.  error
-
-
-state 112
-	DictFields:  DictField.    (82)
-
-	.  reduce 82 (src line 394)
-
-
-state 113
-	Module:  ident '=' module '(' stringLiteral ',' ModuleFields ')'.    (34)
+	CallFunc:  ident '(' '*' '[' ArrayFields ']' ')'.    (34)
 
 	.  reduce 34 (src line 223)
 
 
-state 114
-	ModuleFields:  ModuleFields ','.DictField 
-	ModuleFields:  ModuleFields ','.    (38)
-
-	ident  shift 43
-	.  reduce 38 (src line 240)
-
-	DictField  goto 124
-	Ident  goto 95
-
-state 115
-	DictField:  Ident '='.Ident 
-	DictField:  Ident '='.Literal 
-	DictField:  Ident '='.Array 
-	DictField:  Ident '='.Struct 
-	DictField:  Ident '='.CallFunc 
-	DictField:  Ident '='.Dict 
-
-	ident  shift 68
-	'('  shift 41
-	'{'  shift 40
-	'['  shift 42
-	nullLiteral  shift 39
-	stringLiteral  shift 35
-	boolLiteral  shift 36
-	integerLiteral  shift 37
-	floatLiteral  shift 38
-	dict  shift 69
-	.  error
-
-	Dict  goto 130
-	CallFunc  goto 129
-	Array  goto 127
-	Literal  goto 126
-	Ident  goto 125
-	Struct  goto 128
-
-state 116
-	StructField:  Ident ':' CallFunc $$78.Ident ':' Dict 
-
-	ident  shift 43
-	.  error
-
-	Ident  goto 131
-
-state 117
-	CallFunc:  ident '(' CallFuncArgs ')'.    (39)
-
-	.  reduce 39 (src line 244)
-
-
-state 118
-	CallFuncArgs:  CallFuncArgs ','.CallFuncArg 
-	CallFuncArgs:  CallFuncArgs ','.    (44)
-
-	ident  shift 68
-	'('  shift 41
-	'{'  shift 40
-	'['  shift 42
-	nullLiteral  shift 39
-	stringLiteral  shift 35
-	boolLiteral  shift 36
-	integerLiteral  shift 37
-	floatLiteral  shift 38
-	dict  shift 69
-	.  reduce 44 (src line 266)
-
-	DictField  goto 108
-	Dict  goto 67
-	CallFunc  goto 66
-	Array  goto 63
-	Literal  goto 62
-	Ident  goto 110
-	ArrayField  goto 109
-	CallFuncArg  goto 132
-	Struct  goto 64
-
-state 119
-	CallFunc:  ident '(' ArbitraryArrArgs ')'.    (40)
-
-	.  reduce 40 (src line 249)
-
-
-state 120
-	CallFunc:  ident '(' ArbitraryNamedArgs ')'.    (41)
-
-	.  reduce 41 (src line 254)
-
-
-state 121
-	ArbitraryArrArgs:  '*' '*'.'[' ArrayFields ']' 
-	ArbitraryNamedArgs:  '*' '*'.Dict 
-
-	'['  shift 133
-	dict  shift 69
-	.  error
-
-	Dict  goto 134
-
-state 122
-	Dict:  dict '(' DictFields ')'.    (80)
-
-	.  reduce 80 (src line 388)
-
-
-state 123
-	DictFields:  DictFields ','.DictField 
-	DictFields:  DictFields ','.    (83)
-
-	ident  shift 43
-	.  reduce 83 (src line 396)
-
-	DictField  goto 135
-	Ident  goto 95
-
-state 124
-	ModuleFields:  ModuleFields ',' DictField.    (36)
-
-	.  reduce 36 (src line 236)
-
-
-state 125
-	Ident:  Ident.'.' ident 
-	DictField:  Ident '=' Ident.    (84)
-
-	'.'  shift 51
-	.  reduce 84 (src line 400)
-
-
-state 126
-	DictField:  Ident '=' Literal.    (85)
-
-	.  reduce 85 (src line 403)
-
-
-state 127
-	DictField:  Ident '=' Array.    (86)
-
-	.  reduce 86 (src line 406)
-
-
-state 128
-	DictField:  Ident '=' Struct.    (87)
-
-	.  reduce 87 (src line 409)
-
-
-state 129
-	DictField:  Ident '=' CallFunc.    (88)
-
-	.  reduce 88 (src line 412)
-
-
-state 130
-	DictField:  Ident '=' Dict.    (89)
-
-	.  reduce 89 (src line 415)
-
-
-state 131
-	Ident:  Ident.'.' ident 
-	StructField:  Ident ':' CallFunc $$78 Ident.':' Dict 
-
-	'.'  shift 51
-	':'  shift 136
-	.  error
-
-
-state 132
-	CallFuncArgs:  CallFuncArgs ',' CallFuncArg.    (42)
-
-	.  reduce 42 (src line 261)
-
-
-state 133
-	ArbitraryArrArgs:  '*' '*' '['.ArrayFields ']' 
-
-	ident  shift 68
-	'('  shift 41
-	'{'  shift 40
-	'['  shift 42
-	nullLiteral  shift 39
-	stringLiteral  shift 35
-	boolLiteral  shift 36
-	integerLiteral  shift 37
-	floatLiteral  shift 38
-	dict  shift 69
-	.  error
-
-	Dict  goto 67
-	CallFunc  goto 66
-	Array  goto 63
-	ArrayFields  goto 137
-	Literal  goto 62
-	Ident  goto 65
-	ArrayField  goto 61
-	Struct  goto 64
-
-state 134
-	ArbitraryNamedArgs:  '*' '*' Dict.    (48)
-
-	.  reduce 48 (src line 279)
-
-
-state 135
-	DictFields:  DictFields ',' DictField.    (81)
-
-	.  reduce 81 (src line 392)
-
-
-state 136
-	StructField:  Ident ':' CallFunc $$78 Ident ':'.Dict 
-
-	dict  shift 69
-	.  error
-
-	Dict  goto 138
-
-state 137
-	ArbitraryArrArgs:  '*' '*' '[' ArrayFields.']' 
-	ArrayFields:  ArrayFields.',' ArrayField 
-	ArrayFields:  ArrayFields.',' 
-
-	','  shift 89
-	']'  shift 139
-	.  error
-
-
-state 138
-	StructField:  Ident ':' CallFunc $$78 Ident ':' Dict.    (79)
-
-	.  reduce 79 (src line 384)
-
-
-state 139
-	ArbitraryArrArgs:  '*' '*' '[' ArrayFields ']'.    (47)
-
-	.  reduce 47 (src line 276)
-
-
-33 terminals, 30 nonterminals
-90 grammar rules, 140/16000 states
+33 terminals, 24 nonterminals
+66 grammar rules, 107/16000 states
 0 shift/reduce, 0 reduce/reduce conflicts reported
-79 working sets used
-memory: parser 136/240000
-31 extra closures
-193 shift entries, 1 exceptions
-80 goto entries
-31 entries saved by goto default
-Optimizer space used: output 231/240000
-231 table entries, 12 zero
-maximum spread: 32, maximum offset: 136
+73 working sets used
+memory: parser 151/240000
+37 extra closures
+208 shift entries, 1 exceptions
+45 goto entries
+59 entries saved by goto default
+Optimizer space used: output 233/240000
+233 table entries, 64 zero
+maximum spread: 32, maximum offset: 97

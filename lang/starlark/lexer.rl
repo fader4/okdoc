@@ -32,9 +32,9 @@ import (
     defKeyword = "def";
     moduleKeyword = "module";
     loadKeyword = "load";
+    notKeyword = "not";
     returnKeyword = "return";
-    dictKeyword = "dict";
-    keywords = defKeyword | moduleKeyword | loadKeyword | returnKeyword | dictKeyword;
+    keywords = defKeyword | moduleKeyword | loadKeyword | returnKeyword | notKeyword;
 
     CommentInline = "#" [^\r\n]*;
     tripleQuoted = "'''" | '"""';
@@ -86,8 +86,8 @@ import (
         defKeyword => {
             lex.ReleaseToken(def, "def")
         };
-        dictKeyword => {
-            lex.ReleaseToken(dict, "dict")
+        notKeyword => {
+            lex.ReleaseToken(not, "not")
         };
         moduleKeyword => {
             lex.ReleaseToken(module, "module")
