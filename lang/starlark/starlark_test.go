@@ -1,6 +1,7 @@
 package starlark
 
 import (
+	"encoding/json"
 	"fmt"
 	"testing"
 
@@ -12,37 +13,12 @@ func TestParse(t *testing.T) {
 	assert.NoError(t, err)
 	fmt.Println("---- list tokens ----")
 	for _, token := range res {
-		str, err := token.HumanString()
-		assert.NoError(t, err)
-		fmt.Println(str)
 		err = token.Parse()
 		assert.NoError(t, err)
 
-		prettyToken(token)
-	}
-}
-
-func prettyToken(token *Token) {
-	switch token.Token().Symbol {
-	case def:
-		fmt.Println("Def:")
-		def := token.Def
-		fmt.Println("\tName:", def.Name)
-		fmt.Println("\tNum fields:", len(def.Fields))
-		for _, field := range def.Fields {
-			fmt.Printf("\t\t Key: %v, Value: %v\n", field.Key, field.Value)
-		}
-	case module:
-		fmt.Println("Module:")
-		module := token.Module
-		fmt.Println("\tName:", module.Name)
-		fmt.Println("\tExport field:", module.Export)
-		fmt.Println("\tNum fields:", len(module.Fields))
-		for _, field := range module.Fields {
-			field_ := field.(*Assign)
-
-			fmt.Println("\t\t Key:", field_.Left, "Value:", field_.Right)
-		}
+		prettyToken, err := json.Marshal(token)
+		assert.NoError(t, err)
+		fmt.Println(string(prettyToken))
 	}
 }
 
@@ -186,8 +162,10 @@ foo = module(
 foo = module(
 	"bar",
 	a = "b",
-	a = "b".sort(),
-	arr = 1 + 2,
+	aff = not a,
+	uniq = [1,2,3].uniq(),
+	a = "b".format(),
+	assert = 1 + (2 + 3),
 	ar = f(**dict(c=7, obj=dict(c=7, a=2, b=3), a=2, b=3, fn=f(**dict(c=7, a=2, b=3)))),
 	dic = dict(c=7, a=2, b=3),
 	dic = {"a": "b", "c": 123, "d": {"a": "b", "c": 123}, "fn": f(**dict(c=7, obj=dict(c=7, a=2, b=3), a=2, b=3, fn=f(**dict(c=7, a=2, b=3))))}
@@ -197,7 +175,7 @@ foo = module(
 Free comment
 """
 
-def main(ctx=(1,2,3) , **kwargs):
+def main(ctx=(1,2,3) ,  obj={"a": "b"}, **kwargs):
 	"""
 	Inline comment into method
 	"""

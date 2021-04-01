@@ -1,7 +1,9 @@
 package starlark
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 
 	"github.com/fader4/okdoc/syntax"
 	"github.com/pkg/errors"
@@ -17,6 +19,58 @@ type Token struct {
 	Load    *Load
 	Module  *Module
 	Def     *Def
+}
+
+func (a *Token) Len() int {
+	return a.End.End - a.Start.Start
+}
+
+func (t *Token) MarshalJSON() ([]byte, error) {
+	out := struct {
+		Comment *Comment `json:"comment,omitempty"`
+		Return  *Return  `json:"return,omitempty"`
+		Load    *Load    `json:"load,omitempty"`
+		Module  *Module  `json:"module,omitempty"`
+		Def     *Def     `json:"def,omitempty"`
+		Raw     string   `json:"raw,omitempty"`
+
+		NumChars int `json:"num_chars"`
+		Pos      struct {
+			StartLine       int `json:"start_line"`
+			EndLine         int `json:"end_line"`
+			StartLeftChars  int `json:"start_left_chars"`
+			StartLeftSpaces int `json:"start_left_spaces"`
+		} `json:"pos"`
+	}{
+		Comment:  t.Comment,
+		Return:   t.Return,
+		Load:     t.Load,
+		Module:   t.Module,
+		Def:      t.Def,
+		NumChars: t.Len(),
+		Raw:      string(t.MustBytes()),
+		Pos: struct {
+			StartLine       int `json:"start_line"`
+			EndLine         int `json:"end_line"`
+			StartLeftChars  int `json:"start_left_chars"`
+			StartLeftSpaces int `json:"start_left_spaces"`
+		}{
+			StartLine:       t.Start.Pos.Line(),
+			EndLine:         t.End.Pos.Line(),
+			StartLeftChars:  t.Start.Pos.Spaces(),
+			StartLeftSpaces: t.Start.Pos.Spaces(),
+		},
+	}
+
+	return json.MarshalIndent(out, " ", " ")
+}
+
+func ParseFile(file string) ([]*Token, error) {
+	dat, err := ioutil.ReadFile(file)
+	if err != nil {
+		return nil, err
+	}
+	return Parse(dat)
 }
 
 func Parse(dat []byte) ([]*Token, error) {

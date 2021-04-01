@@ -101,8 +101,17 @@ import (
         CommentMultiline => {
             lex.ReleaseToken(commentMultiline, "comment")
         };
-        [=,.:*] => {
+        [=,.:*+\-\/<>%] => {
             lex.ReleaseSymbol("op_and_punct")
+        };
+        'not' => {
+            lex.ReleaseToken(not, "op_and_punct")
+        };
+        'or' => {
+            lex.ReleaseToken(or, "op_and_punct")
+        };
+        'and' => {
+            lex.ReleaseToken(and, "op_and_punct")
         };
 
         Null => {

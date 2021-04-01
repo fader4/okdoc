@@ -22,8 +22,10 @@ import (
     DefField *DefField
     DefFields []*DefField
     Assign *Assign
+    Assigns []*Assign
     CallFunc *CallFunc
     Operand *Operand
+    arrint []int
 
     val syntax.Value
     arr syntax.Array
@@ -31,10 +33,10 @@ import (
 }
 
 %token <token>
-ident '(' ')' '=' ',' '{' '}' '[' ']' '.' '"' '\'' '*' ':'
+ident '(' ')' '=' ',' '{' '}' '[' ']' '.' '"' '\'' '*' ':' '+' '-' '/' '>' '<'
 nullLiteral stringLiteral boolLiteral integerLiteral floatLiteral
 
-not
+not or and
 returnKeyword
 commentInline
 def endDef
@@ -53,9 +55,10 @@ commentMultiline endCommentMultiline
 %type <Def> Def
 %type <Operand> Operand
 %type <Assign> Assign
-%type <arr> LoadFields Array ArrayFields StructFields StructField ModuleFields CallFuncArgs
+%type <arr> LoadFields Array ArrayFields StructFields StructField CallFuncArgs ModuleField ModuleFields
 %type <val> Literal LoadField CallFuncArg
 %type <map_> Struct
+%type <arrint> Ops
 
 // %type <val> Literal Ident ArrayField
 // %type <arr> StructField StructFields ArrayFields Array
@@ -123,6 +126,12 @@ DefField:
         $$ = &DefField{
             Key: $1,
             Value: $3,
+        }
+    } |
+    Operand '=' Assign {
+        $$ = &DefField{
+            Key: $1,
+            ValueExpr: $3,
         }
     }
 ;
@@ -192,12 +201,22 @@ Module:
     };
 
 ModuleFields:
-    ModuleFields ',' Assign {
-        $$ = append($$, $3)
-    } | Assign {
+    ModuleField {
         $$ = syntax.Array{$1}
-    } | ModuleFields ',' {
+    } |
+    ModuleFields ',' ModuleField {
+        $$ = append($1, $3)
+    } |
+    ModuleFields ',' {
         $$ = $1
+    };
+
+ModuleField:
+    Operand '=' Operand {
+        $$ = syntax.Array{$1, $3}
+    } |
+    Operand '=' Assign {
+        $$ = syntax.Array{$1, $3}
     };
 
 CallFunc:
@@ -213,7 +232,7 @@ CallFunc:
         }
     } | ident '(' '*' '*' CallFunc ')'  {
         if $5.FuncName() != "dict" {
-            panic("should be only dictionary")
+            panic("should be only dictionary for kwargs")
         }
         $$ = &CallFunc{
             Name: $1.Ident(),
@@ -238,90 +257,137 @@ CallFuncArgs:
     };
 
 CallFuncArg:
-    Assign {
-        $$ = syntax.Array{$1.Left, $1.Right}
-    } | Operand {
+    Operand {
         $$ = syntax.Array{$1, syntax.Null_{}}
-    } ;
+    } |
+    Assign {
+        $$ = syntax.Array{syntax.Null_{}, $1}
+    } |
+    Operand '=' Operand {
+        $$ = syntax.Array{$1, $3}
+    } |
+    Operand '=' Assign {
+        $$ = syntax.Array{$1, $3}
+    };
 
 //////////////////
 // Basic types
 //////////////////
 
 
-Literal: stringLiteral {
-    $$ = $1.String()
-} | boolLiteral {
-    $$ = $1.Bool()
-} | integerLiteral {
-    $$ = $1.Int()
-} | floatLiteral {
-    $$ = $1.Float()
-} | nullLiteral {
-    $$ = $1.Null()
-};
+Literal:
+    stringLiteral {
+        $$ = $1.String()
+    } | boolLiteral {
+        $$ = $1.Bool()
+    } | integerLiteral {
+        $$ = $1.Int()
+    } | floatLiteral {
+        $$ = $1.Float()
+    } | nullLiteral {
+        $$ = $1.Null()
+    };
 
 Array:
-'(' ArrayFields ')' {
-    // TODO: it is tuple
-    $$ = $2
-} | '[' ArrayFields ']' {
-    // TODO: it is list
-    $$ = $2
-} | '(' ')' {
-    $$ = syntax.Array{}
-} | '[' ']' {
-    $$ = syntax.Array{}
-};
+    '(' ArrayFields ')' {
+        // TODO: it is tuple
+        $$ = $2
+    } | '[' ArrayFields ']' {
+        // TODO: it is list
+        $$ = $2
+    } | '(' ')' {
+        $$ = syntax.Array{}
+    } | '[' ']' {
+        $$ = syntax.Array{}
+    };
 
-ArrayFields: Operand {
-    $$ = syntax.Array{$1}
-} | ArrayFields ',' Operand {
-    $1.Add($3)
-    $$ = $1
-} | ArrayFields ',' {
-    $$ = $1
-};
+ArrayFields:
+    Assign {
+        $$ = syntax.Array{$1}
+    } | Operand {
+        $$ = syntax.Array{$1}
+    } | ArrayFields ',' Operand {
+        $1.Add($3)
+        $$ = $1
+    } | ArrayFields ',' Assign {
+        $1.Add($3)
+        $$ = $1
+    } | ArrayFields ',' {
+        $$ = $1
+    };
 
-Struct: '{' '}' {
-    $$ = syntax.Map{}
-} | '{' StructFields '}' {
-    $$ = syntax.Map{}
-    for _, item := range $2 {
-        key := item.(syntax.Array)[0]
-        switch in := key.(type) {
-            case syntax.StringLiteral:
-                $$.Keys = append($$.Keys, string(in))
-            case syntax.Ident_:
-                if len(in) > 0 {
-                    $$.Keys = append($$.Keys, "@"+strings.Join(in, "."))
-                } else {
+Struct:
+    '{' '}' {
+        $$ = syntax.Map{}
+    } | '{' StructFields '}' {
+        $$ = syntax.Map{}
+        for _, item := range $2 {
+            key := item.(syntax.Array)[0]
+            switch in := key.(type) {
+                case syntax.StringLiteral:
+                    $$.Keys = append($$.Keys, string(in))
+                case syntax.Ident_:
+                    if len(in) > 0 {
+                        $$.Keys = append($$.Keys, "@"+strings.Join(in, "."))
+                    } else {
+                        $$.Keys = append($$.Keys, "")
+                    }
+                case nil:
                     $$.Keys = append($$.Keys, "")
-                }
-            case nil:
-                $$.Keys = append($$.Keys, "")
-            default:
-                log.Printf("starlark#Fields: not supported key type %T\n", key)
+                default:
+                    log.Printf("starlark#Fields: not supported key type %T\n", key)
+            }
+            $$.Values.Add(item.(syntax.Array)[1])
         }
-        $$.Values.Add(item.(syntax.Array)[1])
-    }
-};
+    };
 
-StructFields: StructField {
-    $$ = syntax.Array{$1}
-} | StructFields ',' StructField {
-    $1.Add($3)
-    $$ = $1
-} | StructFields ',' {
-    $$ = $1
-};
+StructFields:
+    StructField {
+        $$ = syntax.Array{$1}
+    } | StructFields ',' StructField {
+        $1.Add($3)
+        $$ = $1
+    } | StructFields ',' {
+        $$ = $1
+    };
 
-StructField: stringLiteral ':' Operand {
-    $$ = syntax.Array{$1.String(), $3}
-};
+StructField:
+    stringLiteral ':' Operand {
+        $$ = syntax.Array{$1.String(), $3}
+    } | stringLiteral ':' Assign {
+        $$ = syntax.Array{$1.String(), $3}
+    };
 
-Assign: Operand '=' Operand {
-        $$ = &Assign{Left: $1, Op: $2.Symbol, Right: $3}
+Ops:
+    or {
+        $$ = []int{$1.Symbol}
+    } | and {
+        $$ = []int{$1.Symbol}
+    } | '+' {
+        $$ = []int{$1.Symbol}
+    } | '-' {
+        $$ = []int{$1.Symbol}
+    } | '=' '=' {
+        $$ = []int{$1.Symbol, $2.Symbol}
+    } | '>' {
+        $$ = []int{$1.Symbol}
+    } | '<' {
+        $$ = []int{$1.Symbol}
+    } | '<' '=' {
+        $$ = []int{$1.Symbol, $2.Symbol}
+    } | '>' '=' {
+        $$ = []int{$1.Symbol, $2.Symbol}
+    } | '*' {
+        $$ = []int{$1.Symbol}
+    } | '/' {
+        $$ = []int{$1.Symbol}
+    };
+
+Assign:
+    Operand Ops Operand {
+        $$ = &Assign{Left: $1, Op: $2, Right: $3}
+    } | Assign Ops Operand {
+        $$ = &Assign{Parent: $1, Op: $2, Right: $3}
     };
 
 Operand:
@@ -347,26 +413,20 @@ Operand:
     } |
     CallFunc {
         $$ = &Operand{
-            CallFunc: $1,
+            Value: $1,
         }
     } |
+    // Call Suffix
     Operand '.' CallFunc {
         $$ = &Operand{
             Parent: $1,
-            CallFunc: $3,
+            Value: $3,
         }
     } |
+    // Dot Suffix
     Operand '.' ident {
         $$ = &Operand{
             Parent: $1,
             Value: $3.Ident(),
         }
-    }
-    // |
-    // not Operand {
-    //     $$ = &Operand{
-    //         Parent: $1,
-    //         Not: true,
-    //     }
-    // }
-    ;
+    };

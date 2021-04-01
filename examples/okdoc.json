@@ -1,0 +1,1002 @@
+{
+  "files": {
+   "./examples/file1.star": [
+    {
+     "load": {
+      "fields": [
+       [
+        null,
+        "foo"
+       ],
+       [
+        null,
+        "bar"
+       ]
+      ],
+      "kind": "load"
+     },
+     "raw": "load(\"foo\", \"bar\")",
+     "num_chars": 18,
+     "pos": {
+      "start_line": 0,
+      "end_line": 0,
+      "start_left_chars": 0,
+      "start_left_spaces": 0
+     }
+    },
+    {
+     "load": {
+      "fields": [
+       [
+        null,
+        "a"
+       ],
+       [
+        "@b",
+        "c"
+       ],
+       [
+        null,
+        "qw"
+       ]
+      ],
+      "kind": "load"
+     },
+     "raw": "load(\"a\", b = \"c\", \"qw\")",
+     "num_chars": 24,
+     "pos": {
+      "start_line": 2,
+      "end_line": 2,
+      "start_left_chars": 0,
+      "start_left_spaces": 0
+     }
+    },
+    {
+     "comment": {
+      "kind": "comment"
+     },
+     "raw": "# inline comment",
+     "num_chars": 16,
+     "pos": {
+      "start_line": 4,
+      "end_line": 4,
+      "start_left_chars": 0,
+      "start_left_spaces": 0
+     }
+    },
+    {
+     "module": {
+      "export": "@foo",
+      "fields": [],
+      "kind": "module",
+      "name": "bar"
+     },
+     "raw": "foo = module(\n\t\"bar\"\n)",
+     "num_chars": 22,
+     "pos": {
+      "start_line": 6,
+      "end_line": 8,
+      "start_left_chars": 0,
+      "start_left_spaces": 0
+     }
+    },
+    {
+     "module": {
+      "export": "@foo",
+      "fields": [
+       [
+        {
+         "Parent": null,
+         "Value": "@a"
+        },
+        {
+         "Parent": null,
+         "Value": "b"
+        }
+       ],
+       [
+        {
+         "Parent": null,
+         "Value": "@aff"
+        },
+        {
+         "Parent": null,
+         "Value": "@a"
+        }
+       ],
+       [
+        {
+         "Parent": null,
+         "Value": "@uniq"
+        },
+        {
+         "Parent": {
+          "Parent": null,
+          "Value": [
+           {
+            "Parent": null,
+            "Value": 1
+           },
+           {
+            "Parent": null,
+            "Value": 2
+           },
+           {
+            "Parent": null,
+            "Value": 3
+           }
+          ]
+         },
+         "Value": {
+          "Name": "@uniq",
+          "Fields": null,
+          "Varrarrgs": false,
+          "Kwarrgs": false
+         }
+        }
+       ],
+       [
+        {
+         "Parent": null,
+         "Value": "@a"
+        },
+        {
+         "Parent": {
+          "Parent": null,
+          "Value": "b"
+         },
+         "Value": {
+          "Name": "@format",
+          "Fields": null,
+          "Varrarrgs": false,
+          "Kwarrgs": false
+         }
+        }
+       ],
+       [
+        {
+         "Parent": null,
+         "Value": "@assert"
+        },
+        {
+         "Parent": null,
+         "Left": {
+          "Parent": null,
+          "Value": 1
+         },
+         "Op": [
+          43
+         ],
+         "Right": {
+          "Parent": null,
+          "Value": [
+           {
+            "Parent": null,
+            "Left": {
+             "Parent": null,
+             "Value": 2
+            },
+            "Op": [
+             43
+            ],
+            "Right": {
+             "Parent": null,
+             "Value": 3
+            }
+           }
+          ]
+         }
+        }
+       ],
+       [
+        {
+         "Parent": null,
+         "Value": "@ar"
+        },
+        {
+         "Parent": null,
+         "Value": {
+          "Name": "@f",
+          "Fields": [
+           [
+            {
+             "Parent": null,
+             "Value": "@c"
+            },
+            {
+             "Parent": null,
+             "Value": 7
+            }
+           ],
+           [
+            {
+             "Parent": null,
+             "Value": "@obj"
+            },
+            {
+             "Parent": null,
+             "Value": {
+              "Name": "@dict",
+              "Fields": [
+               [
+                {
+                 "Parent": null,
+                 "Value": "@c"
+                },
+                {
+                 "Parent": null,
+                 "Value": 7
+                }
+               ],
+               [
+                {
+                 "Parent": null,
+                 "Value": "@a"
+                },
+                {
+                 "Parent": null,
+                 "Value": 2
+                }
+               ],
+               [
+                {
+                 "Parent": null,
+                 "Value": "@b"
+                },
+                {
+                 "Parent": null,
+                 "Value": 3
+                }
+               ]
+              ],
+              "Varrarrgs": false,
+              "Kwarrgs": false
+             }
+            }
+           ],
+           [
+            {
+             "Parent": null,
+             "Value": "@a"
+            },
+            {
+             "Parent": null,
+             "Value": 2
+            }
+           ],
+           [
+            {
+             "Parent": null,
+             "Value": "@b"
+            },
+            {
+             "Parent": null,
+             "Value": 3
+            }
+           ],
+           [
+            {
+             "Parent": null,
+             "Value": "@fn"
+            },
+            {
+             "Parent": null,
+             "Value": {
+              "Name": "@f",
+              "Fields": [
+               [
+                {
+                 "Parent": null,
+                 "Value": "@c"
+                },
+                {
+                 "Parent": null,
+                 "Value": 7
+                }
+               ],
+               [
+                {
+                 "Parent": null,
+                 "Value": "@a"
+                },
+                {
+                 "Parent": null,
+                 "Value": 2
+                }
+               ],
+               [
+                {
+                 "Parent": null,
+                 "Value": "@b"
+                },
+                {
+                 "Parent": null,
+                 "Value": 3
+                }
+               ]
+              ],
+              "Varrarrgs": false,
+              "Kwarrgs": true
+             }
+            }
+           ]
+          ],
+          "Varrarrgs": false,
+          "Kwarrgs": true
+         }
+        }
+       ],
+       [
+        {
+         "Parent": null,
+         "Value": "@dic"
+        },
+        {
+         "Parent": null,
+         "Value": {
+          "Name": "@dict",
+          "Fields": [
+           [
+            {
+             "Parent": null,
+             "Value": "@c"
+            },
+            {
+             "Parent": null,
+             "Value": 7
+            }
+           ],
+           [
+            {
+             "Parent": null,
+             "Value": "@a"
+            },
+            {
+             "Parent": null,
+             "Value": 2
+            }
+           ],
+           [
+            {
+             "Parent": null,
+             "Value": "@b"
+            },
+            {
+             "Parent": null,
+             "Value": 3
+            }
+           ]
+          ],
+          "Varrarrgs": false,
+          "Kwarrgs": false
+         }
+        }
+       ],
+       [
+        {
+         "Parent": null,
+         "Value": "@dic"
+        },
+        {
+         "Parent": null,
+         "Value": {
+          "a": {
+           "Parent": null,
+           "Value": "b"
+          },
+          "c": {
+           "Parent": null,
+           "Value": 123
+          },
+          "d": {
+           "Parent": null,
+           "Value": {
+            "a": {
+             "Parent": null,
+             "Value": "b"
+            },
+            "c": {
+             "Parent": null,
+             "Value": 123
+            }
+           }
+          },
+          "fn": {
+           "Parent": null,
+           "Value": {
+            "Name": "@f",
+            "Fields": [
+             [
+              {
+               "Parent": null,
+               "Value": "@c"
+              },
+              {
+               "Parent": null,
+               "Value": 7
+              }
+             ],
+             [
+              {
+               "Parent": null,
+               "Value": "@obj"
+              },
+              {
+               "Parent": null,
+               "Value": {
+                "Name": "@dict",
+                "Fields": [
+                 [
+                  {
+                   "Parent": null,
+                   "Value": "@c"
+                  },
+                  {
+                   "Parent": null,
+                   "Value": 7
+                  }
+                 ],
+                 [
+                  {
+                   "Parent": null,
+                   "Value": "@a"
+                  },
+                  {
+                   "Parent": null,
+                   "Value": 2
+                  }
+                 ],
+                 [
+                  {
+                   "Parent": null,
+                   "Value": "@b"
+                  },
+                  {
+                   "Parent": null,
+                   "Value": 3
+                  }
+                 ]
+                ],
+                "Varrarrgs": false,
+                "Kwarrgs": false
+               }
+              }
+             ],
+             [
+              {
+               "Parent": null,
+               "Value": "@a"
+              },
+              {
+               "Parent": null,
+               "Value": 2
+              }
+             ],
+             [
+              {
+               "Parent": null,
+               "Value": "@b"
+              },
+              {
+               "Parent": null,
+               "Value": 3
+              }
+             ],
+             [
+              {
+               "Parent": null,
+               "Value": "@fn"
+              },
+              {
+               "Parent": null,
+               "Value": {
+                "Name": "@f",
+                "Fields": [
+                 [
+                  {
+                   "Parent": null,
+                   "Value": "@c"
+                  },
+                  {
+                   "Parent": null,
+                   "Value": 7
+                  }
+                 ],
+                 [
+                  {
+                   "Parent": null,
+                   "Value": "@a"
+                  },
+                  {
+                   "Parent": null,
+                   "Value": 2
+                  }
+                 ],
+                 [
+                  {
+                   "Parent": null,
+                   "Value": "@b"
+                  },
+                  {
+                   "Parent": null,
+                   "Value": 3
+                  }
+                 ]
+                ],
+                "Varrarrgs": false,
+                "Kwarrgs": true
+               }
+              }
+             ]
+            ],
+            "Varrarrgs": false,
+            "Kwarrgs": true
+           }
+          }
+         }
+        }
+       ]
+      ],
+      "kind": "module",
+      "name": "bar"
+     },
+     "raw": "foo = module(\n\t\"bar\",\n\ta = \"b\",\n\taff = not a,\n\tuniq = [1,2,3].uniq(),\n\ta = \"b\".format(),\n\tassert = 1 + (2 + 3),\n\tar = f(**dict(c=7, obj=dict(c=7, a=2, b=3), a=2, b=3, fn=f(**dict(c=7, a=2, b=3)))),\n\tdic = dict(c=7, a=2, b=3),\n\tdic = {\"a\": \"b\", \"c\": 123, \"d\": {\"a\": \"b\", \"c\": 123}, \"fn\": f(**dict(c=7, obj=dict(c=7, a=2, b=3), a=2, b=3, fn=f(**dict(c=7, a=2, b=3))))}\n)",
+     "num_chars": 368,
+     "pos": {
+      "start_line": 10,
+      "end_line": 20,
+      "start_left_chars": 0,
+      "start_left_spaces": 0
+     }
+    },
+    {
+     "comment": {
+      "kind": "comment"
+     },
+     "raw": "\"\"\"\nFree comment\n\"\"\"",
+     "num_chars": 20,
+     "pos": {
+      "start_line": 22,
+      "end_line": 24,
+      "start_left_chars": 0,
+      "start_left_spaces": 0
+     }
+    },
+    {
+     "comment": {
+      "kind": "comment"
+     },
+     "raw": "\"\"\"\n@Param(ctx, \"ctx with fields\")\n@Param(ctx.foo, description = \"multi\nline\ndescription\nwith\\\"escaped\\\" strings\n\")\n@Param(name = ctx.bar, description = \"ctx with fields\")\n@Param(name = ctx.bar, description = \"ctx with fields\", example = 123)\n@Param(name = ctx.bar, description = \"ctx with fields\", example = 123.123)\n@Param(name = ctx.bar, description = \"ctx with fields\", example = True)\n@Param(name = ctx.bar, description = \"ctx with fields\", example = ident.a.b.c)\n@Param(name = ctx.bar, description = \"ctx with fields\", example = [\"a\", 123, [\"a\", b], {a = \"b\"}])\n@Param(name = ctx.bar, description = \"ctx with fields\", example = {a = \"b\"})\n@Param(name = ctx.bar, description = \"ctx with fields\",\n    example  = \"repeat_same_field\",\n    example  = \"repeat_same_field\",\n    example  = \"repeat_same_field\",\n    example  = \"repeat_same_field\"\n)\n\"\"\"",
+     "num_chars": 849,
+     "annots": [
+      {
+       "fields": [
+        [
+         null,
+         "@ctx"
+        ],
+        [
+         null,
+         "ctx with fields"
+        ]
+       ],
+       "name": "Param",
+       "num_chars": 30,
+       "pos": {
+        "end_line": 1,
+        "start_left_chars": 0,
+        "start_left_spaces": 0,
+        "start_line": 1
+       },
+       "source_file_md5": "4775bbc95919e9aec60efc6403e844bd"
+      },
+      {
+       "fields": [
+        [
+         null,
+         "@ctx.foo"
+        ],
+        [
+         "@description",
+         "multi\nline\ndescription\nwith\\\"escaped\\\" strings\n"
+        ]
+       ],
+       "name": "Param",
+       "num_chars": 80,
+       "pos": {
+        "end_line": 2,
+        "start_left_chars": 0,
+        "start_left_spaces": 0,
+        "start_line": 2
+       },
+       "source_file_md5": "4775bbc95919e9aec60efc6403e844bd"
+      },
+      {
+       "fields": [
+        [
+         null,
+         "@name"
+        ],
+        [
+         "@description",
+         "ctx with fields"
+        ]
+       ],
+       "name": "Param",
+       "num_chars": 55,
+       "pos": {
+        "end_line": 3,
+        "start_left_chars": 0,
+        "start_left_spaces": 0,
+        "start_line": 3
+       },
+       "source_file_md5": "4775bbc95919e9aec60efc6403e844bd"
+      },
+      {
+       "fields": [
+        [
+         null,
+         "@name"
+        ],
+        [
+         "@description",
+         "ctx with fields"
+        ],
+        [
+         "@example",
+         123
+        ]
+       ],
+       "name": "Param",
+       "num_chars": 70,
+       "pos": {
+        "end_line": 4,
+        "start_left_chars": 0,
+        "start_left_spaces": 0,
+        "start_line": 4
+       },
+       "source_file_md5": "4775bbc95919e9aec60efc6403e844bd"
+      },
+      {
+       "fields": [
+        [
+         null,
+         "@name"
+        ],
+        [
+         "@description",
+         "ctx with fields"
+        ],
+        [
+         "@example",
+         123.123
+        ]
+       ],
+       "name": "Param",
+       "num_chars": 74,
+       "pos": {
+        "end_line": 5,
+        "start_left_chars": 0,
+        "start_left_spaces": 0,
+        "start_line": 5
+       },
+       "source_file_md5": "4775bbc95919e9aec60efc6403e844bd"
+      },
+      {
+       "fields": [
+        [
+         null,
+         "@name"
+        ],
+        [
+         "@description",
+         "ctx with fields"
+        ],
+        [
+         "@example",
+         true
+        ]
+       ],
+       "name": "Param",
+       "num_chars": 71,
+       "pos": {
+        "end_line": 6,
+        "start_left_chars": 0,
+        "start_left_spaces": 0,
+        "start_line": 6
+       },
+       "source_file_md5": "4775bbc95919e9aec60efc6403e844bd"
+      },
+      {
+       "fields": [
+        [
+         null,
+         "@name"
+        ],
+        [
+         "@description",
+         "ctx with fields"
+        ],
+        [
+         null,
+         "@example"
+        ]
+       ],
+       "name": "Param",
+       "num_chars": 78,
+       "pos": {
+        "end_line": 7,
+        "start_left_chars": 0,
+        "start_left_spaces": 0,
+        "start_line": 7
+       },
+       "source_file_md5": "4775bbc95919e9aec60efc6403e844bd"
+      },
+      {
+       "fields": [
+        [
+         null,
+         "@name"
+        ],
+        [
+         "@description",
+         "ctx with fields"
+        ],
+        [
+         "@example",
+         [
+          "a",
+          123,
+          [
+           "a",
+           "@b"
+          ],
+          {
+           "@a": "b"
+          }
+         ]
+        ]
+       ],
+       "name": "Param",
+       "num_chars": 98,
+       "pos": {
+        "end_line": 8,
+        "start_left_chars": 0,
+        "start_left_spaces": 0,
+        "start_line": 8
+       },
+       "source_file_md5": "4775bbc95919e9aec60efc6403e844bd"
+      },
+      {
+       "fields": [
+        [
+         null,
+         "@name"
+        ],
+        [
+         "@description",
+         "ctx with fields"
+        ],
+        [
+         "@example",
+         {
+          "@a": "b"
+         }
+        ]
+       ],
+       "name": "Param",
+       "num_chars": 76,
+       "pos": {
+        "end_line": 9,
+        "start_left_chars": 0,
+        "start_left_spaces": 0,
+        "start_line": 9
+       },
+       "source_file_md5": "4775bbc95919e9aec60efc6403e844bd"
+      },
+      {
+       "fields": [
+        [
+         null,
+         "@name"
+        ],
+        [
+         "@description",
+         "ctx with fields"
+        ],
+        [
+         "@example",
+         "repeat_same_field"
+        ],
+        [
+         "@example",
+         "repeat_same_field"
+        ],
+        [
+         "@example",
+         "repeat_same_field"
+        ],
+        [
+         "@example",
+         "repeat_same_field"
+        ]
+       ],
+       "name": "Param",
+       "num_chars": 200,
+       "pos": {
+        "end_line": 15,
+        "start_left_chars": 0,
+        "start_left_spaces": 0,
+        "start_line": 10
+       },
+       "source_file_md5": "4775bbc95919e9aec60efc6403e844bd"
+      }
+     ],
+     "pos": {
+      "start_line": 26,
+      "end_line": 46,
+      "start_left_chars": 0,
+      "start_left_spaces": 0
+     }
+    },
+    {
+     "def": {
+      "fields": [
+       [
+        "@ctx",
+        {
+         "Parent": null,
+         "Value": [
+          {
+           "Parent": null,
+           "Value": 1
+          },
+          {
+           "Parent": null,
+           "Value": 2
+          },
+          {
+           "Parent": null,
+           "Value": 3
+          }
+         ]
+        }
+       ],
+       [
+        "@obj",
+        {
+         "Parent": null,
+         "Value": {
+          "a": {
+           "Parent": null,
+           "Value": "b"
+          }
+         }
+        }
+       ],
+       [
+        "",
+        {
+         "Parent": null,
+         "Value": "@kwargs"
+        }
+       ]
+      ],
+      "kind": "def",
+      "name": "@main"
+     },
+     "raw": "def main(ctx=(1,2,3) ,  obj={\"a\": \"b\"}, **kwargs):",
+     "num_chars": 50,
+     "pos": {
+      "start_line": 47,
+      "end_line": 47,
+      "start_left_chars": 0,
+      "start_left_spaces": 0
+     }
+    },
+    {
+     "comment": {
+      "kind": "comment"
+     },
+     "raw": "\"\"\"\n\tInline comment into method\n\t\"\"\"",
+     "num_chars": 36,
+     "pos": {
+      "start_line": 48,
+      "end_line": 50,
+      "start_left_chars": 1,
+      "start_left_spaces": 1
+     }
+    },
+    {
+     "comment": {
+      "kind": "comment"
+     },
+     "raw": "# @Return(\"Some case\")",
+     "num_chars": 22,
+     "annots": [
+      {
+       "fields": [
+        [
+         null,
+         "Some case"
+        ]
+       ],
+       "name": "Return",
+       "num_chars": 20,
+       "pos": {
+        "end_line": 0,
+        "start_left_chars": 1,
+        "start_left_spaces": 1,
+        "start_line": 0
+       },
+       "source_file_md5": "4d11b2966e5439d149987454128f0b28"
+      }
+     ],
+     "pos": {
+      "start_line": 53,
+      "end_line": 53,
+      "start_left_chars": 2,
+      "start_left_spaces": 2
+     }
+    },
+    {
+     "return": {
+      "kind": "return"
+     },
+     "raw": "return",
+     "num_chars": 6,
+     "pos": {
+      "start_line": 54,
+      "end_line": 54,
+      "start_left_chars": 2,
+      "start_left_spaces": 2
+     }
+    },
+    {
+     "comment": {
+      "kind": "comment"
+     },
+     "raw": "# @Return(\"Happy path\")",
+     "num_chars": 23,
+     "annots": [
+      {
+       "fields": [
+        [
+         null,
+         "Happy path"
+        ]
+       ],
+       "name": "Return",
+       "num_chars": 21,
+       "pos": {
+        "end_line": 0,
+        "start_left_chars": 1,
+        "start_left_spaces": 1,
+        "start_line": 0
+       },
+       "source_file_md5": "5e489bce9d5aec5606695bb72d888232"
+      }
+     ],
+     "pos": {
+      "start_line": 55,
+      "end_line": 55,
+      "start_left_chars": 4,
+      "start_left_spaces": 4
+     }
+    },
+    {
+     "return": {
+      "kind": "return"
+     },
+     "raw": "return",
+     "num_chars": 6,
+     "pos": {
+      "start_line": 56,
+      "end_line": 56,
+      "start_left_chars": 1,
+      "start_left_spaces": 1
+     }
+    }
+   ]
+  }
+ }
