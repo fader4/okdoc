@@ -1,6 +1,6 @@
 {
   "files": {
-   "./examples/file1.star": [
+   "examples/file1.star": [
     {
      "token": {
       "fields": [
