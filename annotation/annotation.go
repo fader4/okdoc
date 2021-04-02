@@ -80,10 +80,7 @@ func (a Annotation) Fields() syntax.Array {
 		switch in := field.Key.(type) {
 		case syntax.Null_:
 			res.Add(syntax.Array{syntax.Null_{}, field.Value})
-		case syntax.StringLiteral,
-			syntax.IntLiteral,
-			syntax.BoolLiteral,
-			syntax.FloatLiteral:
+		case syntax.StringLiteral:
 			res.Add(syntax.Array{in, field.Value})
 		case syntax.Ident_:
 			if len(in) > 0 {
