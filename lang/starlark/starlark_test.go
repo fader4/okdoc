@@ -9,7 +9,7 @@ import (
 )
 
 func TestParse(t *testing.T) {
-	res, err := Parse([]byte(f2))
+	res, err := Parse([]byte(f1))
 	assert.NoError(t, err)
 	fmt.Println("---- list tokens ----")
 	for _, token := range res {

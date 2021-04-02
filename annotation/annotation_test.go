@@ -97,6 +97,11 @@ func TestParse(t *testing.T) {
 			in:   `@Foo(a.b={a="",b="b",c=d.e,f=1,g=1.2,arr=[],arr2=[1],obj={},obj1={a="c"}})`,
 			want: `[{"fields":[["a.b",{"a":"","arr":[],"arr2":[1],"b":"b","c":"d.e","f":1,"g":1.2,"obj":{},"obj1":{"a":"c"}}]],"name":"Foo","num_chars":74,"pos":{"end_line":0,"start_left_chars":0,"start_left_spaces":0,"start_line":0}}]`,
 		},
+
+		{
+			in:   `@Foo(obj={a = "b", c = "d"})`,
+			want: `[{"fields":[["obj",{"a":"b","c":"d"}]],"name":"Foo","num_chars":28,"pos":{"end_line":0,"start_left_chars":0,"start_left_spaces":0,"start_line":0}}]`,
+		},
 	}
 	for _, case_ := range cases {
 		t.Run(case_.in, func(t *testing.T) {
