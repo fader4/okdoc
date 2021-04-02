@@ -42,7 +42,7 @@ import (
 
     Int      = [0-9]+;
     Float    = (([1-9] [0-9]* [.] [0-9]*) | (0? [.] [0-9]+)) ([Ee] [+\-]? [0-9]+)?;
-    Null     = "Null";
+    Null     = "None";
     Bool     = "True"|"False";
     Ident    = ([a-zA-Z_] [a-zA-Z0-9_]*) - Bool - Null - keywords;
 
@@ -123,10 +123,10 @@ import (
         Bool     => {
             lex.ReleaseToken(boolLiteral, "literal", "bool")
         };
-        Int      => {
+        Int|'-'Int      => {
             lex.ReleaseToken(integerLiteral, "literal", "int")
         };
-        Float    => {
+        Float|'-'Float    => {
             lex.ReleaseToken(floatLiteral, "literal", "float")
         };
 

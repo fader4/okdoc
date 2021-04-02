@@ -994,7 +994,7 @@ starlarkdefault:
 					starlarkVAL.map_.Keys = append(starlarkVAL.map_.Keys, string(in))
 				case syntax.Ident_:
 					if len(in) > 0 {
-						starlarkVAL.map_.Keys = append(starlarkVAL.map_.Keys, "@"+strings.Join(in, "."))
+						starlarkVAL.map_.Keys = append(starlarkVAL.map_.Keys, strings.Join(in, "."))
 					} else {
 						starlarkVAL.map_.Keys = append(starlarkVAL.map_.Keys, "")
 					}
