@@ -107,18 +107,18 @@ DefFields:
 DefField:
     Operand {
         $$ = &DefField{
-            Value: $1,
+            Key: $1,
         }
     } |
     '*' Operand {
         $$ = &DefField{
-            Value: $2,
+            Key: $2,
             Varargs: true,
         }
     } |
     '*' '*' Operand {
         $$ = &DefField{
-            Value: $3,
+            Key: $3,
             Kwargs: true,
         }
     } |
@@ -232,7 +232,7 @@ CallFunc:
         }
     } | ident '(' '*' '*' CallFunc ')'  {
         if $5.FuncName() != "dict" {
-            panic("should be only dictionary for kwargs")
+            panic("should be only dictionary for kwargs, got " + $5.FuncName())
         }
         $$ = &CallFunc{
             Name: $1.Ident(),

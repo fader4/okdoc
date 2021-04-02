@@ -41,13 +41,8 @@ type Def struct {
 func (d *Def) MarshalJSON() ([]byte, error) {
 	fields := []interface{}{}
 	for _, field := range d.Fields {
-		if field.Value != nil {
-			fields = append(fields, syntax.Array{field.Key.String(), field.Value})
-		}
-		if field.ValueExpr != nil {
-			fields = append(fields, syntax.Array{field.Key.String(), field.ValueExpr})
-		}
-
+		// Key всегда должен быть Ident
+		fields = append(fields, field.Key.String())
 	}
 	res := map[string]interface{}{
 		"kind":   "def",
@@ -95,7 +90,9 @@ type Module struct {
 func (m *Module) MarshalJSON() ([]byte, error) {
 	fields := []interface{}{}
 	for _, field := range m.Fields {
-		fields = append(fields, field)
+		k := field.(syntax.Array)[0].(*Operand)
+		// NOTE: должен быть Ident потому-что StringDict
+		fields = append(fields, k.String())
 	}
 	res := map[string]interface{}{
 		"kind": "module",
@@ -123,7 +120,7 @@ type CallFunc struct {
 
 func (f CallFunc) FuncName() string {
 	// без @
-	return f.Name.String()[1:]
+	return f.Name.String()
 }
 
 type Operand struct {

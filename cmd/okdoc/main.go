@@ -1,11 +1,13 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"encoding/json"
 	"flag"
 	"io/ioutil"
 	"log"
+	"os"
 	"path/filepath"
 
 	"github.com/fader4/okdoc/annotation"
@@ -25,6 +27,8 @@ func main() {
 	log.Println("Found interesting files", found)
 	res := &Result{Files: map[string]interface{}{}}
 	for _, file := range found {
+		lineFile := lineFile(file)
+
 		tokens, err := starlark.ParseFile(file)
 		outTokens := []interface{}{}
 		for _, token := range tokens {
@@ -33,6 +37,7 @@ func main() {
 				continue
 			}
 			report := newRepot(token)
+			report.AddAroundCode(lineFile)
 			if token.Comment != nil {
 				report.Annots, err = annotation.Parse(token.MustBytes())
 				if err != nil {
@@ -90,18 +95,73 @@ func newRepot(t *starlark.Token) *Report {
 }
 
 type Report struct {
-	Comment  *starlark.Comment        `json:"comment,omitempty"`
-	Return   *starlark.Return         `json:"return,omitempty"`
-	Load     *starlark.Load           `json:"load,omitempty"`
-	Module   *starlark.Module         `json:"module,omitempty"`
-	Def      *starlark.Def            `json:"def,omitempty"`
-	Raw      string                   `json:"raw,omitempty"`
-	NumChars int                      `json:"num_chars"`
-	Annots   []*annotation.Annotation `json:"annots,omitempty"`
-	Pos      struct {
+	Comment         *starlark.Comment        `json:"comment,omitempty"`
+	Return          *starlark.Return         `json:"return,omitempty"`
+	Load            *starlark.Load           `json:"load,omitempty"`
+	Module          *starlark.Module         `json:"module,omitempty"`
+	Def             *starlark.Def            `json:"def,omitempty"`
+	Raw             string                   `json:"raw,omitempty"`
+	CodeAroundLines []int                    `json:"code_around_lines,omitempty"`
+	CodeAround      []string                 `json:"code_around,omitempty"`
+	NumChars        int                      `json:"num_chars"`
+	Annots          []*annotation.Annotation `json:"annots,omitempty"`
+	Pos             struct {
 		StartLine       int `json:"start_line"`
 		EndLine         int `json:"end_line"`
 		StartLeftChars  int `json:"start_left_chars"`
 		StartLeftSpaces int `json:"start_left_spaces"`
 	} `json:"pos"`
+}
+
+func (r *Report) AddAroundCode(lineFile []string) {
+	r.CodeAroundLines = []int{}
+
+	if r.Pos.StartLine-2 > 0 {
+		r.CodeAroundLines = append(r.CodeAroundLines, r.Pos.StartLine-2)
+		r.CodeAround = append(r.CodeAround, lineFile[r.Pos.StartLine-2])
+	}
+
+	if r.Pos.StartLine-1 > 0 {
+		r.CodeAroundLines = append(r.CodeAroundLines, r.Pos.StartLine-1)
+		r.CodeAround = append(r.CodeAround, lineFile[r.Pos.StartLine-1])
+	}
+
+	r.CodeAroundLines = append(r.CodeAroundLines, r.Pos.StartLine)
+	r.CodeAround = append(r.CodeAround, lineFile[r.Pos.StartLine])
+
+	if r.Pos.EndLine != r.Pos.StartLine {
+		for i := r.Pos.StartLine + 1; i <= r.Pos.EndLine && i <= len(lineFile); i++ {
+			r.CodeAroundLines = append(r.CodeAroundLines, i)
+			r.CodeAround = append(r.CodeAround, lineFile[i])
+		}
+	}
+
+	if r.Pos.EndLine+1 < len(lineFile) {
+		r.CodeAroundLines = append(r.CodeAroundLines, r.Pos.EndLine+1)
+		r.CodeAround = append(r.CodeAround, lineFile[r.Pos.EndLine+1])
+	}
+
+	if r.Pos.EndLine+2 < len(lineFile) {
+		r.CodeAroundLines = append(r.CodeAroundLines, r.Pos.EndLine+2)
+		r.CodeAround = append(r.CodeAround, lineFile[r.Pos.EndLine+2])
+	}
+}
+
+func lineFile(filepath string) []string {
+	file, err := os.Open(filepath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	res := []string{}
+	for scanner.Scan() {
+		res = append(res, scanner.Text())
+	}
+
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
+	}
+	return res
 }

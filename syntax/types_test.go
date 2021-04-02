@@ -43,8 +43,8 @@ func Test_TypesMarshalJSON(t *testing.T) {
 		in       Value
 		expected string
 	}{
-		{Ident_{"a"}, `"@a"`},
-		{Ident_{"a", "b"}, `"@a.b"`},
+		{Ident_{"a"}, `"a"`},
+		{Ident_{"a", "b"}, `"a.b"`},
 		{Null_{}, `null`},
 		{StringLiteral("a"), `"a"`},
 		{BoolLiteral(true), `true`},
@@ -81,7 +81,7 @@ func Test_TypesMarshalJSON(t *testing.T) {
 		{Array{
 			Array{Ident_{"a", "b"}, StringLiteral("qwd")},
 			Array{Ident_{"a", "b"}, StringLiteral("qwd")},
-		}, `[["@a.b","qwd"],["@a.b","qwd"]]`},
+		}, `[["a.b","qwd"],["a.b","qwd"]]`},
 	}
 
 	for _, case_ := range cases {

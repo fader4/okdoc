@@ -664,7 +664,7 @@ starlarkdefault:
 //line parser.y:108
 		{
 			starlarkVAL.DefField = &DefField{
-				Value: starlarkDollar[1].Operand,
+				Key: starlarkDollar[1].Operand,
 			}
 		}
 	case 14:
@@ -672,7 +672,7 @@ starlarkdefault:
 //line parser.y:113
 		{
 			starlarkVAL.DefField = &DefField{
-				Value:   starlarkDollar[2].Operand,
+				Key:     starlarkDollar[2].Operand,
 				Varargs: true,
 			}
 		}
@@ -681,7 +681,7 @@ starlarkdefault:
 //line parser.y:119
 		{
 			starlarkVAL.DefField = &DefField{
-				Value:  starlarkDollar[3].Operand,
+				Key:    starlarkDollar[3].Operand,
 				Kwargs: true,
 			}
 		}
@@ -828,7 +828,7 @@ starlarkdefault:
 //line parser.y:233
 		{
 			if starlarkDollar[5].CallFunc.FuncName() != "dict" {
-				panic("should be only dictionary for kwargs")
+				panic("should be only dictionary for kwargs, got " + starlarkDollar[5].CallFunc.FuncName())
 			}
 			starlarkVAL.CallFunc = &CallFunc{
 				Name:    starlarkDollar[1].token.Ident(),

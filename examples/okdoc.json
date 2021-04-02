@@ -16,6 +16,16 @@
       "kind": "load"
      },
      "raw": "load(\"foo\", \"bar\")",
+     "code_around_lines": [
+      0,
+      1,
+      2
+     ],
+     "code_around": [
+      "load(\"foo\", \"bar\")",
+      "",
+      "load(\"a\", b = \"c\", \"qw\")"
+     ],
      "num_chars": 18,
      "pos": {
       "start_line": 0,
@@ -32,7 +42,7 @@
         "a"
        ],
        [
-        "@b",
+        "b",
         "c"
        ],
        [
@@ -43,6 +53,18 @@
       "kind": "load"
      },
      "raw": "load(\"a\", b = \"c\", \"qw\")",
+     "code_around_lines": [
+      1,
+      2,
+      3,
+      4
+     ],
+     "code_around": [
+      "",
+      "load(\"a\", b = \"c\", \"qw\")",
+      "",
+      "# inline comment"
+     ],
      "num_chars": 24,
      "pos": {
       "start_line": 2,
@@ -56,6 +78,20 @@
       "kind": "comment"
      },
      "raw": "# inline comment",
+     "code_around_lines": [
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "code_around": [
+      "load(\"a\", b = \"c\", \"qw\")",
+      "",
+      "# inline comment",
+      "",
+      "foo = module("
+     ],
      "num_chars": 16,
      "pos": {
       "start_line": 4,
@@ -66,12 +102,30 @@
     },
     {
      "module": {
-      "export": "@foo",
+      "export": "foo",
       "fields": [],
       "kind": "module",
       "name": "bar"
      },
      "raw": "foo = module(\n\t\"bar\"\n)",
+     "code_around_lines": [
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+     ],
+     "code_around": [
+      "# inline comment",
+      "",
+      "foo = module(",
+      "\t\"bar\"",
+      ")",
+      "",
+      "foo = module("
+     ],
      "num_chars": 22,
      "pos": {
       "start_line": 6,
@@ -82,465 +136,55 @@
     },
     {
      "module": {
-      "export": "@foo",
+      "export": "foo",
       "fields": [
-       [
-        {
-         "Parent": null,
-         "Value": "@a"
-        },
-        {
-         "Parent": null,
-         "Value": "b"
-        }
-       ],
-       [
-        {
-         "Parent": null,
-         "Value": "@aff"
-        },
-        {
-         "Parent": null,
-         "Value": "@a"
-        }
-       ],
-       [
-        {
-         "Parent": null,
-         "Value": "@uniq"
-        },
-        {
-         "Parent": {
-          "Parent": null,
-          "Value": [
-           {
-            "Parent": null,
-            "Value": 1
-           },
-           {
-            "Parent": null,
-            "Value": 2
-           },
-           {
-            "Parent": null,
-            "Value": 3
-           }
-          ]
-         },
-         "Value": {
-          "Name": "@uniq",
-          "Fields": null,
-          "Varrarrgs": false,
-          "Kwarrgs": false
-         }
-        }
-       ],
-       [
-        {
-         "Parent": null,
-         "Value": "@a"
-        },
-        {
-         "Parent": {
-          "Parent": null,
-          "Value": "b"
-         },
-         "Value": {
-          "Name": "@format",
-          "Fields": null,
-          "Varrarrgs": false,
-          "Kwarrgs": false
-         }
-        }
-       ],
-       [
-        {
-         "Parent": null,
-         "Value": "@assert"
-        },
-        {
-         "Parent": null,
-         "Left": {
-          "Parent": null,
-          "Value": 1
-         },
-         "Op": [
-          43
-         ],
-         "Right": {
-          "Parent": null,
-          "Value": [
-           {
-            "Parent": null,
-            "Left": {
-             "Parent": null,
-             "Value": 2
-            },
-            "Op": [
-             43
-            ],
-            "Right": {
-             "Parent": null,
-             "Value": 3
-            }
-           }
-          ]
-         }
-        }
-       ],
-       [
-        {
-         "Parent": null,
-         "Value": "@ar"
-        },
-        {
-         "Parent": null,
-         "Value": {
-          "Name": "@f",
-          "Fields": [
-           [
-            {
-             "Parent": null,
-             "Value": "@c"
-            },
-            {
-             "Parent": null,
-             "Value": 7
-            }
-           ],
-           [
-            {
-             "Parent": null,
-             "Value": "@obj"
-            },
-            {
-             "Parent": null,
-             "Value": {
-              "Name": "@dict",
-              "Fields": [
-               [
-                {
-                 "Parent": null,
-                 "Value": "@c"
-                },
-                {
-                 "Parent": null,
-                 "Value": 7
-                }
-               ],
-               [
-                {
-                 "Parent": null,
-                 "Value": "@a"
-                },
-                {
-                 "Parent": null,
-                 "Value": 2
-                }
-               ],
-               [
-                {
-                 "Parent": null,
-                 "Value": "@b"
-                },
-                {
-                 "Parent": null,
-                 "Value": 3
-                }
-               ]
-              ],
-              "Varrarrgs": false,
-              "Kwarrgs": false
-             }
-            }
-           ],
-           [
-            {
-             "Parent": null,
-             "Value": "@a"
-            },
-            {
-             "Parent": null,
-             "Value": 2
-            }
-           ],
-           [
-            {
-             "Parent": null,
-             "Value": "@b"
-            },
-            {
-             "Parent": null,
-             "Value": 3
-            }
-           ],
-           [
-            {
-             "Parent": null,
-             "Value": "@fn"
-            },
-            {
-             "Parent": null,
-             "Value": {
-              "Name": "@f",
-              "Fields": [
-               [
-                {
-                 "Parent": null,
-                 "Value": "@c"
-                },
-                {
-                 "Parent": null,
-                 "Value": 7
-                }
-               ],
-               [
-                {
-                 "Parent": null,
-                 "Value": "@a"
-                },
-                {
-                 "Parent": null,
-                 "Value": 2
-                }
-               ],
-               [
-                {
-                 "Parent": null,
-                 "Value": "@b"
-                },
-                {
-                 "Parent": null,
-                 "Value": 3
-                }
-               ]
-              ],
-              "Varrarrgs": false,
-              "Kwarrgs": true
-             }
-            }
-           ]
-          ],
-          "Varrarrgs": false,
-          "Kwarrgs": true
-         }
-        }
-       ],
-       [
-        {
-         "Parent": null,
-         "Value": "@dic"
-        },
-        {
-         "Parent": null,
-         "Value": {
-          "Name": "@dict",
-          "Fields": [
-           [
-            {
-             "Parent": null,
-             "Value": "@c"
-            },
-            {
-             "Parent": null,
-             "Value": 7
-            }
-           ],
-           [
-            {
-             "Parent": null,
-             "Value": "@a"
-            },
-            {
-             "Parent": null,
-             "Value": 2
-            }
-           ],
-           [
-            {
-             "Parent": null,
-             "Value": "@b"
-            },
-            {
-             "Parent": null,
-             "Value": 3
-            }
-           ]
-          ],
-          "Varrarrgs": false,
-          "Kwarrgs": false
-         }
-        }
-       ],
-       [
-        {
-         "Parent": null,
-         "Value": "@dic"
-        },
-        {
-         "Parent": null,
-         "Value": {
-          "a": {
-           "Parent": null,
-           "Value": "b"
-          },
-          "c": {
-           "Parent": null,
-           "Value": 123
-          },
-          "d": {
-           "Parent": null,
-           "Value": {
-            "a": {
-             "Parent": null,
-             "Value": "b"
-            },
-            "c": {
-             "Parent": null,
-             "Value": 123
-            }
-           }
-          },
-          "fn": {
-           "Parent": null,
-           "Value": {
-            "Name": "@f",
-            "Fields": [
-             [
-              {
-               "Parent": null,
-               "Value": "@c"
-              },
-              {
-               "Parent": null,
-               "Value": 7
-              }
-             ],
-             [
-              {
-               "Parent": null,
-               "Value": "@obj"
-              },
-              {
-               "Parent": null,
-               "Value": {
-                "Name": "@dict",
-                "Fields": [
-                 [
-                  {
-                   "Parent": null,
-                   "Value": "@c"
-                  },
-                  {
-                   "Parent": null,
-                   "Value": 7
-                  }
-                 ],
-                 [
-                  {
-                   "Parent": null,
-                   "Value": "@a"
-                  },
-                  {
-                   "Parent": null,
-                   "Value": 2
-                  }
-                 ],
-                 [
-                  {
-                   "Parent": null,
-                   "Value": "@b"
-                  },
-                  {
-                   "Parent": null,
-                   "Value": 3
-                  }
-                 ]
-                ],
-                "Varrarrgs": false,
-                "Kwarrgs": false
-               }
-              }
-             ],
-             [
-              {
-               "Parent": null,
-               "Value": "@a"
-              },
-              {
-               "Parent": null,
-               "Value": 2
-              }
-             ],
-             [
-              {
-               "Parent": null,
-               "Value": "@b"
-              },
-              {
-               "Parent": null,
-               "Value": 3
-              }
-             ],
-             [
-              {
-               "Parent": null,
-               "Value": "@fn"
-              },
-              {
-               "Parent": null,
-               "Value": {
-                "Name": "@f",
-                "Fields": [
-                 [
-                  {
-                   "Parent": null,
-                   "Value": "@c"
-                  },
-                  {
-                   "Parent": null,
-                   "Value": 7
-                  }
-                 ],
-                 [
-                  {
-                   "Parent": null,
-                   "Value": "@a"
-                  },
-                  {
-                   "Parent": null,
-                   "Value": 2
-                  }
-                 ],
-                 [
-                  {
-                   "Parent": null,
-                   "Value": "@b"
-                  },
-                  {
-                   "Parent": null,
-                   "Value": 3
-                  }
-                 ]
-                ],
-                "Varrarrgs": false,
-                "Kwarrgs": true
-               }
-              }
-             ]
-            ],
-            "Varrarrgs": false,
-            "Kwarrgs": true
-           }
-          }
-         }
-        }
-       ]
+       "a",
+       "aff",
+       "uniq",
+       "a",
+       "assert",
+       "ar",
+       "dic",
+       "dic"
       ],
       "kind": "module",
       "name": "bar"
      },
      "raw": "foo = module(\n\t\"bar\",\n\ta = \"b\",\n\taff = not a,\n\tuniq = [1,2,3].uniq(),\n\ta = \"b\".format(),\n\tassert = 1 + (2 + 3),\n\tar = f(**dict(c=7, obj=dict(c=7, a=2, b=3), a=2, b=3, fn=f(**dict(c=7, a=2, b=3)))),\n\tdic = dict(c=7, a=2, b=3),\n\tdic = {\"a\": \"b\", \"c\": 123, \"d\": {\"a\": \"b\", \"c\": 123}, \"fn\": f(**dict(c=7, obj=dict(c=7, a=2, b=3), a=2, b=3, fn=f(**dict(c=7, a=2, b=3))))}\n)",
+     "code_around_lines": [
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22
+     ],
+     "code_around": [
+      ")",
+      "",
+      "foo = module(",
+      "\t\"bar\",",
+      "\ta = \"b\",",
+      "\taff = not a,",
+      "\tuniq = [1,2,3].uniq(),",
+      "\ta = \"b\".format(),",
+      "\tassert = 1 + (2 + 3),",
+      "\tar = f(**dict(c=7, obj=dict(c=7, a=2, b=3), a=2, b=3, fn=f(**dict(c=7, a=2, b=3)))),",
+      "\tdic = dict(c=7, a=2, b=3),",
+      "\tdic = {\"a\": \"b\", \"c\": 123, \"d\": {\"a\": \"b\", \"c\": 123}, \"fn\": f(**dict(c=7, obj=dict(c=7, a=2, b=3), a=2, b=3, fn=f(**dict(c=7, a=2, b=3))))}",
+      ")",
+      "",
+      "\"\"\""
+     ],
      "num_chars": 368,
      "pos": {
       "start_line": 10,
@@ -554,6 +198,24 @@
       "kind": "comment"
      },
      "raw": "\"\"\"\nFree comment\n\"\"\"",
+     "code_around_lines": [
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26
+     ],
+     "code_around": [
+      ")",
+      "",
+      "\"\"\"",
+      "Free comment",
+      "\"\"\"",
+      "",
+      "\"\"\""
+     ],
      "num_chars": 20,
      "pos": {
       "start_line": 22,
@@ -567,13 +229,67 @@
       "kind": "comment"
      },
      "raw": "\"\"\"\n@Param(ctx, \"ctx with fields\")\n@Param(ctx.foo, description = \"multi\nline\ndescription\nwith\\\"escaped\\\" strings\n\")\n@Param(name = ctx.bar, description = \"ctx with fields\")\n@Param(name = ctx.bar, description = \"ctx with fields\", example = 123)\n@Param(name = ctx.bar, description = \"ctx with fields\", example = 123.123)\n@Param(name = ctx.bar, description = \"ctx with fields\", example = True)\n@Param(name = ctx.bar, description = \"ctx with fields\", example = ident.a.b.c)\n@Param(name = ctx.bar, description = \"ctx with fields\", example = [\"a\", 123, [\"a\", b], {a = \"b\"}])\n@Param(name = ctx.bar, description = \"ctx with fields\", example = {a = \"b\"})\n@Param(name = ctx.bar, description = \"ctx with fields\",\n    example  = \"repeat_same_field\",\n    example  = \"repeat_same_field\",\n    example  = \"repeat_same_field\",\n    example  = \"repeat_same_field\"\n)\n\"\"\"",
+     "code_around_lines": [
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48
+     ],
+     "code_around": [
+      "\"\"\"",
+      "",
+      "\"\"\"",
+      "@Param(ctx, \"ctx with fields\")",
+      "@Param(ctx.foo, description = \"multi",
+      "line",
+      "description",
+      "with\\\"escaped\\\" strings",
+      "\")",
+      "@Param(name = ctx.bar, description = \"ctx with fields\")",
+      "@Param(name = ctx.bar, description = \"ctx with fields\", example = 123)",
+      "@Param(name = ctx.bar, description = \"ctx with fields\", example = 123.123)",
+      "@Param(name = ctx.bar, description = \"ctx with fields\", example = True)",
+      "@Param(name = ctx.bar, description = \"ctx with fields\", example = ident.a.b.c)",
+      "@Param(name = ctx.bar, description = \"ctx with fields\", example = [\"a\", 123, [\"a\", b], {a = \"b\"}])",
+      "@Param(name = ctx.bar, description = \"ctx with fields\", example = {a = \"b\"})",
+      "@Param(name = ctx.bar, description = \"ctx with fields\",",
+      "    example  = \"repeat_same_field\",",
+      "    example  = \"repeat_same_field\",",
+      "    example  = \"repeat_same_field\",",
+      "    example  = \"repeat_same_field\"",
+      ")",
+      "\"\"\"",
+      "def main(ctx=(1,2,3) ,  obj={\"a\": \"b\"}, **kwargs):",
+      "\t\"\"\""
+     ],
      "num_chars": 849,
      "annots": [
       {
        "fields": [
         [
          null,
-         "@ctx"
+         "ctx"
         ],
         [
          null,
@@ -594,10 +310,10 @@
        "fields": [
         [
          null,
-         "@ctx.foo"
+         "ctx.foo"
         ],
         [
-         "@description",
+         "description",
          "multi\nline\ndescription\nwith\\\"escaped\\\" strings\n"
         ]
        ],
@@ -615,10 +331,10 @@
        "fields": [
         [
          null,
-         "@name"
+         "name"
         ],
         [
-         "@description",
+         "description",
          "ctx with fields"
         ]
        ],
@@ -636,14 +352,14 @@
        "fields": [
         [
          null,
-         "@name"
+         "name"
         ],
         [
-         "@description",
+         "description",
          "ctx with fields"
         ],
         [
-         "@example",
+         "example",
          123
         ]
        ],
@@ -661,14 +377,14 @@
        "fields": [
         [
          null,
-         "@name"
+         "name"
         ],
         [
-         "@description",
+         "description",
          "ctx with fields"
         ],
         [
-         "@example",
+         "example",
          123.123
         ]
        ],
@@ -686,14 +402,14 @@
        "fields": [
         [
          null,
-         "@name"
+         "name"
         ],
         [
-         "@description",
+         "description",
          "ctx with fields"
         ],
         [
-         "@example",
+         "example",
          true
         ]
        ],
@@ -711,15 +427,15 @@
        "fields": [
         [
          null,
-         "@name"
+         "name"
         ],
         [
-         "@description",
+         "description",
          "ctx with fields"
         ],
         [
          null,
-         "@example"
+         "example"
         ]
        ],
        "name": "Param",
@@ -736,20 +452,20 @@
        "fields": [
         [
          null,
-         "@name"
+         "name"
         ],
         [
-         "@description",
+         "description",
          "ctx with fields"
         ],
         [
-         "@example",
+         "example",
          [
           "a",
           123,
           [
            "a",
-           "@b"
+           "b"
           ],
           {
            "@a": "b"
@@ -771,14 +487,14 @@
        "fields": [
         [
          null,
-         "@name"
+         "name"
         ],
         [
-         "@description",
+         "description",
          "ctx with fields"
         ],
         [
-         "@example",
+         "example",
          {
           "@a": "b"
          }
@@ -798,26 +514,26 @@
        "fields": [
         [
          null,
-         "@name"
+         "name"
         ],
         [
-         "@description",
+         "description",
          "ctx with fields"
         ],
         [
-         "@example",
+         "example",
          "repeat_same_field"
         ],
         [
-         "@example",
+         "example",
          "repeat_same_field"
         ],
         [
-         "@example",
+         "example",
          "repeat_same_field"
         ],
         [
-         "@example",
+         "example",
          "repeat_same_field"
         ]
        ],
@@ -842,50 +558,28 @@
     {
      "def": {
       "fields": [
-       [
-        "@ctx",
-        {
-         "Parent": null,
-         "Value": [
-          {
-           "Parent": null,
-           "Value": 1
-          },
-          {
-           "Parent": null,
-           "Value": 2
-          },
-          {
-           "Parent": null,
-           "Value": 3
-          }
-         ]
-        }
-       ],
-       [
-        "@obj",
-        {
-         "Parent": null,
-         "Value": {
-          "a": {
-           "Parent": null,
-           "Value": "b"
-          }
-         }
-        }
-       ],
-       [
-        "",
-        {
-         "Parent": null,
-         "Value": "@kwargs"
-        }
-       ]
+       "ctx",
+       "obj",
+       "kwargs"
       ],
       "kind": "def",
-      "name": "@main"
+      "name": "main"
      },
      "raw": "def main(ctx=(1,2,3) ,  obj={\"a\": \"b\"}, **kwargs):",
+     "code_around_lines": [
+      45,
+      46,
+      47,
+      48,
+      49
+     ],
+     "code_around": [
+      ")",
+      "\"\"\"",
+      "def main(ctx=(1,2,3) ,  obj={\"a\": \"b\"}, **kwargs):",
+      "\t\"\"\"",
+      "\tInline comment into method"
+     ],
      "num_chars": 50,
      "pos": {
       "start_line": 47,
@@ -899,6 +593,24 @@
       "kind": "comment"
      },
      "raw": "\"\"\"\n\tInline comment into method\n\t\"\"\"",
+     "code_around_lines": [
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52
+     ],
+     "code_around": [
+      "\"\"\"",
+      "def main(ctx=(1,2,3) ,  obj={\"a\": \"b\"}, **kwargs):",
+      "\t\"\"\"",
+      "\tInline comment into method",
+      "\t\"\"\"",
+      "",
+      "\tif False:"
+     ],
      "num_chars": 36,
      "pos": {
       "start_line": 48,
@@ -912,6 +624,20 @@
       "kind": "comment"
      },
      "raw": "# @Return(\"Some case\")",
+     "code_around_lines": [
+      51,
+      52,
+      53,
+      54,
+      55
+     ],
+     "code_around": [
+      "",
+      "\tif False:",
+      "\t\t# @Return(\"Some case\")",
+      "\t\treturn False",
+      "\t# @Return(\"Happy path\")"
+     ],
      "num_chars": 22,
      "annots": [
       {
@@ -944,6 +670,20 @@
       "kind": "return"
      },
      "raw": "return",
+     "code_around_lines": [
+      52,
+      53,
+      54,
+      55,
+      56
+     ],
+     "code_around": [
+      "\tif False:",
+      "\t\t# @Return(\"Some case\")",
+      "\t\treturn False",
+      "\t# @Return(\"Happy path\")",
+      "\treturn True"
+     ],
      "num_chars": 6,
      "pos": {
       "start_line": 54,
@@ -957,6 +697,18 @@
       "kind": "comment"
      },
      "raw": "# @Return(\"Happy path\")",
+     "code_around_lines": [
+      53,
+      54,
+      55,
+      56
+     ],
+     "code_around": [
+      "\t\t# @Return(\"Some case\")",
+      "\t\treturn False",
+      "\t# @Return(\"Happy path\")",
+      "\treturn True"
+     ],
      "num_chars": 23,
      "annots": [
       {
@@ -980,8 +732,8 @@
      "pos": {
       "start_line": 55,
       "end_line": 55,
-      "start_left_chars": 4,
-      "start_left_spaces": 4
+      "start_left_chars": 1,
+      "start_left_spaces": 1
      }
     },
     {
@@ -989,6 +741,16 @@
       "kind": "return"
      },
      "raw": "return",
+     "code_around_lines": [
+      54,
+      55,
+      56
+     ],
+     "code_around": [
+      "\t\treturn False",
+      "\t# @Return(\"Happy path\")",
+      "\treturn True"
+     ],
      "num_chars": 6,
      "pos": {
       "start_line": 56,
