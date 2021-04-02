@@ -36,8 +36,8 @@ import (
 
     Int      = [0-9]+;
     Float    = (([1-9] [0-9]* [.] [0-9]*) | (0? [.] [0-9]+)) ([Ee] [+\-]? [0-9]+)?;
-    Null     = "Null";
-    Bool     = "True"|"False";
+    Null     = "Null"|"NULL";
+    Bool     = "True"|"False"|"TRUE"|"FALSE";
     Ident    = ([a-zA-Z_] [a-zA-Z0-9_]*) - Bool - AT - Null;
 
     singleQuoteString := |*
@@ -70,6 +70,10 @@ import (
         WhiteSpace;
         NewLine;
 
+        "''"|'""' => {
+            lex.ReleaseToken(stringLiteral, "literal", "string")
+        };
+
         AT => {
             lex.ReleaseSymbol("at")
         };
@@ -86,10 +90,10 @@ import (
         Bool     => {
             lex.ReleaseToken(boolLiteral, "literal", "bool")
         };
-        Int      => {
+        Int|'-'Int      => {
             lex.ReleaseToken(integerLiteral, "literal", "int")
         };
-        Float    => {
+        Float|'-'Float    => {
             lex.ReleaseToken(floatLiteral, "literal", "float")
         };
 

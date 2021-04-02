@@ -87,7 +87,8 @@ Field:
     } |
     Ident '=' Ident {
         $$ = &AnnotationField{
-            Value: $1,
+            Key: $1,
+            Value: $3,
         }
     } |
     Ident '=' Literal {
@@ -162,7 +163,7 @@ Struct: '{' '}' {
                 $$.Keys = append($$.Keys, string(in))
             case syntax.Ident_:
                 if len(in) > 0 {
-                    $$.Keys = append($$.Keys, "@"+strings.Join(in, "."))
+                    $$.Keys = append($$.Keys, strings.Join(in, "."))
                 } else {
                     $$.Keys = append($$.Keys, "")
                 }

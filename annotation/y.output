@@ -123,31 +123,31 @@ state 13
 state 14
 	Literal:  stringLiteral.    (19)
 
-	.  reduce 19 (src line 119)
+	.  reduce 19 (src line 120)
 
 
 state 15
 	Literal:  boolLiteral.    (20)
 
-	.  reduce 20 (src line 121)
+	.  reduce 20 (src line 122)
 
 
 state 16
 	Literal:  integerLiteral.    (21)
 
-	.  reduce 21 (src line 123)
+	.  reduce 21 (src line 124)
 
 
 state 17
 	Literal:  floatLiteral.    (22)
 
-	.  reduce 22 (src line 125)
+	.  reduce 22 (src line 126)
 
 
 state 18
 	Literal:  nullLiteral.    (23)
 
-	.  reduce 23 (src line 127)
+	.  reduce 23 (src line 128)
 
 
 state 19
@@ -187,7 +187,7 @@ state 20
 state 21
 	Ident:  ident.    (17)
 
-	.  reduce 17 (src line 113)
+	.  reduce 17 (src line 114)
 
 
 state 22
@@ -246,7 +246,7 @@ state 25
 state 26
 	Struct:  '{' '}'.    (32)
 
-	.  reduce 32 (src line 154)
+	.  reduce 32 (src line 155)
 
 
 state 27
@@ -261,7 +261,7 @@ state 27
 state 28
 	StructFields:  StructField.    (34)
 
-	.  reduce 34 (src line 178)
+	.  reduce 34 (src line 179)
 
 
 state 29
@@ -288,31 +288,31 @@ state 30
 state 31
 	Array:  '[' ']'.    (25)
 
-	.  reduce 25 (src line 133)
+	.  reduce 25 (src line 134)
 
 
 state 32
 	ArrayFields:  ArrayField.    (26)
 
-	.  reduce 26 (src line 137)
+	.  reduce 26 (src line 138)
 
 
 state 33
 	ArrayField:  Literal.    (28)
 
-	.  reduce 28 (src line 144)
+	.  reduce 28 (src line 145)
 
 
 state 34
 	ArrayField:  Array.    (29)
 
-	.  reduce 29 (src line 146)
+	.  reduce 29 (src line 147)
 
 
 state 35
 	ArrayField:  Struct.    (30)
 
-	.  reduce 30 (src line 148)
+	.  reduce 30 (src line 149)
 
 
 state 36
@@ -320,7 +320,7 @@ state 36
 	ArrayField:  Ident.    (31)
 
 	'.'  shift 25
-	.  reduce 31 (src line 150)
+	.  reduce 31 (src line 151)
 
 
 state 37
@@ -340,31 +340,31 @@ state 38
 state 39
 	Field:  Ident '=' Literal.    (14)
 
-	.  reduce 14 (src line 92)
+	.  reduce 14 (src line 93)
 
 
 state 40
 	Field:  Ident '=' Array.    (15)
 
-	.  reduce 15 (src line 98)
+	.  reduce 15 (src line 99)
 
 
 state 41
 	Field:  Ident '=' Struct.    (16)
 
-	.  reduce 16 (src line 104)
+	.  reduce 16 (src line 105)
 
 
 state 42
 	Ident:  Ident '.' ident.    (18)
 
-	.  reduce 18 (src line 115)
+	.  reduce 18 (src line 116)
 
 
 state 43
 	Struct:  '{' StructFields '}'.    (33)
 
-	.  reduce 33 (src line 156)
+	.  reduce 33 (src line 157)
 
 
 state 44
@@ -400,7 +400,7 @@ state 45
 state 46
 	Array:  '[' ArrayFields ']'.    (24)
 
-	.  reduce 24 (src line 131)
+	.  reduce 24 (src line 132)
 
 
 state 47
@@ -425,19 +425,19 @@ state 47
 state 48
 	StructFields:  StructFields ',' StructField.    (35)
 
-	.  reduce 35 (src line 180)
+	.  reduce 35 (src line 181)
 
 
 state 49
 	StructField:  Ident '=' Literal.    (36)
 
-	.  reduce 36 (src line 185)
+	.  reduce 36 (src line 186)
 
 
 state 50
 	StructField:  Ident '=' Array.    (37)
 
-	.  reduce 37 (src line 187)
+	.  reduce 37 (src line 188)
 
 
 state 51
@@ -445,19 +445,19 @@ state 51
 	StructField:  Ident '=' Ident.    (38)
 
 	'.'  shift 25
-	.  reduce 38 (src line 189)
+	.  reduce 38 (src line 190)
 
 
 state 52
 	StructField:  Ident '=' Struct.    (39)
 
-	.  reduce 39 (src line 191)
+	.  reduce 39 (src line 192)
 
 
 state 53
 	ArrayFields:  ArrayFields ',' ArrayField.    (27)
 
-	.  reduce 27 (src line 139)
+	.  reduce 27 (src line 140)
 
 
 22 terminals, 14 nonterminals

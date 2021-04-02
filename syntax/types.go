@@ -103,6 +103,9 @@ func (m Ident_) String() string {
 }
 
 func String(in []byte) StringLiteral {
+	if string(in) == `""` || string(in) == `''` {
+		return StringLiteral(string(""))
+	}
 	return StringLiteral(string(in))
 }
 

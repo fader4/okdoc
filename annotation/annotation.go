@@ -1,8 +1,6 @@
 package annotation
 
 import (
-	"crypto/md5"
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -33,7 +31,6 @@ func (a *Annotation) MarshalJSON() ([]byte, error) {
 			"start_left_chars":  a.Start.Pos.Spaces(),
 			"start_left_spaces": a.Start.Pos.Spaces(),
 		},
-		"source_file_md5": GetMD5Hash(a.lex.Data),
 	}
 	return json.MarshalIndent(res, " ", " ")
 }
@@ -74,14 +71,19 @@ func (a Annotation) Name() string {
 	if len(a.name) == 0 {
 		return ""
 	}
-	return a.name[0]
+	return a.name.String()
 }
 
 func (a Annotation) Fields() syntax.Array {
 	res := syntax.Array{}
 	for _, field := range a.fields {
 		switch in := field.Key.(type) {
-		case syntax.StringLiteral:
+		case syntax.Null_:
+			res.Add(syntax.Array{syntax.Null_{}, field.Value})
+		case syntax.StringLiteral,
+			syntax.IntLiteral,
+			syntax.BoolLiteral,
+			syntax.FloatLiteral:
 			res.Add(syntax.Array{in, field.Value})
 		case syntax.Ident_:
 			if len(in) > 0 {
@@ -92,7 +94,7 @@ func (a Annotation) Fields() syntax.Array {
 		case nil:
 			res.Add(syntax.Array{syntax.Null_{}, field.Value})
 		default:
-			log.Printf("Annotation#Fields: not supported key type %T\n", field.Key)
+			log.Fatalf("Annotation#Fields: not supported key type %T\n", field.Key)
 		}
 	}
 	return res
@@ -182,9 +184,4 @@ func (l *annotationLex) Lex(out *annotationSymType) (symbol int) {
 		fmt.Println(string(tokenBytesm))
 	}
 	return token.Symbol
-}
-
-func GetMD5Hash(in []byte) string {
-	hash := md5.Sum(in)
-	return hex.EncodeToString(hash[:])
 }
