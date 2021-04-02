@@ -336,8 +336,7 @@
         "start_left_chars": 1,
         "start_left_spaces": 1,
         "start_line": 1
-       },
-       "source_file_md5": "5239eccb6f2a491628ec7df9c9c7b97b"
+       }
       },
       {
        "fields": [
@@ -357,14 +356,13 @@
         "start_left_chars": 1,
         "start_left_spaces": 1,
         "start_line": 2
-       },
-       "source_file_md5": "5239eccb6f2a491628ec7df9c9c7b97b"
+       }
       },
       {
        "fields": [
         [
-         null,
-         "name"
+         "name",
+         "ctx.bar"
         ],
         [
          "description",
@@ -378,14 +376,13 @@
         "start_left_chars": 1,
         "start_left_spaces": 1,
         "start_line": 3
-       },
-       "source_file_md5": "5239eccb6f2a491628ec7df9c9c7b97b"
+       }
       },
       {
        "fields": [
         [
-         null,
-         "name"
+         "name",
+         "ctx.bar"
         ],
         [
          "description",
@@ -403,14 +400,13 @@
         "start_left_chars": 1,
         "start_left_spaces": 1,
         "start_line": 4
-       },
-       "source_file_md5": "5239eccb6f2a491628ec7df9c9c7b97b"
+       }
       },
       {
        "fields": [
         [
-         null,
-         "name"
+         "name",
+         "ctx.bar"
         ],
         [
          "description",
@@ -428,14 +424,13 @@
         "start_left_chars": 1,
         "start_left_spaces": 1,
         "start_line": 5
-       },
-       "source_file_md5": "5239eccb6f2a491628ec7df9c9c7b97b"
+       }
       },
       {
        "fields": [
         [
-         null,
-         "name"
+         "name",
+         "ctx.bar"
         ],
         [
          "description",
@@ -453,22 +448,21 @@
         "start_left_chars": 1,
         "start_left_spaces": 1,
         "start_line": 6
-       },
-       "source_file_md5": "5239eccb6f2a491628ec7df9c9c7b97b"
+       }
       },
       {
        "fields": [
         [
-         null,
-         "name"
+         "name",
+         "ctx.bar"
         ],
         [
          "description",
          "ctx with fields"
         ],
         [
-         null,
-         "example"
+         "example",
+         "ident.a.b.c"
         ]
        ],
        "name": "Param",
@@ -478,14 +472,13 @@
         "start_left_chars": 1,
         "start_left_spaces": 1,
         "start_line": 7
-       },
-       "source_file_md5": "5239eccb6f2a491628ec7df9c9c7b97b"
+       }
       },
       {
        "fields": [
         [
-         null,
-         "name"
+         "name",
+         "ctx.bar"
         ],
         [
          "description",
@@ -501,7 +494,7 @@
            "b"
           ],
           {
-           "@a": "b"
+           "a": "b"
           }
          ]
         ]
@@ -513,14 +506,13 @@
         "start_left_chars": 1,
         "start_left_spaces": 1,
         "start_line": 8
-       },
-       "source_file_md5": "5239eccb6f2a491628ec7df9c9c7b97b"
+       }
       },
       {
        "fields": [
         [
-         null,
-         "name"
+         "name",
+         "ctx.bar"
         ],
         [
          "description",
@@ -529,7 +521,7 @@
         [
          "example",
          {
-          "@a": "b"
+          "a": "b"
          }
         ]
        ],
@@ -540,14 +532,13 @@
         "start_left_chars": 1,
         "start_left_spaces": 1,
         "start_line": 9
-       },
-       "source_file_md5": "5239eccb6f2a491628ec7df9c9c7b97b"
+       }
       },
       {
        "fields": [
         [
-         null,
-         "name"
+         "name",
+         "ctx.bar"
         ],
         [
          "description",
@@ -577,8 +568,7 @@
         "start_left_chars": 1,
         "start_left_spaces": 1,
         "start_line": 10
-       },
-       "source_file_md5": "5239eccb6f2a491628ec7df9c9c7b97b"
+       }
       }
      ],
      "pos": {
@@ -623,8 +613,7 @@
         "start_left_chars": 1,
         "start_left_spaces": 1,
         "start_line": 0
-       },
-       "source_file_md5": "4d11b2966e5439d149987454128f0b28"
+       }
       }
      ],
      "pos": {
@@ -694,8 +683,7 @@
         "start_left_chars": 1,
         "start_left_spaces": 1,
         "start_line": 0
-       },
-       "source_file_md5": "5e489bce9d5aec5606695bb72d888232"
+       }
       }
      ],
      "pos": {
