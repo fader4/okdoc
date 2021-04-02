@@ -72,12 +72,7 @@ type Result struct {
 }
 
 func newRepot(t *starlark.Token) *Report {
-	return &Report{
-		Comment:  t.Comment,
-		Return:   t.Return,
-		Load:     t.Load,
-		Module:   t.Module,
-		Def:      t.Def,
+	r := &Report{
 		NumChars: t.Len(),
 		Raw:      string(t.MustBytes()),
 		Pos: struct {
@@ -92,14 +87,26 @@ func newRepot(t *starlark.Token) *Report {
 			StartLeftSpaces: t.Start.Pos.Spaces(),
 		},
 	}
+	if t.Comment != nil {
+		r.Token = t.Comment
+	}
+	if t.Return != nil {
+		r.Token = t.Return
+	}
+	if t.Load != nil {
+		r.Token = t.Load
+	}
+	if t.Module != nil {
+		r.Token = t.Module
+	}
+	if t.Def != nil {
+		r.Token = t.Def
+	}
+	return r
 }
 
 type Report struct {
-	Comment         *starlark.Comment        `json:"comment,omitempty"`
-	Return          *starlark.Return         `json:"return,omitempty"`
-	Load            *starlark.Load           `json:"load,omitempty"`
-	Module          *starlark.Module         `json:"module,omitempty"`
-	Def             *starlark.Def            `json:"def,omitempty"`
+	Token           interface{}              `json:"token"`
 	Raw             string                   `json:"raw,omitempty"`
 	CodeAroundLines []int                    `json:"code_around_lines,omitempty"`
 	CodeAround      []string                 `json:"code_around,omitempty"`

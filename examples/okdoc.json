@@ -2,7 +2,7 @@
   "files": {
    "./examples/file1.star": [
     {
-     "load": {
+     "token": {
       "fields": [
        [
         null,
@@ -35,7 +35,7 @@
      }
     },
     {
-     "load": {
+     "token": {
       "fields": [
        [
         null,
@@ -74,7 +74,7 @@
      }
     },
     {
-     "comment": {
+     "token": {
       "kind": "comment"
      },
      "raw": "# inline comment",
@@ -101,7 +101,7 @@
      }
     },
     {
-     "module": {
+     "token": {
       "export": "foo",
       "fields": [],
       "kind": "module",
@@ -135,7 +135,7 @@
      }
     },
     {
-     "module": {
+     "token": {
       "export": "foo",
       "fields": [
        "a",
@@ -194,7 +194,7 @@
      }
     },
     {
-     "comment": {
+     "token": {
       "kind": "comment"
      },
      "raw": "\"\"\"\nFree comment\n\"\"\"",
@@ -214,7 +214,7 @@
       "Free comment",
       "\"\"\"",
       "",
-      "\"\"\""
+      "def main(ctx=(1,2,3) ,  obj={\"a\": \"b\"}, **kwargs):"
      ],
      "num_chars": 20,
      "pos": {
@@ -225,12 +225,44 @@
      }
     },
     {
-     "comment": {
-      "kind": "comment"
+     "token": {
+      "fields": [
+       "ctx",
+       "obj",
+       "kwargs"
+      ],
+      "kind": "def",
+      "name": "main"
      },
-     "raw": "\"\"\"\n@Param(ctx, \"ctx with fields\")\n@Param(ctx.foo, description = \"multi\nline\ndescription\nwith\\\"escaped\\\" strings\n\")\n@Param(name = ctx.bar, description = \"ctx with fields\")\n@Param(name = ctx.bar, description = \"ctx with fields\", example = 123)\n@Param(name = ctx.bar, description = \"ctx with fields\", example = 123.123)\n@Param(name = ctx.bar, description = \"ctx with fields\", example = True)\n@Param(name = ctx.bar, description = \"ctx with fields\", example = ident.a.b.c)\n@Param(name = ctx.bar, description = \"ctx with fields\", example = [\"a\", 123, [\"a\", b], {a = \"b\"}])\n@Param(name = ctx.bar, description = \"ctx with fields\", example = {a = \"b\"})\n@Param(name = ctx.bar, description = \"ctx with fields\",\n    example  = \"repeat_same_field\",\n    example  = \"repeat_same_field\",\n    example  = \"repeat_same_field\",\n    example  = \"repeat_same_field\"\n)\n\"\"\"",
+     "raw": "def main(ctx=(1,2,3) ,  obj={\"a\": \"b\"}, **kwargs):",
      "code_around_lines": [
       24,
+      25,
+      26,
+      27,
+      28
+     ],
+     "code_around": [
+      "\"\"\"",
+      "",
+      "def main(ctx=(1,2,3) ,  obj={\"a\": \"b\"}, **kwargs):",
+      "\t\"\"\"",
+      "\t@Param(ctx, \"ctx with fields\")"
+     ],
+     "num_chars": 50,
+     "pos": {
+      "start_line": 26,
+      "end_line": 26,
+      "start_left_chars": 0,
+      "start_left_spaces": 0
+     }
+    },
+    {
+     "token": {
+      "kind": "comment"
+     },
+     "raw": "\"\"\"\n\t@Param(ctx, \"ctx with fields\")\n\t@Param(ctx.foo, description = \"multi\n\tline\n\tdescription\n\twith\\\"escaped\\\" strings\n\t\")\n\t@Param(name = ctx.bar, description = \"ctx with fields\")\n\t@Param(name = ctx.bar, description = \"ctx with fields\", example = 123)\n\t@Param(name = ctx.bar, description = \"ctx with fields\", example = 123.123)\n\t@Param(name = ctx.bar, description = \"ctx with fields\", example = True)\n\t@Param(name = ctx.bar, description = \"ctx with fields\", example = ident.a.b.c)\n\t@Param(name = ctx.bar, description = \"ctx with fields\", example = [\"a\", 123, [\"a\", b], {a = \"b\"}])\n\t@Param(name = ctx.bar, description = \"ctx with fields\", example = {a = \"b\"})\n\t@Param(name = ctx.bar, description = \"ctx with fields\",\n\t\texample  = \"repeat_same_field\",\n\t\texample  = \"repeat_same_field\",\n\t\texample  = \"repeat_same_field\",\n\t\texample  = \"repeat_same_field\"\n\t)\n\t\"\"\"",
+     "code_around_lines": [
       25,
       26,
       27,
@@ -254,36 +286,37 @@
       45,
       46,
       47,
-      48
+      48,
+      49
      ],
      "code_around": [
-      "\"\"\"",
       "",
-      "\"\"\"",
-      "@Param(ctx, \"ctx with fields\")",
-      "@Param(ctx.foo, description = \"multi",
-      "line",
-      "description",
-      "with\\\"escaped\\\" strings",
-      "\")",
-      "@Param(name = ctx.bar, description = \"ctx with fields\")",
-      "@Param(name = ctx.bar, description = \"ctx with fields\", example = 123)",
-      "@Param(name = ctx.bar, description = \"ctx with fields\", example = 123.123)",
-      "@Param(name = ctx.bar, description = \"ctx with fields\", example = True)",
-      "@Param(name = ctx.bar, description = \"ctx with fields\", example = ident.a.b.c)",
-      "@Param(name = ctx.bar, description = \"ctx with fields\", example = [\"a\", 123, [\"a\", b], {a = \"b\"}])",
-      "@Param(name = ctx.bar, description = \"ctx with fields\", example = {a = \"b\"})",
-      "@Param(name = ctx.bar, description = \"ctx with fields\",",
-      "    example  = \"repeat_same_field\",",
-      "    example  = \"repeat_same_field\",",
-      "    example  = \"repeat_same_field\",",
-      "    example  = \"repeat_same_field\"",
-      ")",
-      "\"\"\"",
       "def main(ctx=(1,2,3) ,  obj={\"a\": \"b\"}, **kwargs):",
-      "\t\"\"\""
+      "\t\"\"\"",
+      "\t@Param(ctx, \"ctx with fields\")",
+      "\t@Param(ctx.foo, description = \"multi",
+      "\tline",
+      "\tdescription",
+      "\twith\\\"escaped\\\" strings",
+      "\t\")",
+      "\t@Param(name = ctx.bar, description = \"ctx with fields\")",
+      "\t@Param(name = ctx.bar, description = \"ctx with fields\", example = 123)",
+      "\t@Param(name = ctx.bar, description = \"ctx with fields\", example = 123.123)",
+      "\t@Param(name = ctx.bar, description = \"ctx with fields\", example = True)",
+      "\t@Param(name = ctx.bar, description = \"ctx with fields\", example = ident.a.b.c)",
+      "\t@Param(name = ctx.bar, description = \"ctx with fields\", example = [\"a\", 123, [\"a\", b], {a = \"b\"}])",
+      "\t@Param(name = ctx.bar, description = \"ctx with fields\", example = {a = \"b\"})",
+      "\t@Param(name = ctx.bar, description = \"ctx with fields\",",
+      "\t\texample  = \"repeat_same_field\",",
+      "\t\texample  = \"repeat_same_field\",",
+      "\t\texample  = \"repeat_same_field\",",
+      "\t\texample  = \"repeat_same_field\"",
+      "\t)",
+      "\t\"\"\"",
+      "",
+      "\tif False:"
      ],
-     "num_chars": 849,
+     "num_chars": 857,
      "annots": [
       {
        "fields": [
@@ -300,11 +333,11 @@
        "num_chars": 30,
        "pos": {
         "end_line": 1,
-        "start_left_chars": 0,
-        "start_left_spaces": 0,
+        "start_left_chars": 1,
+        "start_left_spaces": 1,
         "start_line": 1
        },
-       "source_file_md5": "4775bbc95919e9aec60efc6403e844bd"
+       "source_file_md5": "5239eccb6f2a491628ec7df9c9c7b97b"
       },
       {
        "fields": [
@@ -314,18 +347,18 @@
         ],
         [
          "description",
-         "multi\nline\ndescription\nwith\\\"escaped\\\" strings\n"
+         "multi\n\tline\n\tdescription\n\twith\\\"escaped\\\" strings\n\t"
         ]
        ],
        "name": "Param",
-       "num_chars": 80,
+       "num_chars": 84,
        "pos": {
         "end_line": 2,
-        "start_left_chars": 0,
-        "start_left_spaces": 0,
+        "start_left_chars": 1,
+        "start_left_spaces": 1,
         "start_line": 2
        },
-       "source_file_md5": "4775bbc95919e9aec60efc6403e844bd"
+       "source_file_md5": "5239eccb6f2a491628ec7df9c9c7b97b"
       },
       {
        "fields": [
@@ -342,11 +375,11 @@
        "num_chars": 55,
        "pos": {
         "end_line": 3,
-        "start_left_chars": 0,
-        "start_left_spaces": 0,
+        "start_left_chars": 1,
+        "start_left_spaces": 1,
         "start_line": 3
        },
-       "source_file_md5": "4775bbc95919e9aec60efc6403e844bd"
+       "source_file_md5": "5239eccb6f2a491628ec7df9c9c7b97b"
       },
       {
        "fields": [
@@ -367,11 +400,11 @@
        "num_chars": 70,
        "pos": {
         "end_line": 4,
-        "start_left_chars": 0,
-        "start_left_spaces": 0,
+        "start_left_chars": 1,
+        "start_left_spaces": 1,
         "start_line": 4
        },
-       "source_file_md5": "4775bbc95919e9aec60efc6403e844bd"
+       "source_file_md5": "5239eccb6f2a491628ec7df9c9c7b97b"
       },
       {
        "fields": [
@@ -392,11 +425,11 @@
        "num_chars": 74,
        "pos": {
         "end_line": 5,
-        "start_left_chars": 0,
-        "start_left_spaces": 0,
+        "start_left_chars": 1,
+        "start_left_spaces": 1,
         "start_line": 5
        },
-       "source_file_md5": "4775bbc95919e9aec60efc6403e844bd"
+       "source_file_md5": "5239eccb6f2a491628ec7df9c9c7b97b"
       },
       {
        "fields": [
@@ -417,11 +450,11 @@
        "num_chars": 71,
        "pos": {
         "end_line": 6,
-        "start_left_chars": 0,
-        "start_left_spaces": 0,
+        "start_left_chars": 1,
+        "start_left_spaces": 1,
         "start_line": 6
        },
-       "source_file_md5": "4775bbc95919e9aec60efc6403e844bd"
+       "source_file_md5": "5239eccb6f2a491628ec7df9c9c7b97b"
       },
       {
        "fields": [
@@ -442,11 +475,11 @@
        "num_chars": 78,
        "pos": {
         "end_line": 7,
-        "start_left_chars": 0,
-        "start_left_spaces": 0,
+        "start_left_chars": 1,
+        "start_left_spaces": 1,
         "start_line": 7
        },
-       "source_file_md5": "4775bbc95919e9aec60efc6403e844bd"
+       "source_file_md5": "5239eccb6f2a491628ec7df9c9c7b97b"
       },
       {
        "fields": [
@@ -477,11 +510,11 @@
        "num_chars": 98,
        "pos": {
         "end_line": 8,
-        "start_left_chars": 0,
-        "start_left_spaces": 0,
+        "start_left_chars": 1,
+        "start_left_spaces": 1,
         "start_line": 8
        },
-       "source_file_md5": "4775bbc95919e9aec60efc6403e844bd"
+       "source_file_md5": "5239eccb6f2a491628ec7df9c9c7b97b"
       },
       {
        "fields": [
@@ -504,11 +537,11 @@
        "num_chars": 76,
        "pos": {
         "end_line": 9,
-        "start_left_chars": 0,
-        "start_left_spaces": 0,
+        "start_left_chars": 1,
+        "start_left_spaces": 1,
         "start_line": 9
        },
-       "source_file_md5": "4775bbc95919e9aec60efc6403e844bd"
+       "source_file_md5": "5239eccb6f2a491628ec7df9c9c7b97b"
       },
       {
        "fields": [
@@ -538,98 +571,34 @@
         ]
        ],
        "name": "Param",
-       "num_chars": 200,
+       "num_chars": 193,
        "pos": {
         "end_line": 15,
-        "start_left_chars": 0,
-        "start_left_spaces": 0,
+        "start_left_chars": 1,
+        "start_left_spaces": 1,
         "start_line": 10
        },
-       "source_file_md5": "4775bbc95919e9aec60efc6403e844bd"
+       "source_file_md5": "5239eccb6f2a491628ec7df9c9c7b97b"
       }
      ],
      "pos": {
-      "start_line": 26,
-      "end_line": 46,
-      "start_left_chars": 0,
-      "start_left_spaces": 0
-     }
-    },
-    {
-     "def": {
-      "fields": [
-       "ctx",
-       "obj",
-       "kwargs"
-      ],
-      "kind": "def",
-      "name": "main"
-     },
-     "raw": "def main(ctx=(1,2,3) ,  obj={\"a\": \"b\"}, **kwargs):",
-     "code_around_lines": [
-      45,
-      46,
-      47,
-      48,
-      49
-     ],
-     "code_around": [
-      ")",
-      "\"\"\"",
-      "def main(ctx=(1,2,3) ,  obj={\"a\": \"b\"}, **kwargs):",
-      "\t\"\"\"",
-      "\tInline comment into method"
-     ],
-     "num_chars": 50,
-     "pos": {
-      "start_line": 47,
+      "start_line": 27,
       "end_line": 47,
-      "start_left_chars": 0,
-      "start_left_spaces": 0
-     }
-    },
-    {
-     "comment": {
-      "kind": "comment"
-     },
-     "raw": "\"\"\"\n\tInline comment into method\n\t\"\"\"",
-     "code_around_lines": [
-      46,
-      47,
-      48,
-      49,
-      50,
-      51,
-      52
-     ],
-     "code_around": [
-      "\"\"\"",
-      "def main(ctx=(1,2,3) ,  obj={\"a\": \"b\"}, **kwargs):",
-      "\t\"\"\"",
-      "\tInline comment into method",
-      "\t\"\"\"",
-      "",
-      "\tif False:"
-     ],
-     "num_chars": 36,
-     "pos": {
-      "start_line": 48,
-      "end_line": 50,
       "start_left_chars": 1,
       "start_left_spaces": 1
      }
     },
     {
-     "comment": {
+     "token": {
       "kind": "comment"
      },
      "raw": "# @Return(\"Some case\")",
      "code_around_lines": [
+      48,
+      49,
+      50,
       51,
-      52,
-      53,
-      54,
-      55
+      52
      ],
      "code_around": [
       "",
@@ -659,23 +628,23 @@
       }
      ],
      "pos": {
-      "start_line": 53,
-      "end_line": 53,
+      "start_line": 50,
+      "end_line": 50,
       "start_left_chars": 2,
       "start_left_spaces": 2
      }
     },
     {
-     "return": {
+     "token": {
       "kind": "return"
      },
      "raw": "return",
      "code_around_lines": [
+      49,
+      50,
+      51,
       52,
-      53,
-      54,
-      55,
-      56
+      53
      ],
      "code_around": [
       "\tif False:",
@@ -686,22 +655,22 @@
      ],
      "num_chars": 6,
      "pos": {
-      "start_line": 54,
-      "end_line": 54,
+      "start_line": 51,
+      "end_line": 51,
       "start_left_chars": 2,
       "start_left_spaces": 2
      }
     },
     {
-     "comment": {
+     "token": {
       "kind": "comment"
      },
      "raw": "# @Return(\"Happy path\")",
      "code_around_lines": [
-      53,
-      54,
-      55,
-      56
+      50,
+      51,
+      52,
+      53
      ],
      "code_around": [
       "\t\t# @Return(\"Some case\")",
@@ -730,21 +699,21 @@
       }
      ],
      "pos": {
-      "start_line": 55,
-      "end_line": 55,
+      "start_line": 52,
+      "end_line": 52,
       "start_left_chars": 1,
       "start_left_spaces": 1
      }
     },
     {
-     "return": {
+     "token": {
       "kind": "return"
      },
      "raw": "return",
      "code_around_lines": [
-      54,
-      55,
-      56
+      51,
+      52,
+      53
      ],
      "code_around": [
       "\t\treturn False",
@@ -753,8 +722,8 @@
      ],
      "num_chars": 6,
      "pos": {
-      "start_line": 56,
-      "end_line": 56,
+      "start_line": 53,
+      "end_line": 53,
       "start_left_chars": 1,
       "start_left_spaces": 1
      }

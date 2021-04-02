@@ -24,30 +24,27 @@ foo = module(
 Free comment
 """
 
-"""
-@Param(ctx, "ctx with fields")
-@Param(ctx.foo, description = "multi
-line
-description
-with\"escaped\" strings
-")
-@Param(name = ctx.bar, description = "ctx with fields")
-@Param(name = ctx.bar, description = "ctx with fields", example = 123)
-@Param(name = ctx.bar, description = "ctx with fields", example = 123.123)
-@Param(name = ctx.bar, description = "ctx with fields", example = True)
-@Param(name = ctx.bar, description = "ctx with fields", example = ident.a.b.c)
-@Param(name = ctx.bar, description = "ctx with fields", example = ["a", 123, ["a", b], {a = "b"}])
-@Param(name = ctx.bar, description = "ctx with fields", example = {a = "b"})
-@Param(name = ctx.bar, description = "ctx with fields",
-    example  = "repeat_same_field",
-    example  = "repeat_same_field",
-    example  = "repeat_same_field",
-    example  = "repeat_same_field"
-)
-"""
 def main(ctx=(1,2,3) ,  obj={"a": "b"}, **kwargs):
 	"""
-	Inline comment into method
+	@Param(ctx, "ctx with fields")
+	@Param(ctx.foo, description = "multi
+	line
+	description
+	with\"escaped\" strings
+	")
+	@Param(name = ctx.bar, description = "ctx with fields")
+	@Param(name = ctx.bar, description = "ctx with fields", example = 123)
+	@Param(name = ctx.bar, description = "ctx with fields", example = 123.123)
+	@Param(name = ctx.bar, description = "ctx with fields", example = True)
+	@Param(name = ctx.bar, description = "ctx with fields", example = ident.a.b.c)
+	@Param(name = ctx.bar, description = "ctx with fields", example = ["a", 123, ["a", b], {a = "b"}])
+	@Param(name = ctx.bar, description = "ctx with fields", example = {a = "b"})
+	@Param(name = ctx.bar, description = "ctx with fields",
+		example  = "repeat_same_field",
+		example  = "repeat_same_field",
+		example  = "repeat_same_field",
+		example  = "repeat_same_field"
+	)
 	"""
 
 	if False:
