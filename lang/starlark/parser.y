@@ -110,6 +110,16 @@ DefField:
             Key: $1,
         }
     } |
+    '*' {
+        $$ = &DefField{
+            Varargs: true,
+        }
+    } |
+    '*' '*' {
+        $$ = &DefField{
+            Kwargs: true,
+        }
+    } |
     '*' Operand {
         $$ = &DefField{
             Key: $2,

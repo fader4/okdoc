@@ -9,7 +9,7 @@ import (
 )
 
 func TestParse(t *testing.T) {
-	res, err := Parse([]byte(f1))
+	res, err := Parse([]byte(f2))
 	assert.NoError(t, err)
 	fmt.Println("---- list tokens ----")
 	for _, token := range res {
@@ -175,7 +175,7 @@ foo = module(
 Free comment
 """
 
-def main(ctx=(1,2,3) ,  obj={"a": "b"}, **kwargs):
+def main(ctx=(1,2,3) , *, obj={"a": "b"}, **kwargs):
 	"""
 	Inline comment into method
 	"""
